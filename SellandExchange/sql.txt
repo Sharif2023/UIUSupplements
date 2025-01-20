@@ -1,0 +1,21 @@
+CREATE DATABASE swap_bangladesh;
+
+USE swap_bangladesh;
+
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_name VARCHAR(255) NOT NULL,
+    category VARCHAR(100),
+    price DECIMAL(10, 2),
+    description TEXT,
+    image_path VARCHAR(255) NOT NULL
+);
+ALTER TABLE products ADD COLUMN bargain_price DECIMAL(10, 2) DEFAULT NULL;
+CREATE TABLE bargains (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    bargain_price DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);

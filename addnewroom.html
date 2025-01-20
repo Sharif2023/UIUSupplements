@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Room | UIU Supplement</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background-color: #f0f0f5;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 100%;
+            max-width: 250px;
+            background-color: #fff;
+            padding: 20px;
+            height: 100vh;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .styled-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding-top: 20px;
+        }
+
+        nav ul li {
+            margin: 15px 0;
+        }
+
+        nav ul li a {
+            color: #555;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            text-decoration: none;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: #f0f0f5;
+            border-radius: 10px;
+        }
+
+        nav ul li a .nav-item {
+            margin-left: 15px;
+        }
+
+        /* Log Out Button */
+        .logout-btn {
+            background-color: #ff5722;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background-color: #e64a19;
+        }
+
+        /* Main Section */
+        .main {
+            flex: 1;
+            margin-left: 250px;
+            padding: 40px;
+        }
+
+        .main h1 {
+            font-size: 30px;
+            color: #333;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="file"] {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background-color: #ff5722;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #e64a19;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav>
+            <ul>
+                <li><a href="uiusupplementhomepage.php" class="logo">
+                    <h1 class="styled-title">UIU Supplement</h1>
+                </a></li>
+                <li><a href="uiusupplementhomepage.php">
+                    <i class="fas fa-home"></i>
+                    <span class="nav-item">Home</span>
+                </a></li>
+                <li><a href="SellAndExchange.php">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span class="nav-item">Sell</span>
+                  </a></li>
+                <li><a href="availablerooms.html">
+                    <i class="fas fa-building"></i>
+                    <span class="nav-item">Room Rent</span>
+                </a></li>
+                <li><a href="browsementors.html">
+                    <i class="fas fa-user"></i>
+                    <span class="nav-item">Mentorship</span>
+                </a></li>
+                <li><a href="#">
+                    <i class="fas fa-briefcase"></i>
+                    <span class="nav-item">Jobs</span>
+                </a></li>
+                <li><a href="lostandfound.php">
+                    <i class="fas fa-dumpster"></i>
+                    <span class="nav-item">Lost and Found</span>
+                </a></li>
+                <li><a href="shuttle_tracking_system.php">
+                    <i class="fas fa-bus"></i>
+                    <span class="nav-item">Shuttle Services</span>
+                </a></li>
+            </ul>
+
+            <a href="uiusupplementlogin.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Log Out
+            </a>
+        </nav>
+
+        <!-- Main Content Section -->
+        <section class="main">
+            <h1>Add New Room Details</h1>
+            <form id="add-room-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="room-id">Room ID</label>
+                    <input type="text" id="room-id" name="room-id" placeholder="Enter Room ID (e.g., uiu-12345)" required>
+                </div>
+                <div class="form-group">
+                    <label for="room-location">Location</label>
+                    <input type="text" id="room-location" name="room-location" required>
+                </div>
+                <div class="form-group">
+                    <label for="room-details">Room Details</label>
+                    <input type="text" id="room-details" name="room-details" placeholder="Enter Room Details (e.g., single, double)" required>
+                </div>
+                <div class="form-group">
+                    <label for="room-photos">Upload Room Photos</label>
+                    <input type="file" id="room-photos" name="room-photos[]" multiple>
+                </div>
+                <div class="form-group">
+                    <label for="available-from">Available From</label>
+                    <input type="date" id="available-from" name="available-from" required>
+                </div>
+                <div class="form-group">
+                    <label for="available-to">Available To (optional)</label>
+                    <input type="date" id="available-to" name="available-to">
+                </div>
+                <div class="form-group">
+                    <label>Status</label><br>
+                    <label for="status-available">
+                    <input type="radio" id="status-available" name="available-status" value="available" checked>Available</label>
+                    <label for="status-not-available">
+                    <input type="radio" id="status-not-available" name="available-status" value="not-available">Not Available</label>
+                </div>
+                <div class="form-group">
+                    <label for="room-rent">Rent</label>
+                    <input type="number" id="room-rent" name="room-rent" placeholder="Enter Rent in BDT" required>
+                </div>
+                <div class="button-group">
+                    <button type="submit" id="add-room-btn">Add New Room Details</button>
+                </div>
+                <button type="button" onclick="goBack()">Return Home</button>
+            </form>
+        </section>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = "availablerooms.html";
+        }
+
+        document.getElementById('add-room-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch('addnewroom.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(result => {
+                alert('New room added successfully!');
+                document.getElementById('add-room-form').reset();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was a problem adding the new room.');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Mentors | UIU Supplement</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background-color: #f0f0f5;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 100%;
+            max-width: 250px;
+            background-color: #fff;
+            padding: 20px;
+            height: 100vh;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .styled-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding-top: 20px;
+        }
+
+        nav ul li {
+            margin: 15px 0;
+        }
+
+        nav ul li a {
+            color: #555;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            text-decoration: none;
+        }
+
+        nav ul li a.active,
+        nav ul li a:hover {
+            background-color: #f0f0f5;
+            border-radius: 10px;
+        }
+
+        nav ul li a .nav-item {
+            margin-left: 15px;
+        }
+
+        /* Log Out Button */
+        .logout-btn {
+            background-color: #ff5722;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background-color: #e64a19;
+        }
+
+        /* Main Section */
+        .main {
+            flex: 1;
+            margin-left: 250px;
+            padding: 40px;
+        }
+
+        .main-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Centered Title */
+        .center-title {
+            flex: 1;
+            text-align: center;
+            font-size: 30px;
+            color: #333;
+        }
+
+        .back-btn {
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+
+        .back-btn:hover {
+            background-color: #1976D2;
+        }
+
+        /* Container for Mentor Cards */
+        .mentor-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+            gap: 20px; /* Space between cards */
+            margin-top: 20px;
+        }
+
+        .mentor-card {
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            justify-content: space-between; /* Space between elements */
+            width: 100%; /* Full width */
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            position: relative; /* Positioning for the buttons */
+        }
+
+        .mentor-card img {
+            width: 100px; /* Adjusted image size */
+            height: 100px; /* Adjusted image size */
+            border-radius: 50%; /* Round shape */
+            margin-right: 15px;
+            object-fit: cover; /* Maintain aspect ratio */
+        }
+
+        .mentor-card-content {
+            flex-grow: 1;
+        }
+
+        .mentor-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .mentor-info h2 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .contact-button {
+            background-color: #2196F3; /* Same as back button */
+            color: white;
+            padding: 5px 8px; /* Adjusted button size */
+            font-size: 12px; /* Adjusted font size */
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            text-decoration: none; /* Remove underline */
+        }
+
+        .contact-button img {
+            width: 12px; /* Reduced icon size */
+            height: 12px; /* Reduced icon size */
+            margin-right: 5px; /* Maintained margin for spacing */
+        }
+
+        h3 {
+            display: flex;
+            align-items: center;
+            font-size: 12px; /* Adjusted font size */
+            margin: 5px 0;
+        }
+
+        .mentor-card-content h3 img {
+            width: 12px; /* Set icon size */
+            height: 12px; /* Set icon size */
+        }
+
+        .language img,
+        .country img,
+        .response-time img {
+            width: 12px; /* Set to the same size */
+            height: 12px; /* Set to the same size */
+        }
+
+        .language,
+        .country,
+        .response-time {
+            font-size: 12px; /* Adjusted font size */
+            margin: 0 5px; /* Reduced margin */
+            display: flex;
+            align-items: center;
+        }
+
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block; /* For consistent spacing */
+        }
+
+        button.view-profile {
+            background-color: #ff5722; /* Match with logout button */
+        }
+
+        button.view-profile:hover {
+            background-color: #e64a19; /* Darker shade on hover */
+        }
+
+        /* Add New Mentor button */
+        .add-mentor-btn {
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: inline-block;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .add-mentor-btn:hover {
+            background-color: #218838;
+        }
+
+        /* Media Queries for responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            nav {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mentor-cards {
+                grid-template-columns: 1fr; /* 1 card per row on very small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="uiusupplementhomepage.php" class="logo">
+                    <h1 class="styled-title">UIU Supplement</h1>
+                </a></li>
+                <li><a href="uiusupplementhomepage.php">
+                    <i class="fas fa-home"></i>
+                    <span class="nav-item">Home</span>
+                </a></li>
+                <li><a href="SellAndExchange.php">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span class="nav-item">Sell</span>
+                  </a></li>
+                <li><a href="availablerooms.html">
+                    <i class="fas fa-building"></i>
+                    <span class="nav-item">Room Rent</span>
+                </a></li>
+                <li><a href="browsementors.html" class="active">
+                    <i class="fas fa-user"></i>
+                    <span class="nav-item">Mentorship</span>
+                </a></li>
+                <li><a href="#">
+                    <i class="fas fa-briefcase"></i>
+                    <span class="nav-item">Jobs</span>
+                </a></li>
+                <li><a href="lostandfound.php">
+                    <i class="fas fa-dumpster"></i>
+                    <span class="nav-item">Lost and Found</span>
+                </a></li>
+                <li><a href="shuttle_tracking_system.php">
+                    <i class="fas fa-bus"></i>
+                    <span class="nav-item">Shuttle Services</span>
+                </a></li>
+            </ul>
+            <a href="uiusupplementlogin.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Log Out
+            </a>
+        </nav>
+
+        <section class="main">
+            <div class="main-top">
+                <button id="back" onclick="location.href='uiusupplementhomepage.php'" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <h1 class="center-title">Browse Mentors</h1>
+            </div>
+            
+            
+            <div class="mentor-cards" id="mentor-list">
+                <!-- Mentor cards will be dynamically inserted here from database-->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('browsementors.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(mentors => {
+                    const mentorListContainer = document.getElementById('mentor-list');
+                    if (mentors.length === 0) {
+                        mentorListContainer.innerHTML = "<p>No mentors found</p>";
+                        return;
+                    }
+                    mentors.forEach(mentor => {
+                        const mentorCard = document.createElement('div');
+                        mentorCard.classList.add('mentor-card');
+
+                        mentorCard.innerHTML = `
+                            <img src="${mentor.photo}" alt="${mentor.name} Photo">
+                            <div class="mentor-card-content">
+                                <div class="mentor-info">
+                                    <h2>${mentor.name}</h2>
+                                    <a href="contactmentor.php?mentor_id=${mentor.id}" class="contact-button">
+                                        <img src="https://img.icons8.com/ios-filled/30/000000/phone.png" alt="Contact Icon">
+                                        Contact
+                                    </a>
+                                </div>
+                                <h3>
+                                    <img src="https://img.icons8.com/material-rounded/24/000000/language.png" alt="Language Icon"> ${mentor.language}
+                                </h3>
+                                <h3>
+                                    <img src="https://img.icons8.com/material-rounded/24/000000/marker.png" alt="Location Icon"> ${mentor.country}
+                                </h3>
+                                <h3 class="response-time">
+                                    <img src="https://img.icons8.com/emoji/24/4CAF50/high-voltage.png" alt="Response Time Icon"> ${mentor.response_time}
+                                </h3>
+                                <h3>
+                                    Skills: ${mentor.skills}
+                                </h3>
+                                <button onclick="location.href='viewmentorprofile.php?id=${mentor.id}'" class="view-profile">View Profile</button>
+                            </div>
+                        `;
+                        mentorListContainer.appendChild(mentorCard);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching mentors:', error);
+                    document.getElementById('mentor-list').innerHTML = "<p>Error loading mentors.</p>";
+                });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+Create Database uiusupplements;
+
+create table users(
+	id int(11) primary key,
+	username varchar(50),
+	email varchar(100),
+	Gender enum('m','f','o'),
+	password_hash varchar(255),
+	mobilenumber varchar(20),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+);
+
+CREATE TABLE availablerooms (
+    serial int(11) primary key auto_increment,
+    room_id varchar(255) Unique Not Null,
+    room_location varchar(100),
+    room_details varchar(50),
+    room_photos varchar(1000),
+    available_from date,
+    available_to date,
+    status enum('available','not-available'),
+    room_rent int(11)
+);
+
+CREATE TABLE appointedrooms(
+    appointed_room_id varchar(255) Primary Key Not Null,
+    appointed_user_id int ,
+    appointed_user_name varchar(50),
+    appointed_user_email varchar(100),
+    CONSTRAINT fk_appoint_user FOREIGN KEY (appointed_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_room_id FOREIGN KEY (appointed_room_id) REFERENCES availablerooms(room_id) ON DELETE CASCADE
+);
+
+CREATE TABLE uiumentorlist (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    photo VARCHAR(255),
+    name VARCHAR(100) NOT NULL,
+    bio TEXT NOT NULL,
+    language ENUM('Bangla', 'English') NOT NULL,
+    response_time ENUM('6 hours', '12 hours', '24 hours', '48 hours', '72 hours') NOT NULL,
+    industry ENUM('Tech', 'Finance', 'Healthcare', 'Marketing', 'Other') NOT NULL,
+    hourly_rate VARCHAR(50) NOT NULL,
+    company VARCHAR(100),
+    country ENUM('Bangladesh', 'USA', 'UK', 'India', 'Canada') NOT NULL,
+    skills TEXT,
+    email VARCHAR(100) NOT NULL,
+    whatsapp VARCHAR(20),
+    linkedin VARCHAR(255),
+    facebook VARCHAR(255)
+);
+
+CREATE TABLE request_mentorship_session (
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    mentor_id INT NOT NULL,
+    session_time VARCHAR(255) NOT NULL,
+    session_price VARCHAR(255) NOT NULL,
+    communication_method VARCHAR(255) NOT NULL,
+    session_date DATE NOT NULL,
+    problem_description TEXT,
+    status VARCHAR(50) DEFAULT 'Pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (mentor_id) REFERENCES uiumentorlist(id)
+);
+
+
+CREATE TABLE user_profiles (
+    user_id INT(11) PRIMARY KEY,
+    user_photo VARCHAR(255),
+    user_bio TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE admins (
+    admin_id INT(11) PRIMARY KEY,
+    admin_name VARCHAR(50) NOT NULL,
+    admin_email VARCHAR(100) NOT NULL,
+    ADD CONSTRAINT admin_user FOREIGN KEY (admin_id) REFERENCES users(id);
+);
+
+-- Sell Exchange List Table
+CREATE TABLE sell_exchange_list (
+    item_id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    user_id INT(11) NOT NULL,
+    item_name VARCHAR(100),
+    item_description TEXT,
+    item_photo VARCHAR(255),
+    item_status ENUM('available', 'sold', 'exchanged'),
+    price DECIMAL(10,2),
+    posted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Events Table
+CREATE TABLE events (
+    event_id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    event_name VARCHAR(100),
+    event_date DATE,
+    event_location VARCHAR(100),
+    event_description TEXT,
+    event_status ENUM('upcoming', 'ongoing', 'completed') DEFAULT 'upcoming',
+    organizer_id INT(11),
+    FOREIGN KEY (organizer_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+
+--Rafi--
+
+USE Database uiusupplements;
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT(11) NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    category VARCHAR(100),
+    price DECIMAL(10, 2),
+    description TEXT,
+    image_path VARCHAR(255) NOT NULL,
+    bargain_price DECIMAL(10, 2) DEFAULT NULL,
+    status ENUM('On Hold', 'Sold') DEFAULT 'On Hold';
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+);
+CREATE TABLE bargains (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    bargain_price DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE TABLE lost_and_found (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(50),
+    email VARCHAR(100),
+    category VARCHAR(50),
+    image_path VARCHAR(255),
+    foundPlace VARCHAR(255),
+    date_time DATETIME,
+    contact_info VARCHAR(255),
+    where_now VARCHAR(255)
+    claim_status TINYINT DEFAULT 0
+);
+
+
+CREATE TABLE claims (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    item_id INT,
+    user_id VARCHAR(50),
+    email VARCHAR(100),
+    identification_info TEXT,
+    FOREIGN KEY (item_id) REFERENCES lost_and_found(id)
+);
+
+CREATE TABLE shuttle_driver(
+	d_id varchar(20) PRIMARY KEY,
+    d_name varchar(255),
+    d_contactNo varchar(255),
+    d_password varchar(255)
+);
+
+CREATE TABLE total_trip(
+    driver_id varchar(20) PRIMARY KEY,
+    trip_count int,
+    CONSTRAINT fk_driver FOREIGN KEY (driver_id) REFERENCES shuttle_driver(d_id)
+);
+
+CREATE TABLE messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    message TEXT NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
