@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appointed Rooms | UIU Supplement</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
 
@@ -61,7 +62,8 @@
             text-decoration: none;
         }
 
-        nav ul li a:hover, nav ul li a.active {
+        nav ul li a:hover,
+        nav ul li a.active {
             background-color: #f0f0f5;
             border-radius: 10px;
         }
@@ -160,48 +162,48 @@
                 padding: 20px;
             }
         }
-
     </style>
 </head>
+
 <body>
     <div class="container">
         <nav>
             <ul>
                 <li><a href="uiusupplementhomepage.php" class="logo">
-                    <h1 class="styled-title">UIU Supplement</h1>
-                </a></li>
+                        <h1 class="styled-title">UIU Supplement</h1>
+                    </a></li>
                 <li><a href="uiusupplementhomepage.php">
-                    <i class="fas fa-home"></i>
-                    <span class="nav-item">Home</span>
-                </a></li>
+                        <i class="fas fa-home"></i>
+                        <span class="nav-item">Home</span>
+                    </a></li>
                 <li><a href="SellAndExchange.php">
-                    <i class="fas fa-exchange-alt"></i>
-                    <span class="nav-item">Sell or Exchange</span>
-                  </a></li>
+                        <i class="fas fa-exchange-alt"></i>
+                        <span class="nav-item">Sell or Exchange</span>
+                    </a></li>
                 <li><a href="availablerooms.html">
-                    <i class="fas fa-building"></i>
-                    <span class="nav-item">Room Rent</span>
-                </a></li>
+                        <i class="fas fa-building"></i>
+                        <span class="nav-item">Room Rent</span>
+                    </a></li>
                 <li><a href="browsementors.html">
-                    <i class="fas fa-user"></i>
-                    <span class="nav-item">Mentorship</span>
-                </a></li>
+                        <i class="fas fa-user"></i>
+                        <span class="nav-item">Mentorship</span>
+                    </a></li>
                 <li><a href="#">
-                    <i class="fas fa-briefcase"></i>
-                    <span class="nav-item">Jobs</span>
-                </a></li>
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Jobs</span>
+                    </a></li>
                 <li><a href="lostandfound.php">
-                    <i class="fas fa-dumpster"></i>
-                    <span class="nav-item">Lost and Found</span>
-                </a></li>
+                        <i class="fas fa-dumpster"></i>
+                        <span class="nav-item">Lost and Found</span>
+                    </a></li>
                 <li><a href="shuttle_tracking_system.php">
-                    <i class="fas fa-bus"></i>
-                    <span class="nav-item">Shuttle Services</span>
-                </a></li>
+                        <i class="fas fa-bus"></i>
+                        <span class="nav-item">Shuttle Services</span>
+                    </a></li>
                 <li><a href="#">
-                    <i class="fas fa-ad"></i>
-                    <span class="nav-item">Promotions</span>
-                </a></li>
+                        <i class="fas fa-ad"></i>
+                        <span class="nav-item">Promotions</span>
+                    </a></li>
             </ul>
 
             <a href="uiusupplementlogin.html" class="logout-btn">
@@ -224,17 +226,17 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             fetch('appointedrooms.php')
                 .then(response => response.json())
                 .then(appointedRooms => {
                     const appointedRoomListContainer = document.getElementById('appointed-room-list');
-                    
+
                     if (appointedRooms.length > 0) {
                         appointedRooms.forEach(room => {
                             const roomDiv = document.createElement('div');
                             roomDiv.classList.add('room-item');
-    
+
                             roomDiv.innerHTML = `
                                 <h3>Room ID: ${room.room_id}</h3>
                                 <p><strong>Location:</strong> ${room.room_location}</p>
@@ -244,7 +246,7 @@
                                 <p><strong>User Name:</strong> ${room.appointed_user_name}</p>
                                 <p><strong>User Email:</strong> ${room.appointed_user_email}</p>
                             `;
-    
+
                             appointedRoomListContainer.appendChild(roomDiv);
                         });
                     } else {
@@ -257,4 +259,5 @@
         });
     </script>
 </body>
+
 </html>

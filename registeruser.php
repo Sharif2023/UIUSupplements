@@ -33,4 +33,3 @@ if ($stmt->execute()) {
 // Close connections
 $stmt->close();
 $conn->close();
-?>

@@ -49,7 +49,7 @@ if ($user) {
                 $stmt = $conn->prepare($updateRoomQuery);
                 $stmt->bind_param("s", $room_id);
                 $stmt->execute();
-                
+
                 // Respond with success
                 echo json_encode(['status' => 'success', 'message' => 'Room rented successfully']);
             } else {
@@ -66,4 +66,3 @@ if ($user) {
 }
 
 $conn->close();
-?>

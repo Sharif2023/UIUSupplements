@@ -27,4 +27,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "No claims found for this item.";
     }
 }
-?>

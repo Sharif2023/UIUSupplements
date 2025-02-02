@@ -18,10 +18,11 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-function resizeImage($file, $targetFile, $maxWidth, $maxHeight, $imageFileType) {
+function resizeImage($file, $targetFile, $maxWidth, $maxHeight, $imageFileType)
+{
     list($width, $height) = getimagesize($file);
     $ratio = $width / $height;
-    
+
     if ($maxWidth / $maxHeight > $ratio) {
         $newWidth = $maxHeight * $ratio;
         $newHeight = $maxHeight;
@@ -100,11 +101,12 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Product</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
 
@@ -161,7 +163,8 @@ $conn->close();
             text-decoration: none;
         }
 
-        nav ul li a:hover, nav ul li a.active {
+        nav ul li a:hover,
+        nav ul li a.active {
             background-color: #f0f0f5;
             border-radius: 10px;
         }
@@ -203,14 +206,15 @@ $conn->close();
             text-align: center;
         }
 
-        h2{
+        h2 {
             padding-bottom: 20px;
         }
 
         .form-group {
             margin-bottom: 15px;
         }
-        .form-label{
+
+        .form-label {
             padding: 5px;
         }
 
@@ -221,13 +225,15 @@ $conn->close();
             font-weight: bold;
         }
 
-        input[type="text"], input[type="number"] {
+        input[type="text"],
+        input[type="number"] {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+
         input[type="file"] {
             padding: 5px;
             border: 1px solid #ccc;
@@ -256,42 +262,43 @@ $conn->close();
         }
     </style>
 </head>
+
 <body>
-<div class="container">
+    <div class="container">
         <!-- Sidebar Navigation -->
         <nav>
             <ul>
                 <li><a href="uiusupplementhomepage.php" class="logo">
-                    <h1 class="styled-title">UIU Supplement</h1>
-                </a></li>
+                        <h1 class="styled-title">UIU Supplement</h1>
+                    </a></li>
                 <li><a href="uiusupplementhomepage.php">
-                    <i class="fas fa-home"></i>
-                    <span class="nav-item">Home</span>
-                </a></li>
+                        <i class="fas fa-home"></i>
+                        <span class="nav-item">Home</span>
+                    </a></li>
                 <li><a href="SellAndExchange.php">
-                    <i class="fas fa-exchange-alt"></i>
-                    <span class="nav-item">Sell</span>
-                  </a></li>
+                        <i class="fas fa-exchange-alt"></i>
+                        <span class="nav-item">Sell</span>
+                    </a></li>
                 <li><a href="availablerooms.html">
-                    <i class="fas fa-building"></i>
-                    <span class="nav-item">Room Rent</span>
-                </a></li>
+                        <i class="fas fa-building"></i>
+                        <span class="nav-item">Room Rent</span>
+                    </a></li>
                 <li><a href="browsementors.html">
-                    <i class="fas fa-user"></i>
-                    <span class="nav-item">Mentorship</span>
-                </a></li>
+                        <i class="fas fa-user"></i>
+                        <span class="nav-item">Mentorship</span>
+                    </a></li>
                 <li><a href="#">
-                    <i class="fas fa-briefcase"></i>
-                    <span class="nav-item">Jobs</span>
-                </a></li>
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Jobs</span>
+                    </a></li>
                 <li><a href="lostandfound.php">
-                    <i class="fas fa-dumpster"></i>
-                    <span class="nav-item">Lost and Found</span>
-                </a></li>
+                        <i class="fas fa-dumpster"></i>
+                        <span class="nav-item">Lost and Found</span>
+                    </a></li>
                 <li><a href="shuttle_tracking_system.php">
-                    <i class="fas fa-bus"></i>
-                    <span class="nav-item">Shuttle Services</span>
-                </a></li>
+                        <i class="fas fa-bus"></i>
+                        <span class="nav-item">Shuttle Services</span>
+                    </a></li>
             </ul>
 
             <a href="uiusupplementlogin.html" class="logout-btn">
@@ -338,34 +345,35 @@ $conn->close();
             </form>
         </section>
 
-    <script>
-        // Drag-and-drop functionality
-        const dropArea = document.getElementById('drop-area');
-        const fileInput = document.getElementById('image');
+        <script>
+            // Drag-and-drop functionality
+            const dropArea = document.getElementById('drop-area');
+            const fileInput = document.getElementById('image');
 
-        dropArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropArea.classList.add('dragging');
-        });
+            dropArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropArea.classList.add('dragging');
+            });
 
-        dropArea.addEventListener('dragleave', () => {
-            dropArea.classList.remove('dragging');
-        });
+            dropArea.addEventListener('dragleave', () => {
+                dropArea.classList.remove('dragging');
+            });
 
-        dropArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            fileInput.files = e.dataTransfer.files;
-            dropArea.classList.remove('dragging');
-        });
-    </script>
+            dropArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                fileInput.files = e.dataTransfer.files;
+                dropArea.classList.remove('dragging');
+            });
+        </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js">
-        
-    </script>
-    <script>
-        function goBack() {
-            window.location.href = "SellAndExchange.php";
-        }
-    </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js">
+
+        </script>
+        <script>
+            function goBack() {
+                window.location.href = "SellAndExchange.php";
+            }
+        </script>
 </body>
+
 </html>

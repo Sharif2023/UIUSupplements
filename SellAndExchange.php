@@ -1,4 +1,4 @@
-<?php 
+<?php
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -58,21 +58,23 @@ $bargain_list_result = $conn->query($bargain_list_sql);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UIU Supplements - Product Listings</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: "Poppins", sans-serif;
         }
-        
+
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f9;
@@ -80,7 +82,7 @@ $bargain_list_result = $conn->query($bargain_list_sql);
             padding: 20px;
         }
 
-        
+
 
         /* Sidebar Navigation */
         nav {
@@ -120,7 +122,8 @@ $bargain_list_result = $conn->query($bargain_list_sql);
             text-decoration: none;
         }
 
-        nav ul li a:hover, nav ul li a.active {
+        nav ul li a:hover,
+        nav ul li a.active {
             background-color: #f0f0f5;
             border-radius: 10px;
         }
@@ -213,6 +216,7 @@ $bargain_list_result = $conn->query($bargain_list_sql);
             font-size: 18px;
             font-weight: bold;
         }
+
         #bargain-success {
             position: fixed;
             top: 20px;
@@ -223,9 +227,11 @@ $bargain_list_result = $conn->query($bargain_list_sql);
             color: white;
             border-radius: 5px;
             font-size: 14px;
-            display: none; /* Initially hidden */
+            display: none;
+            /* Initially hidden */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
         #drop-area {
             border: 2px dashed #007bff;
             padding: 20px;
@@ -238,71 +244,77 @@ $bargain_list_result = $conn->query($bargain_list_sql);
         }
 
         .bargain-list-btn {
-            font-size: 0.8rem; /* Smaller text */
-            position: absolute; /* Positioning to the corner */
-            bottom: 10px; /* Adjusts the vertical position */
-            right: 10px; /* Adjusts the horizontal position */
+            font-size: 0.8rem;
+            /* Smaller text */
+            position: absolute;
+            /* Positioning to the corner */
+            bottom: 10px;
+            /* Adjusts the vertical position */
+            right: 10px;
+            /* Adjusts the horizontal position */
         }
+
         /* Media Queries for Responsiveness */
         @media (max-width: 768px) {
-        .container {
-            flex-direction: row;
-        }
+            .container {
+                flex-direction: row;
+            }
 
-        nav {
-            width: 100%;
-            height: auto;
-            position: relative;
-        }
+            nav {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
 
-        .main {
-            margin-left: 0;
-            padding: 20px;
-        }
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
         }
 
         @media (max-width: 1200px) {
-        .main {
-            padding: 20px;
-        }}
-
+            .main {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <nav>
             <ul>
                 <li><a href="uiusupplementhomepage.php" class="logo">
-                    <h1 class="styled-title">UIU Supplement</h1>
-                </a></li>
+                        <h1 class="styled-title">UIU Supplement</h1>
+                    </a></li>
                 <li><a href="uiusupplementhomepage.php">
-                    <i class="fas fa-home"></i>
-                    <span class="nav-item">Home</span>
-                </a></li>
+                        <i class="fas fa-home"></i>
+                        <span class="nav-item">Home</span>
+                    </a></li>
                 <li><a href="SellAndExchange.php" class="active">
-                    <i class="fas fa-exchange-alt"></i>
-                    <span class="nav-item">Sell</span>
-                  </a></li>
+                        <i class="fas fa-exchange-alt"></i>
+                        <span class="nav-item">Sell</span>
+                    </a></li>
                 <li><a href="availablerooms.html">
-                    <i class="fas fa-building"></i>
-                    <span class="nav-item">Room Rent</span>
-                </a></li>
+                        <i class="fas fa-building"></i>
+                        <span class="nav-item">Room Rent</span>
+                    </a></li>
                 <li><a href="browsementors.html">
-                    <i class="fas fa-user"></i>
-                    <span class="nav-item">Mentorship</span>
-                </a></li>
+                        <i class="fas fa-user"></i>
+                        <span class="nav-item">Mentorship</span>
+                    </a></li>
                 <li><a href="#">
-                    <i class="fas fa-briefcase"></i>
-                    <span class="nav-item">Jobs</span>
-                </a></li>
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Jobs</span>
+                    </a></li>
                 <li><a href="lostandfound.php">
-                    <i class="fas fa-dumpster"></i>
-                    <span class="nav-item">Lost and Found</span>
-                </a></li>
+                        <i class="fas fa-dumpster"></i>
+                        <span class="nav-item">Lost and Found</span>
+                    </a></li>
                 <li><a href="shuttle_tracking_system.php">
-                    <i class="fas fa-bus"></i>
-                    <span class="nav-item">Shuttle Services</span>
-                </a></li>
+                        <i class="fas fa-bus"></i>
+                        <span class="nav-item">Shuttle Services</span>
+                    </a></li>
             </ul>
             <a href="uiusupplementlogin.html" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i> Log Out
@@ -318,9 +330,9 @@ $bargain_list_result = $conn->query($bargain_list_sql);
             <a href="add-product.php" class="add-product-btn">Add Product</a>
             <div class="product-cards">
                 <?php
-                    if ($result->num_rows > 0) {
-                        while($row = $result->fetch_assoc()) {
-                            echo '<div class="card">
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo '<div class="card">
                                     <img class="card-img-top" src="' . $row['image_path'] . '" alt="Product Image">
                                     <div class="card-body">
                                         <h5 class="card-title">' . $row['product_name'] . '</h5>
@@ -334,102 +346,103 @@ $bargain_list_result = $conn->query($bargain_list_sql);
                                         </div>
                                     </div>
                                 </div>';
-                        }
-                    } else {
-                        echo "No products available.";
                     }
+                } else {
+                    echo "No products available.";
+                }
                 ?>
             </div>
-        
 
-        <!-- Modal for Bargain Submission -->
-        <div class="modal fade" id="bargainModal" tabindex="-1" aria-labelledby="bargainModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="bargainModalLabel">Submit Your Bargain</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" action="">
-                            <input type="hidden" id="product_id" name="product_id">
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="bargain_price" class="form-label">Bargain Price</label>
-                                <input type="number" class="form-control" id="bargain_price" name="bargain_price" required>
-                            </div>
-                            <input type="hidden" name="user_id" value="1"> <!-- Replace with dynamic user_id if available -->
-                            <button type="submit" class="btn btn-primary">Submit Bargain</button>
-                        </form>
+
+            <!-- Modal for Bargain Submission -->
+            <div class="modal fade" id="bargainModal" tabindex="-1" aria-labelledby="bargainModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="bargainModalLabel">Submit Your Bargain</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" action="">
+                                <input type="hidden" id="product_id" name="product_id">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="bargain_price" class="form-label">Bargain Price</label>
+                                    <input type="number" class="form-control" id="bargain_price" name="bargain_price" required>
+                                </div>
+                                <input type="hidden" name="user_id" value="1"> <!-- Replace with dynamic user_id if available -->
+                                <button type="submit" class="btn btn-primary">Submit Bargain</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Modal for Bargain List -->
-        <div class="modal fade" id="bargainListModal" tabindex="-1" aria-labelledby="bargainListModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="bargainListModalLabel">Bargain List</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Product Name</th>
-                                    <th>Email</th>
-                                    <th>User ID</th>
-                                    <th>Bargain Price</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                if ($bargain_list_result->num_rows > 0) {
-                                    while ($bargain = $bargain_list_result->fetch_assoc()) {
-                                        echo '<tr>';
-                                        echo '<td>' . $bargain["product_id"] . '</td>'; // Adjust to fetch product name if available
-                                        echo '<td>' . $bargain["email"] . '</td>';
-                                        echo '<td>' . $bargain["user_id"] . '</td>';
-                                        echo '<td>' . $bargain["bargain_price"] . '</td>';
-                                        echo '</tr>';
+            <!-- Modal for Bargain List -->
+            <div class="modal fade" id="bargainListModal" tabindex="-1" aria-labelledby="bargainListModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="bargainListModalLabel">Bargain List</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product Name</th>
+                                        <th>Email</th>
+                                        <th>User ID</th>
+                                        <th>Bargain Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    if ($bargain_list_result->num_rows > 0) {
+                                        while ($bargain = $bargain_list_result->fetch_assoc()) {
+                                            echo '<tr>';
+                                            echo '<td>' . $bargain["product_id"] . '</td>'; // Adjust to fetch product name if available
+                                            echo '<td>' . $bargain["email"] . '</td>';
+                                            echo '<td>' . $bargain["user_id"] . '</td>';
+                                            echo '<td>' . $bargain["bargain_price"] . '</td>';
+                                            echo '</tr>';
+                                        }
+                                    } else {
+                                        echo '<tr><td colspan="4">No bargains found.</td></tr>';
                                     }
-                                } else {
-                                    echo '<tr><td colspan="4">No bargains found.</td></tr>';
-                                }
-                                ?>
-                            </tbody>
-                        </table>
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         </section>
     </div>
     <script>
         var bargainModal = document.getElementById('bargainModal');
-        bargainModal.addEventListener('show.bs.modal', function (event) {
+        bargainModal.addEventListener('show.bs.modal', function(event) {
             var button = event.relatedTarget;
             var productId = button.getAttribute('data-product-id');
             var modalProductIdInput = document.getElementById('product_id');
             modalProductIdInput.value = productId;
         });
         document.addEventListener("DOMContentLoaded", function() {
-    var successMessage = document.getElementById('bargain-success');
-    
-    if (successMessage) {
-        successMessage.style.display = 'block'; // Show the message
-        setTimeout(function() {
-            successMessage.style.display = 'none'; // Hide after 2 seconds
-        }, 2000); // 2000 milliseconds = 2 seconds
-    }
-});
+            var successMessage = document.getElementById('bargain-success');
+
+            if (successMessage) {
+                successMessage.style.display = 'block'; // Show the message
+                setTimeout(function() {
+                    successMessage.style.display = 'none'; // Hide after 2 seconds
+                }, 2000); // 2000 milliseconds = 2 seconds
+            }
+        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

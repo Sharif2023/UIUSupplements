@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Available Rooms | UIU Supplement</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
 
@@ -107,7 +108,8 @@
         }
 
         .back-btn {
-            background-color: #2196F3; /* New color */
+            background-color: #2196F3;
+            /* New color */
             color: white;
             padding: 10px 15px;
             border: none;
@@ -117,7 +119,8 @@
         }
 
         .back-btn:hover {
-            background-color: #1976D2; /* Darker shade on hover */
+            background-color: #1976D2;
+            /* Darker shade on hover */
         }
 
         .main-content {
@@ -127,7 +130,8 @@
 
         .card {
             display: flex;
-            flex-direction: column; /* Ensure vertical layout for each card */
+            flex-direction: column;
+            /* Ensure vertical layout for each card */
             border: 1px solid #ccc;
             border-radius: 10px;
             padding: 15px;
@@ -150,12 +154,14 @@
             height: 100px;
             overflow: hidden;
             border-radius: 10px;
-            margin-left: 20px; /* Space between details and carousel */
+            margin-left: 20px;
+            /* Space between details and carousel */
         }
 
         .carousel {
             width: 100%;
-            height: 200px; /* Set height for the carousel */
+            height: 200px;
+            /* Set height for the carousel */
             overflow: hidden;
             position: relative;
         }
@@ -176,7 +182,8 @@
         .button-group {
             display: flex;
             justify-content: center;
-            gap: 10px; /* Reduced gap between buttons */
+            gap: 10px;
+            /* Reduced gap between buttons */
         }
 
         /* Centered Title with Space for Search and Sort */
@@ -190,13 +197,15 @@
             align-items: center;
             gap: 10px;
             position: absolute;
-            right: 20px; /* Aligns the search and sort to the right corner */
+            right: 20px;
+            /* Aligns the search and sort to the right corner */
         }
 
         /* Adjusted width to match available rooms container */
         .search-bar,
         .sort-bar {
-            width: auto; /* Let it be auto to avoid fixed width issues */
+            width: auto;
+            /* Let it be auto to avoid fixed width issues */
         }
 
         /* Search Bar Styling */
@@ -210,15 +219,18 @@
             position: absolute;
             left: 10px;
             color: #888;
-            pointer-events: none; /* Prevents clicks on the icon */
+            pointer-events: none;
+            /* Prevents clicks on the icon */
         }
 
         #search-room {
-            padding: 8px 35px; /* Space for the search icon */
+            padding: 8px 35px;
+            /* Space for the search icon */
             border-radius: 5px;
             border: 1px solid #ccc;
             font-size: 14px;
-            width: 200px; /* Adjust width as needed */
+            width: 200px;
+            /* Adjust width as needed */
         }
 
         .search-btn {
@@ -227,12 +239,14 @@
             padding: 8px 15px;
             border: none;
             border-radius: 5px;
-            margin-left: 10px; /* Space between the input and button */
+            margin-left: 10px;
+            /* Space between the input and button */
             cursor: pointer;
         }
 
         .search-btn:hover {
-            background-color: #e64a19; /* Darker shade on hover */
+            background-color: #e64a19;
+            /* Darker shade on hover */
         }
 
         /* Sort Bar Styling */
@@ -249,11 +263,13 @@
         }
 
         #sort-options {
-            padding: 8px 8px 8px 35px; /* Space for the sort icon */
+            padding: 8px 8px 8px 35px;
+            /* Space for the sort icon */
             border-radius: 5px;
             border: 1px solid #ccc;
             font-size: 14px;
-            width: 150px; /* Fixed width for sort options */
+            width: 150px;
+            /* Fixed width for sort options */
         }
 
         .carousel-nav {
@@ -284,9 +300,12 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 15px; /* Ensure the button is below the room details */
-            width: 100px; /* Set button width to prevent it from being too wide */
-            align-self: flex-end; /* Align button at the end of the card */
+            margin-top: 15px;
+            /* Ensure the button is below the room details */
+            width: 100px;
+            /* Set button width to prevent it from being too wide */
+            align-self: flex-end;
+            /* Align button at the end of the card */
         }
 
         .card-btn-appointed {
@@ -308,13 +327,16 @@
             color: #333;
             flex-grow: 1;
         }
-        
+
         /* Adjust the rooms container margin */
         .main-skills {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust the minimum card size and allow auto-fill */
-            grid-gap: 20px; /* Gap between cards */
-            margin-top: 70px; /* Keep enough space between search/sort and rooms container */
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            /* Adjust the minimum card size and allow auto-fill */
+            grid-gap: 20px;
+            /* Gap between cards */
+            margin-top: 70px;
+            /* Keep enough space between search/sort and rooms container */
         }
 
         /* Media Queries for responsiveness */
@@ -331,63 +353,70 @@
 
             /* Adjust margin for mobile view */
             .main-skills {
-                margin-top: 40px; /* Smaller margin for mobile view */
+                margin-top: 40px;
+                /* Smaller margin for mobile view */
             }
+
             .card {
-                grid-template-rows: auto 1fr auto; /* Same layout for smaller screens */
+                grid-template-rows: auto 1fr auto;
+                /* Same layout for smaller screens */
             }
-            
+
             .carousel {
-                height: 150px; /* Adjust carousel height for mobile */
+                height: 150px;
+                /* Adjust carousel height for mobile */
             }
 
             .card-btn {
-                width: 100%; /* Full width button for smaller screens */
+                width: 100%;
+                /* Full width button for smaller screens */
             }
-            
+
             .image-container {
-                width: 100%; /* Full width for small screens */
-                height: auto; /* Auto height for images */
+                width: 100%;
+                /* Full width for small screens */
+                height: auto;
+                /* Auto height for images */
             }
         }
-
     </style>
 </head>
+
 <body>
     <div class="container">
         <nav>
             <ul>
                 <li><a href="uiusupplementhomepage.php" class="logo">
-                    <h1 class="styled-title">UIU Supplement</h1>
-                </a></li>
+                        <h1 class="styled-title">UIU Supplement</h1>
+                    </a></li>
                 <li><a href="uiusupplementhomepage.php">
-                    <i class="fas fa-home"></i>
-                    <span class="nav-item">Home</span>
-                </a></li>
+                        <i class="fas fa-home"></i>
+                        <span class="nav-item">Home</span>
+                    </a></li>
                 <li><a href="SellAndExchange.php">
-                    <i class="fas fa-exchange-alt"></i>
-                    <span class="nav-item">Sell</span>
-                  </a></li>
+                        <i class="fas fa-exchange-alt"></i>
+                        <span class="nav-item">Sell</span>
+                    </a></li>
                 <li><a href="availablerooms.html" class="active">
-                    <i class="fas fa-building"></i>
-                    <span class="nav-item">Room Rent</span>
-                </a></li>
+                        <i class="fas fa-building"></i>
+                        <span class="nav-item">Room Rent</span>
+                    </a></li>
                 <li><a href="browsementors.html">
-                    <i class="fas fa-user"></i>
-                    <span class="nav-item">Mentorship</span>
-                </a></li>
+                        <i class="fas fa-user"></i>
+                        <span class="nav-item">Mentorship</span>
+                    </a></li>
                 <li><a href="#">
-                    <i class="fas fa-briefcase"></i>
-                    <span class="nav-item">Jobs</span>
-                </a></li>
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Jobs</span>
+                    </a></li>
                 <li><a href="lostandfound.php">
-                    <i class="fas fa-dumpster"></i>
-                    <span class="nav-item">Lost and Found</span>
-                </a></li>
+                        <i class="fas fa-dumpster"></i>
+                        <span class="nav-item">Lost and Found</span>
+                    </a></li>
                 <li><a href="shuttle_tracking_system.php">
-                    <i class="fas fa-bus"></i>
-                    <span class="nav-item">Shuttle Services</span>
-                </a></li>
+                        <i class="fas fa-bus"></i>
+                        <span class="nav-item">Shuttle Services</span>
+                    </a></li>
             </ul>
 
             <a href="uiusupplementlogin.html" class="logout-btn">
@@ -418,10 +447,12 @@
             </div>
             <div id="room-list" class="main-skills">
                 <!-- Room details will be dynamically inserted here -->
-            </div>            
+            </div>
             <div class="button-group">
-                <button id="add-new-room" onclick="location.href='addnewroom.html'" class="card-btn">Add New Room</button>
-                <button id="view-rooms" onclick="location.href='appointedrooms.html'" class="card-btn">Rented Rooms</button>
+                <button id="add-new-room" onclick="location.href='addnewroom.html'" class="card-btn">Add New
+                    Room</button>
+                <button id="view-rooms" onclick="location.href='appointedrooms.html'" class="card-btn">Rented
+                    Rooms</button>
             </div>
         </section>
     </div>
@@ -440,7 +471,7 @@
                     console.error('Error fetching room data:', error);
                 });
 
-                function displayRooms(rooms) {
+            function displayRooms(rooms) {
                 const roomListContainer = document.getElementById('room-list');
                 roomListContainer.innerHTML = ''; // Clear previous data
 
@@ -536,7 +567,7 @@
             window.nextSlide = function (roomIndex) {
                 const carouselImages = document.querySelectorAll('.carousel-images')[roomIndex];
                 const totalImages = carouselImages.children.length;
-                
+
                 if (!currentIndexes[roomIndex]) {
                     currentIndexes[roomIndex] = 0;
                 }
@@ -548,7 +579,7 @@
             window.prevSlide = function (roomIndex) {
                 const carouselImages = document.querySelectorAll('.carousel-images')[roomIndex];
                 const totalImages = carouselImages.children.length;
-                
+
                 if (!currentIndexes[roomIndex]) {
                     currentIndexes[roomIndex] = 0;
                 }
@@ -562,7 +593,7 @@
                 const searchValue = document.getElementById('search-room').value.toLowerCase();
                 console.log(`Searching for: ${searchValue}`); // Debug statement
 
-                const filteredRooms = roomsData.filter(room => 
+                const filteredRooms = roomsData.filter(room =>
                     room.room_location.toLowerCase().includes(searchValue)
                 );
 
@@ -601,37 +632,38 @@
 
 
             function rentRoom(roomId, button) {
-    const userId = prompt("Enter your User ID:");
-    const password = prompt("Enter your Password:");
-    
-    if (userId && password) {
-        fetch('appointroom.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ user_id: userId, password: password, room_id: roomId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data); // Log the server response for debugging
-            if (data.status === 'success') {
-                alert('Room rented successfully!');
-                button.textContent = 'Rented';
-                button.classList.add('card-btn-appointed');
-                button.setAttribute('disabled', 'disabled');
-            } else {
-                alert(data.message);
+                const userId = prompt("Enter your User ID:");
+                const password = prompt("Enter your Password:");
+
+                if (userId && password) {
+                    fetch('appointroom.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ user_id: userId, password: password, room_id: roomId })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data); // Log the server response for debugging
+                            if (data.status === 'success') {
+                                alert('Room rented successfully!');
+                                button.textContent = 'Rented';
+                                button.classList.add('card-btn-appointed');
+                                button.setAttribute('disabled', 'disabled');
+                            } else {
+                                alert(data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error renting room:', error);
+                        });
+                } else {
+                    alert("User ID and Password are required.");
+                }
             }
-        })
-        .catch(error => {
-            console.error('Error renting room:', error);
         });
-    } else {
-        alert("User ID and Password are required.");
-    }
-        }
-        });
-    </script>    
+    </script>
 </body>
+
 </html>

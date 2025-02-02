@@ -13,6 +13,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,13 +21,14 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: "Poppins", sans-serif;
         }
-        
+
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f9;
@@ -34,7 +36,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             padding: 20px;
         }
 
-        
+
 
         /* Sidebar Navigation */
         nav {
@@ -73,7 +75,8 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             text-decoration: none;
         }
 
-        nav ul li a:hover, nav ul li a.active {
+        nav ul li a:hover,
+        nav ul li a.active {
             background-color: #f0f0f5;
             border-radius: 10px;
         }
@@ -158,8 +161,10 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             font-size: 16px;
             color: #555;
             margin-bottom: 10px;
-            padding: 5px 0; /* Add padding for better spacing */
-            overflow: hidden; /* Prevent overlap */
+            padding: 5px 0;
+            /* Add padding for better spacing */
+            overflow: hidden;
+            /* Prevent overlap */
         }
 
         .detail-item img {
@@ -169,10 +174,12 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         }
 
         .detail-item span {
-            white-space: nowrap; /* Prevent wrapping if needed */
+            white-space: nowrap;
+            /* Prevent wrapping if needed */
         }
 
-        .back-button, .browse-mentors-button {
+        .back-button,
+        .browse-mentors-button {
             background-color: #ff5722;
             color: white;
             padding: 10px 20px;
@@ -180,7 +187,8 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            margin-bottom: 20px; /* Space below the back button */
+            margin-bottom: 20px;
+            /* Space below the back button */
         }
 
         .browse-mentors-button {
@@ -191,9 +199,12 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            margin: 20px auto; /* Center the button */
-            display: block; /* Make it a block-level element */
-            max-width: 200px; /* Optional: limit the button width */
+            margin: 20px auto;
+            /* Center the button */
+            display: block;
+            /* Make it a block-level element */
+            max-width: 200px;
+            /* Optional: limit the button width */
         }
 
         .browse-mentors-button:hover {
@@ -238,41 +249,42 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <nav>
             <ul>
                 <li><a href="uiusupplementhomepage.php" class="logo">
-                    <h1 class="styled-title">UIU Supplement</h1>
-                </a></li>
+                        <h1 class="styled-title">UIU Supplement</h1>
+                    </a></li>
                 <li><a href="uiusupplementhomepage.php">
-                    <i class="fas fa-home"></i>
-                    <span class="nav-item">Home</span>
-                </a></li>
+                        <i class="fas fa-home"></i>
+                        <span class="nav-item">Home</span>
+                    </a></li>
                 <li><a href="SellAndExchange.php">
-                    <i class="fas fa-exchange-alt"></i>
-                    <span class="nav-item">Sell or Exchange</span>
-                  </a></li>
+                        <i class="fas fa-exchange-alt"></i>
+                        <span class="nav-item">Sell or Exchange</span>
+                    </a></li>
                 <li><a href="roomrenthomepage.html">
-                    <i class="fas fa-building"></i>
-                    <span class="nav-item">Room Rent</span>
-                </a></li>
+                        <i class="fas fa-building"></i>
+                        <span class="nav-item">Room Rent</span>
+                    </a></li>
                 <li><a href="browsementors.php">
-                    <i class="fas fa-user"></i>
-                    <span class="nav-item">Mentorship</span>
-                </a></li>
+                        <i class="fas fa-user"></i>
+                        <span class="nav-item">Mentorship</span>
+                    </a></li>
                 <li><a href="#">
-                    <i class="fas fa-briefcase"></i>
-                    <span class="nav-item">Jobs</span>
-                </a></li>
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Jobs</span>
+                    </a></li>
                 <li><a href="lostandfound.php">
-                    <i class="fas fa-dumpster"></i>
-                    <span class="nav-item">Lost and Found</span>
-                </a></li>
+                        <i class="fas fa-dumpster"></i>
+                        <span class="nav-item">Lost and Found</span>
+                    </a></li>
                 <li><a href="shuttle_tracking_system.php">
-                    <i class="fas fa-bus"></i>
-                    <span class="nav-item">Shuttle Services</span>
-                </a></li>
+                        <i class="fas fa-bus"></i>
+                        <span class="nav-item">Shuttle Services</span>
+                    </a></li>
             </ul>
 
             <!-- Log Out Button -->
@@ -294,7 +306,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
                     if ($result->num_rows > 0) {
                         $mentor = $result->fetch_assoc();
-                        ?>
+                ?>
 
                         <div class='profile-header'>
                             <img src='<?php echo $mentor["photo"]; ?>' alt='Mentor Photo' class='profile-photo'>
@@ -335,23 +347,23 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                                 <img src='https://img.icons8.com/ios-filled/50/000000/email.png'>Email
                             </a>
                             <?php if ($mentor["whatsapp"]) { ?>
-                            <a href='https://wa.me/<?php echo $mentor["whatsapp"]; ?>'>
-                                <img src='https://img.icons8.com/ios-filled/50/000000/whatsapp.png'>WhatsApp
-                            </a>
+                                <a href='https://wa.me/<?php echo $mentor["whatsapp"]; ?>'>
+                                    <img src='https://img.icons8.com/ios-filled/50/000000/whatsapp.png'>WhatsApp
+                                </a>
                             <?php } ?>
                             <?php if ($mentor["linkedin"]) { ?>
-                            <a href='<?php echo $mentor["linkedin"]; ?>'>
-                                <img src='https://img.icons8.com/ios-filled/50/000000/linkedin.png'>LinkedIn
-                            </a>
+                                <a href='<?php echo $mentor["linkedin"]; ?>'>
+                                    <img src='https://img.icons8.com/ios-filled/50/000000/linkedin.png'>LinkedIn
+                                </a>
                             <?php } ?>
                             <?php if ($mentor["facebook"]) { ?>
-                            <a href='<?php echo $mentor["facebook"]; ?>'>
-                                <img src='https://img.icons8.com/ios-filled/50/000000/facebook.png'>Facebook
-                            </a>
+                                <a href='<?php echo $mentor["facebook"]; ?>'>
+                                    <img src='https://img.icons8.com/ios-filled/50/000000/facebook.png'>Facebook
+                                </a>
                             <?php } ?>
                         </div>
-                            
-                        <?php
+
+                <?php
                     } else {
                         echo "<p>Mentor not found.</p>";
                     }
@@ -366,6 +378,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         </section>
     </div>
 </body>
+
 </html>
 
 <?php

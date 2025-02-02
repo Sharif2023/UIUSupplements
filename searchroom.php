@@ -53,4 +53,3 @@ echo json_encode($rooms);
 // Close the connection
 $stmt->close();
 $conn->close();
-?>

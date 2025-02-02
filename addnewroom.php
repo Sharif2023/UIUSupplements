@@ -33,7 +33,7 @@ foreach ($_FILES['room-photos']['tmp_name'] as $key => $tmp_name) {
     $file_name = $_FILES['room-photos']['name'][$key];
     $file_tmp = $_FILES['room-photos']['tmp_name'][$key];
     $file_path = $upload_dir . basename($file_name);
-    
+
     if (move_uploaded_file($file_tmp, $file_path)) {
         $uploaded_files[] = $file_path; // Store file path in an array
     }
@@ -56,4 +56,3 @@ if ($stmt->execute()) {
 // Close the statement and connection
 $stmt->close();
 $conn->close();
-?>

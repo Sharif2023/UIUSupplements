@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $date = $_POST['selected_date'];
     $problem_description = $_POST['problem_description'];
     $created_time = date('Y-m-d H:i:s');
-    
+
     // Ensure user_id is correctly fetched from the session
     $user_id = $_SESSION['user_id'];
 
@@ -69,11 +69,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Session Request</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
 
@@ -129,7 +130,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-decoration: none;
         }
 
-        nav ul li a:hover, nav ul li a.active {
+        nav ul li a:hover,
+        nav ul li a.active {
             background-color: #f0f0f5;
             border-radius: 10px;
         }
@@ -160,7 +162,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         /* Main Section */
         .main {
-            margin-left: 270px; /* Adjusted to ensure proper alignment with sidebar */
+            margin-left: 270px;
+            /* Adjusted to ensure proper alignment with sidebar */
             flex: 1;
             padding: 40px;
         }
@@ -333,21 +336,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .nav-btn:hover {
             background-color: #555;
         }
+
         /* Selected button highlighting */
         .selected {
             border: 2px solid #28a745;
             background-color: #28a745 !important;
         }
-         /* Date-Time Picker Styles */
-         .schedule-session {
+
+        /* Date-Time Picker Styles */
+        .schedule-session {
             margin-top: 20px;
         }
+
         .date-time-option {
             display: flex;
             justify-content: space-between;
             margin: 15px 0;
         }
-        .date-btn, .time-btn {
+
+        .date-btn,
+        .time-btn {
             background-color: #28a745;
             color: #fff;
             padding: 10px 20px;
@@ -359,18 +367,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             align-items: center;
             justify-content: center;
         }
-        .date-btn:hover, .time-btn:hover {
+
+        .date-btn:hover,
+        .time-btn:hover {
             background-color: #218838;
         }
-        .date-btn img, .time-btn img {
+
+        .date-btn img,
+        .time-btn img {
             width: 20px;
             margin-right: 10px;
         }
+
         .selected-datetime {
             margin-top: 10px;
             font-size: 16px;
             color: #333;
         }
+
         .custom-picker {
             display: none;
             background-color: #fff;
@@ -381,6 +395,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             z-index: 1000;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         .custom-picker input {
             width: 200px;
             padding: 5px;
@@ -388,44 +403,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-
     </style>
 </head>
+
 <body>
     <div class="container">
         <nav>
             <ul>
                 <li><a href="uiusupplementhomepage.php" class="logo">
-                    <h1 class="styled-title">UIU Supplement</h1>
-                </a></li>
+                        <h1 class="styled-title">UIU Supplement</h1>
+                    </a></li>
                 <li><a href="uiusupplementhomepage.php">
-                    <i class="fas fa-home"></i>
-                    <span class="nav-item">Home</span>
-                </a></li>
+                        <i class="fas fa-home"></i>
+                        <span class="nav-item">Home</span>
+                    </a></li>
                 <li><a href="SellAndExchange.php">
-                    <i class="fas fa-exchange-alt"></i>
-                    <span class="nav-item">Sell</span>
-                  </a></li>
+                        <i class="fas fa-exchange-alt"></i>
+                        <span class="nav-item">Sell</span>
+                    </a></li>
                 <li><a href="availablerooms.html">
-                    <i class="fas fa-building"></i>
-                    <span class="nav-item">Room Rent</span>
-                </a></li>
+                        <i class="fas fa-building"></i>
+                        <span class="nav-item">Room Rent</span>
+                    </a></li>
                 <li><a href="browsementors.html" class="active">
-                    <i class="fas fa-user"></i>
-                    <span class="nav-item">Mentorship</span>
-                </a></li>
+                        <i class="fas fa-user"></i>
+                        <span class="nav-item">Mentorship</span>
+                    </a></li>
                 <li><a href="#">
-                    <i class="fas fa-briefcase"></i>
-                    <span class="nav-item">Jobs</span>
-                </a></li>
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Jobs</span>
+                    </a></li>
                 <li><a href="lostandfound.php">
-                    <i class="fas fa-dumpster"></i>
-                    <span class="nav-item">Lost and Found</span>
-                </a></li>
+                        <i class="fas fa-dumpster"></i>
+                        <span class="nav-item">Lost and Found</span>
+                    </a></li>
                 <li><a href="shuttle_tracking_system.php">
-                    <i class="fas fa-bus"></i>
-                    <span class="nav-item">Shuttle Services</span>
-                </a></li>
+                        <i class="fas fa-bus"></i>
+                        <span class="nav-item">Shuttle Services</span>
+                    </a></li>
             </ul>
             <a href="uiusupplementlogin.html" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
@@ -445,10 +460,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="session-options">
                     <?php foreach ($hourly_rates as $index => $rate): ?>
-                    <button class="time-price-option" onclick="selectOption(this, '<?php echo htmlspecialchars(trim($rate)); ?>')">
-                        <span class="low-opacity"><?php echo ($index + 1) * 30 . ' min'; ?></span><br>
-                        <?php echo htmlspecialchars(trim($rate)) . ' Tk'; ?>
-                    </button>
+                        <button class="time-price-option" onclick="selectOption(this, '<?php echo htmlspecialchars(trim($rate)); ?>')">
+                            <span class="low-opacity"><?php echo ($index + 1) * 30 . ' min'; ?></span><br>
+                            <?php echo htmlspecialchars(trim($rate)) . ' Tk'; ?>
+                        </button>
                     <?php endforeach; ?>
                 </div>
 
@@ -505,11 +520,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="hidden" id="selected-date-input" name="selected_date">
                     <textarea rows="5" name="problem_description" placeholder="Describe your problem or challenge..."></textarea>
                     <div class="problem-section">
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="mentor-checkbox">
-                        <label for="mentor-checkbox" require>Are you confirm for session request</label>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="mentor-checkbox">
+                            <label for="mentor-checkbox" require>Are you confirm for session request</label>
+                        </div>
                     </div>
-                </div>
                     <button type="submit" class="confirm-btn">Confirm Request</button>
                     <a href="contactmentor.php?mentor_id=<?php echo $mentor_id; ?>" class="nav-btn">View Mentor Profile</a>
                 </form>
@@ -541,7 +556,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         function showDateTime() {
-            let currentDateTime = new Date().toLocaleString();  // Get current date and time
+            let currentDateTime = new Date().toLocaleString(); // Get current date and time
             document.getElementById('selected-date-time').innerHTML = "Selected Date & Time: " + currentDateTime;
         }
 
@@ -572,4 +587,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     </script>
 </body>
+
 </html>

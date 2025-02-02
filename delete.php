@@ -26,7 +26,7 @@ if ($_POST['action'] === 'delete_room') {
 
     // Perform the deletion
     $sql = "DELETE FROM availablerooms WHERE room_id = ?";
-    
+
     // Prepare statement
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('i', $room_id);  // Bind the room_id parameter to the query
@@ -57,4 +57,3 @@ if ($_POST['action'] == 'delete_mentor') {
 }
 
 $conn->close();
-?>

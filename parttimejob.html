@@ -1,202 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Part-Time Jobs</title>
-    <link rel="stylesheet" href="uiusupplementhomepage.css" />
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Part-Time Jobs</title>
+  <link rel="stylesheet" href="uiusupplementhomepage.css" />
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
 
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Poppins", sans-serif;
-      }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
 
-      body {
-        background-color: #f0f0f5;
-      }
+    body {
+      background-color: #f0f0f5;
+    }
 
-      .container {
-        display: flex;
-        min-height: 100vh;
-      }
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
 
-      /* Left Navigation */
-      nav {
-        width: 250px;
-        background-color: #fff;
-        padding: 20px;
-        height: 100vh;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      }
+    /* Left Navigation */
+    nav {
+      width: 250px;
+      background-color: #fff;
+      padding: 20px;
+      height: 100vh;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
 
-      nav .nav-logo {
-        font-size: 22px;
-        font-weight: bold;
-        color: #333;
-      }
+    nav .nav-logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #333;
+    }
 
-      nav ul {
-        list-style-type: none;
-        margin-top: 20px;
-      }
+    nav ul {
+      list-style-type: none;
+      margin-top: 20px;
+    }
 
-      nav ul li {
-        margin: 15px 0;
-      }
+    nav ul li {
+      margin: 15px 0;
+    }
 
-      nav ul li a {
-        color: #555;
-        font-size: 18px;
-        text-decoration: none;
-      }
+    nav ul li a {
+      color: #555;
+      font-size: 18px;
+      text-decoration: none;
+    }
 
-      .logout-btn {
-        background-color: #ff5722;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
-        border-radius: 5px;
-        margin-top: 20px;
-        display: block;
-      }
+    .logout-btn {
+      background-color: #ff5722;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      border-radius: 5px;
+      margin-top: 20px;
+      display: block;
+    }
 
-      .logout-btn:hover {
-        background-color: #e64a19;
-      }
+    .logout-btn:hover {
+      background-color: #e64a19;
+    }
 
-      .main {
-        flex: 1;
-        padding: 40px;
-      }
+    .main {
+      flex: 1;
+      padding: 40px;
+    }
 
-      .main h1 {
-        font-size: 28px;
-        margin-bottom: 20px;
-      }
+    .main h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
 
-      .job-card {
-        background-color: #fff;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-      }
+    .job-card {
+      background-color: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
 
-      .job-card h3 {
-        font-size: 20px;
-        margin-bottom: 10px;
-      }
+    .job-card h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
 
-      .job-card p {
-        font-size: 16px;
-        margin-bottom: 5px;
-      }
+    .job-card p {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
 
-      .accept-btn {
-        background-color: #ff5722;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
+    .accept-btn {
+      background-color: #ff5722;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
 
-      .accept-btn:hover {
-        background-color: #e64a19;
-      }
-
-    </style>
+    .accept-btn:hover {
+      background-color: #e64a19;
+    }
+  </style>
   <!-- Font Awesome CDN Link -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 </head>
+
 <body>
-    <div class="container">
-        <nav>
-            <ul>
-              <li><a href="uiusupplementhomepage.php" class="logo">
-                <h1 class="styled-title">UIU Supplement</h1>
-              </a></li>
-              <li><a href="uiusupplementhomepage.php">
-                <i class="fas fa-home"></i>
-                <span class="nav-item">Home</span>
-              </a></li>
-              <li><a href="SellAndExchange.php">
-                <i class="fas fa-exchange-alt"></i>
-                <span class="nav-item">Sell</span>
-              </a></li>
-              <li><a href="availablerooms.html">
-                <i class="fas fa-building"></i>
-                <span class="nav-item">Room Rent</span>
-              </a></li>
-              <li><a href="browsementors.html">
-                <i class="fas fa-user"></i>
-                <span class="nav-item">Mentorship</span>
-              </a></li>
-              <li><a href="parttimejob.html">
-                <i class="fas fa-briefcase"></i>
-                <span class="nav-item">Jobs</span>
-              </a></li>
-              <li><a href="lostandfound.php">
-                <i class="fas fa-dumpster"></i>
-                <span class="nav-item">Lost and Found</span>
-              </a></li>
-              <li><a href="shuttle_tracking_system.php">
-                <i class="fas fa-bus"></i>
-                <span class="nav-item">Shuttle Services</span>
-              </a></li>
-            </ul>
-      
-            <!-- Log Out Button -->
-            <a href="uiusupplementlogin.html" class="logout-btn">
-              <i class="fas fa-sign-out-alt"></i>
-              Log Out
-            </a>
-          </nav>
+  <div class="container">
+    <nav>
+      <ul>
+        <li><a href="uiusupplementhomepage.php" class="logo">
+            <h1 class="styled-title">UIU Supplement</h1>
+          </a></li>
+        <li><a href="uiusupplementhomepage.php">
+            <i class="fas fa-home"></i>
+            <span class="nav-item">Home</span>
+          </a></li>
+        <li><a href="SellAndExchange.php">
+            <i class="fas fa-exchange-alt"></i>
+            <span class="nav-item">Sell</span>
+          </a></li>
+        <li><a href="availablerooms.html">
+            <i class="fas fa-building"></i>
+            <span class="nav-item">Room Rent</span>
+          </a></li>
+        <li><a href="browsementors.html">
+            <i class="fas fa-user"></i>
+            <span class="nav-item">Mentorship</span>
+          </a></li>
+        <li><a href="parttimejob.html">
+            <i class="fas fa-briefcase"></i>
+            <span class="nav-item">Jobs</span>
+          </a></li>
+        <li><a href="lostandfound.php">
+            <i class="fas fa-dumpster"></i>
+            <span class="nav-item">Lost and Found</span>
+          </a></li>
+        <li><a href="shuttle_tracking_system.php">
+            <i class="fas fa-bus"></i>
+            <span class="nav-item">Shuttle Services</span>
+          </a></li>
+      </ul>
 
-        <!-- Job Listings -->
-        <div class="main">
-            <h1>Available Part-Time Jobs</h1>
-            <div class="job-card">
-                <h3>Job Title 1</h3>
-                <p>Days per week: 5</p>
-                <p>Salary: $500/week</p>
-                <p>Category: Teaching Assistant</p>
-                <p>Location: UIU</p>
-                <button class="accept-btn" onclick="acceptJob(1)">Accept Job</button>
-            </div>
+      <!-- Log Out Button -->
+      <a href="uiusupplementlogin.html" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i>
+        Log Out
+      </a>
+    </nav>
 
-            <div class="job-card">
-                <h3>Job Title 2</h3>
-                <p>Days per week: 3</p>
-                <p>Salary: $300/week</p>
-                <p>Category: Research Assistant</p>
-                <p>Location: Remote</p>
-                <button class="accept-btn" onclick="acceptJob(2)">Accept Job</button>
-            </div>
-        </div>
+    <!-- Job Listings -->
+    <div class="main">
+      <h1>Available Part-Time Jobs</h1>
+      <div class="job-card">
+        <h3>Job Title 1</h3>
+        <p>Days per week: 5</p>
+        <p>Salary: $500/week</p>
+        <p>Category: Teaching Assistant</p>
+        <p>Location: UIU</p>
+        <button class="accept-btn" onclick="acceptJob(1)">Accept Job</button>
+      </div>
+
+      <div class="job-card">
+        <h3>Job Title 2</h3>
+        <p>Days per week: 3</p>
+        <p>Salary: $300/week</p>
+        <p>Category: Research Assistant</p>
+        <p>Location: Remote</p>
+        <button class="accept-btn" onclick="acceptJob(2)">Accept Job</button>
+      </div>
     </div>
+  </div>
 
-    <script>
-        function acceptJob(jobId) {
-            var userId = 1; // Replace with dynamic user ID from session
+  <script>
+    function acceptJob(jobId) {
+      var userId = 1; // Replace with dynamic user ID from session
 
-            // Use AJAX to send the job acceptance request to the server
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "accept_job.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      // Use AJAX to send the job acceptance request to the server
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "accept_job.php", true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    alert(xhr.responseText); // Show the response from the server
-                }
-            };
-
-            xhr.send("job_id=" + jobId + "&user_id=" + userId);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          alert(xhr.responseText); // Show the response from the server
         }
-    </script>
+      };
+
+      xhr.send("job_id=" + jobId + "&user_id=" + userId);
+    }
+  </script>
 </body>
+
 </html>

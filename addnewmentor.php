@@ -79,6 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -86,13 +87,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: "Poppins", sans-serif;
         }
-        
+
         body {
             background-color: #f4f4f9;
             margin: 0;
@@ -136,7 +138,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             text-decoration: none;
         }
 
-        nav ul li a:hover, nav ul li a.active {
+        nav ul li a:hover,
+        nav ul li a.active {
             background-color: #f0f0f5;
             border-radius: 10px;
         }
@@ -191,7 +194,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-bottom: 5px;
         }
 
-        .form-group input, .form-group select, .form-group textarea {
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 10px;
             font-size: 1em;
@@ -267,46 +272,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 position: relative;
             }
         }
-
-
     </style>
 </head>
+
 <body>
     <div class="side-bar">
         <!-- Sidebar Navigation -->
         <nav>
             <ul>
                 <li><a href="uiusupplementhomepage.php" class="logo">
-                    <h1 class="styled-title">UIU Supplement</h1>
-                </a></li>
+                        <h1 class="styled-title">UIU Supplement</h1>
+                    </a></li>
                 <li><a href="uiusupplementhomepage.php">
-                    <i class="fas fa-home"></i>
-                    <span class="nav-item">Home</span>
-                </a></li>
+                        <i class="fas fa-home"></i>
+                        <span class="nav-item">Home</span>
+                    </a></li>
                 <li><a href="SellAndExchange.php">
-                    <i class="fas fa-exchange-alt"></i>
-                    <span class="nav-item">Sell</span>
-                  </a></li>
+                        <i class="fas fa-exchange-alt"></i>
+                        <span class="nav-item">Sell</span>
+                    </a></li>
                 <li><a href="availablerooms.html">
-                    <i class="fas fa-building"></i>
-                    <span class="nav-item">Room Rent</span>
-                </a></li>
+                        <i class="fas fa-building"></i>
+                        <span class="nav-item">Room Rent</span>
+                    </a></li>
                 <li><a href="browsementors.html">
-                    <i class="fas fa-user"></i>
-                    <span class="nav-item">Mentorship</span>
-                </a></li>
+                        <i class="fas fa-user"></i>
+                        <span class="nav-item">Mentorship</span>
+                    </a></li>
                 <li><a href="#">
-                    <i class="fas fa-briefcase"></i>
-                    <span class="nav-item">Jobs</span>
-                </a></li>
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Jobs</span>
+                    </a></li>
                 <li><a href="lostandfound.php">
-                    <i class="fas fa-dumpster"></i>
-                    <span class="nav-item">Lost and Found</span>
-                </a></li>
+                        <i class="fas fa-dumpster"></i>
+                        <span class="nav-item">Lost and Found</span>
+                    </a></li>
                 <li><a href="shuttle_tracking_system.php">
-                    <i class="fas fa-bus"></i>
-                    <span class="nav-item">Shuttle Services</span>
-                </a></li>
+                        <i class="fas fa-bus"></i>
+                        <span class="nav-item">Shuttle Services</span>
+                    </a></li>
             </ul>
 
             <a href="uiusupplementlogin.html" class="logout-btn">
@@ -323,19 +327,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="photo">Upload Mentor Photo:</label>
                 <input type="file" id="photo" name="photo" accept="image/*">
             </div>
-            
+
             <!-- Mentor Name -->
             <div class="form-group">
                 <label for="name">Mentor Name:</label>
                 <input type="text" id="name" name="name" required>
             </div>
-            
+
             <!-- Mentor Bio -->
             <div class="form-group">
                 <label for="bio">Bio:</label>
                 <textarea id="bio" name="bio" rows="4" required></textarea>
             </div>
-            
+
             <!-- Language Dropdown -->
             <div class="form-group">
                 <label for="language">Language:</label>
@@ -344,7 +348,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <option value="English">English</option>
                 </select>
             </div>
-            
+
             <!-- Response Time Dropdown -->
             <div class="form-group">
                 <label for="response-time">Response Time:</label>
@@ -356,7 +360,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <option value="72 hours">72 hours</option>
                 </select>
             </div>
-            
+
             <!-- Industry Dropdown -->
             <div class="form-group">
                 <label for="industry">Industry:</label>
@@ -368,7 +372,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <option value="Other">Other</option>
                 </select>
             </div>
-            
+
             <!-- Hourly Rate Section -->
             <div class="form-group">
                 <label for="hourly-rate">Hourly Rate:</label>
@@ -381,7 +385,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <button type="button" id="add-hourly-rate-btn">Add Rate</button>
             </div>
-            
+
             <!-- Company and Country -->
             <div class="form-group">
                 <label for="company">Company:</label>
@@ -409,7 +413,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <button type="button" id="add-skill-btn">Add Skill</button>
             </div>
-            
+
             <!-- Contact Section -->
             <div class="form-group">
                 <label for="email">Email:</label>
@@ -427,12 +431,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="facebook">Facebook:</label>
                 <input type="url" id="facebook" name="facebook">
             </div>
-            
+
             <button type="submit">Submit</button>
         </form>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const skillsContainer = document.getElementById('skills-container');
             const addSkillBtn = document.getElementById('add-skill-btn');
 
@@ -440,21 +444,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             function addSkillInput() {
                 const skillEntry = document.createElement('div');
                 skillEntry.classList.add('skill-entry');
-                
+
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.name = 'skills[]';
                 input.placeholder = 'Enter Skill';
                 skillEntry.appendChild(input);
-                
+
                 const removeBtn = document.createElement('button');
                 removeBtn.textContent = 'Remove';
                 removeBtn.type = 'button';
                 removeBtn.classList.add('remove-skill-btn');
                 skillEntry.appendChild(removeBtn);
-                
+
                 skillsContainer.appendChild(skillEntry);
-                
+
                 // Remove previous 'Add Skill' button and add a new one below the current form
                 addSkillBtn.remove();
                 const newAddSkillBtn = document.createElement('button');
@@ -462,62 +466,62 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 newAddSkillBtn.id = 'add-skill-btn';
                 newAddSkillBtn.type = 'button';
                 skillsContainer.appendChild(newAddSkillBtn);
-                
+
                 // Add event listener to new 'Add Skill' button
                 newAddSkillBtn.addEventListener('click', addSkillInput);
             }
-            
+
             // Initial 'Add Skill' button event listener
             addSkillBtn.addEventListener('click', addSkillInput);
 
             // Handle removal of skill input fields
-            skillsContainer.addEventListener('click', function (event) {
+            skillsContainer.addEventListener('click', function(event) {
                 if (event.target.classList.contains('remove-skill-btn')) {
                     event.target.parentElement.remove();
                 }
             });
         });
-        document.addEventListener('DOMContentLoaded', function () {
-    const hourlyRateContainer = document.getElementById('hourly-rate-container');
-    const addHourlyRateBtn = document.getElementById('add-hourly-rate-btn');
+        document.addEventListener('DOMContentLoaded', function() {
+            const hourlyRateContainer = document.getElementById('hourly-rate-container');
+            const addHourlyRateBtn = document.getElementById('add-hourly-rate-btn');
 
-    // Function to add a new hourly rate input field
-    function addHourlyRateInput() {
-        const rateEntry = document.createElement('div');
-        rateEntry.classList.add('hourly-rate-entry');
-        
-        const descriptionInput = document.createElement('input');
-        descriptionInput.type = 'text';
-        descriptionInput.name = 'hourly-rate-descriptions[]';
-        descriptionInput.placeholder = 'Description (e.g., 1 hour)';
-        descriptionInput.required = true;
-        rateEntry.appendChild(descriptionInput);
-        
-        const valueInput = document.createElement('input');
-        valueInput.type = 'number';
-        valueInput.name = 'hourly-rate-values[]';
-        valueInput.placeholder = 'Price (tk)';
-        valueInput.required = true;
-        rateEntry.appendChild(valueInput);
-        
-        const removeBtn = document.createElement('button');
-        removeBtn.textContent = 'Remove';
-        removeBtn.type = 'button';
-        removeBtn.classList.add('remove-rate-btn');
-        rateEntry.appendChild(removeBtn);
-        
-        hourlyRateContainer.appendChild(rateEntry);
+            // Function to add a new hourly rate input field
+            function addHourlyRateInput() {
+                const rateEntry = document.createElement('div');
+                rateEntry.classList.add('hourly-rate-entry');
 
-        // Add event listener for removing the rate entry
-        removeBtn.addEventListener('click', function () {
-            rateEntry.remove();
+                const descriptionInput = document.createElement('input');
+                descriptionInput.type = 'text';
+                descriptionInput.name = 'hourly-rate-descriptions[]';
+                descriptionInput.placeholder = 'Description (e.g., 1 hour)';
+                descriptionInput.required = true;
+                rateEntry.appendChild(descriptionInput);
+
+                const valueInput = document.createElement('input');
+                valueInput.type = 'number';
+                valueInput.name = 'hourly-rate-values[]';
+                valueInput.placeholder = 'Price (tk)';
+                valueInput.required = true;
+                rateEntry.appendChild(valueInput);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = 'Remove';
+                removeBtn.type = 'button';
+                removeBtn.classList.add('remove-rate-btn');
+                rateEntry.appendChild(removeBtn);
+
+                hourlyRateContainer.appendChild(rateEntry);
+
+                // Add event listener for removing the rate entry
+                removeBtn.addEventListener('click', function() {
+                    rateEntry.remove();
+                });
+            }
+
+            // Initial event listener for adding hourly rates
+            addHourlyRateBtn.addEventListener('click', addHourlyRateInput);
         });
-    }
-    
-    // Initial event listener for adding hourly rates
-    addHourlyRateBtn.addEventListener('click', addHourlyRateInput);
-});
-
     </script>
 </body>
+
 </html>

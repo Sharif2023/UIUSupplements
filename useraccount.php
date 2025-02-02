@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($check !== false) {
             // Move the file to the target directory
             if (move_uploaded_file($_FILES['upload-photo']['tmp_name'], $photoPath)) {
-                echo "The file ". htmlspecialchars(basename($_FILES['upload-photo']['name'])). " has been uploaded.";
+                echo "The file " . htmlspecialchars(basename($_FILES['upload-photo']['name'])) . " has been uploaded.";
             } else {
                 echo "Sorry, there was an error uploading your file.";
             }
@@ -145,6 +145,7 @@ if ($productsResult->num_rows > 0) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -205,6 +206,7 @@ if ($productsResult->num_rows > 0) {
             padding: 10px;
             text-decoration: none;
         }
+
         nav ul li a.active,
         nav ul li a:hover {
             background-color: #f0f0f5;
@@ -214,7 +216,7 @@ if ($productsResult->num_rows > 0) {
         nav ul li a .nav-item {
             margin-left: 15px;
         }
-        
+
         .logout-btn {
             background-color: #ff5722;
             color: white;
@@ -324,7 +326,7 @@ if ($productsResult->num_rows > 0) {
         .save-bio-button {
             display: none;
         }
-        
+
         .contact-button {
             background-color: #ff5722;
             color: white;
@@ -376,47 +378,48 @@ if ($productsResult->num_rows > 0) {
         .status.sold {
             color: lightgreen;
         }
-        
+
         ul {
             list-style-type: none;
         }
     </style>
 </head>
+
 <body>
-<<div class="container">
+    <<div class="container">
         <nav>
             <ul>
                 <li><a href="uiusupplementhomepage.php" class="logo">
-                    <h1 class="styled-title">UIU Supplement</h1>
-                </a></li>
+                        <h1 class="styled-title">UIU Supplement</h1>
+                    </a></li>
                 <li><a href="uiusupplementhomepage.php">
-                    <i class="fas fa-home"></i>
-                    <span class="nav-item">Home</span>
-                </a></li>
+                        <i class="fas fa-home"></i>
+                        <span class="nav-item">Home</span>
+                    </a></li>
                 <li><a href="SellAndExchange.php">
-                    <i class="fas fa-exchange-alt"></i>
-                    <span class="nav-item">Sell</span>
-                  </a></li>
+                        <i class="fas fa-exchange-alt"></i>
+                        <span class="nav-item">Sell</span>
+                    </a></li>
                 <li><a href="availablerooms.html">
-                    <i class="fas fa-building"></i>
-                    <span class="nav-item">Room Rent</span>
-                </a></li>
+                        <i class="fas fa-building"></i>
+                        <span class="nav-item">Room Rent</span>
+                    </a></li>
                 <li><a href="browsementors.php">
-                    <i class="fas fa-user"></i>
-                    <span class="nav-item">Mentorship</span>
-                </a></li>
+                        <i class="fas fa-user"></i>
+                        <span class="nav-item">Mentorship</span>
+                    </a></li>
                 <li><a href="#">
-                    <i class="fas fa-briefcase"></i>
-                    <span class="nav-item">Jobs</span>
-                </a></li>
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Jobs</span>
+                    </a></li>
                 <li><a href="lostandfound.php">
-                    <i class="fas fa-dumpster"></i>
-                    <span class="nav-item">Lost and Found</span>
-                </a></li>
+                        <i class="fas fa-dumpster"></i>
+                        <span class="nav-item">Lost and Found</span>
+                    </a></li>
                 <li><a href="shuttle_tracking_system.php">
-                    <i class="fas fa-bus"></i>
-                    <span class="nav-item">Shuttle Services</span>
-                </a></li>
+                        <i class="fas fa-bus"></i>
+                        <span class="nav-item">Shuttle Services</span>
+                    </a></li>
             </ul>
 
             <!-- Log Out Button -->
@@ -426,130 +429,131 @@ if ($productsResult->num_rows > 0) {
         </nav>
 
         <div class="main">
-        <div class="container">
-        <div class="profile-container">
-            <form action="useraccount.php" method="POST" enctype="multipart/form-data">
-                <div class="profile-header">
-                    <div style="position: relative;">
-                        <img src="<?php echo $profile['user_photo']; ?>" alt="User Photo" id="profile-photo" width="150" height="150">
-                        <label for="upload-photo" class="upload-icon" id="photo-upload-icon">
-                            <i class="fas fa-camera"></i>
-                        </label>
-                        <input type="file" id="upload-photo" name="upload-photo">
-                    </div>
-                    <div class="profile-info">
-                        <h1><?php echo $user['username']; ?></h1>
-                        <h3><i class="fas fa-envelope"></i> <?php echo $user['email']; ?></h3>
-                        <h3><i class="fas fa-user"></i> <?php echo $user['gender']; ?></h3>
-                        <h3><i class="fas fa-phone"></i> <?php echo $user['mobilenumber']; ?></h3>
-                    </div>
-                </div>
-
-                <div class="bio-section">
-                    <h2>Bio</h2>
-                    <textarea name="user_bio" id="user-bio" placeholder="Write a short bio..."><?php echo $profile['user_bio']; ?></textarea>
-                    <button type="submit" class="save-bio-button" id="save-bio-button">Save Bio</button>
-                </div>
-            </form>
-
-                <div class="profile-section">
-                <h2>My Sell List</h2>
-                    <?php if (!empty($products)): ?>
-                        <ul>
-                            <?php foreach ($products as $product): ?>
-                                <?php
-                                // Determine the CSS class for the product status
-                                $statusClass = '';
-                                if ($product['status'] == 'On Hold') {
-                                    $statusClass = 'on-hold';
-                                } elseif ($product['status'] == 'Sold') {
-                                    $statusClass = 'sold';
-                                }
-                                ?>
-                                <li>
-                                    <strong>Product Name:</strong> <?php echo $product['product_name']; ?><br>
-                                    <strong>Price:</strong> $<?php echo $product['price']; ?><br>
-                                    <strong>Status:</strong> <span class="status <?php echo $statusClass; ?>"><?php echo $product['status']; ?></span><br>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php else: ?>
-                        <p>No products listed for sale.</p>
-                    <?php endif; ?>
-
-                    <h2>My Buying List</h2>
-                    <p>No details available.</p>
-
-                    <h2>Lost Product update</h2>
-                    <p>No details available.</p>
-
-                    <h2>My Rented Rooms</h2>
-                    <?php if (!empty($appointedRooms)): ?>
-                        <?php foreach ($appointedRooms as $room): ?>
-                            <p>
-                                <strong>Room ID:</strong> <?php echo $room['appointed_room_id']; ?><br>
-                                <strong>User ID:</strong> <?php echo $room['appointed_user_id']; ?><br>
-                                <strong>User Name:</strong> <?php echo $room['appointed_user_name']; ?><br>
-                                <strong>User Email:</strong> <?php echo $room['appointed_user_email']; ?><br>
-                            </p>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <p>No rented rooms available.</p>
-                    <?php endif; ?>
-
-                    <h2>My Mentors Request Session</h2>
-                    <?php if (!empty($mentorSessions)): ?>
-                        <?php foreach ($mentorSessions as $session): ?>
-                            <div class="session-details">
-                                <p>
-                                    <strong>Session ID:</strong> <?php echo $session['session_id']; ?><br>
-                                    <strong>Mentor Name:</strong> <?php echo $session['mentor_name']; ?><br>
-                                    <strong>Session Time:</strong> <?php echo $session['session_time']; ?><br>
-                                    <strong>Session Price:</strong> <?php echo $session['session_price']; ?><br>
-                                    <strong>Communication Method:</strong> <?php echo $session['communication_method']; ?><br>
-                                    <strong>Session Date:</strong> <?php echo $session['session_date']; ?><br>
-                                    <strong>Problem Description:</strong> <?php echo $session['problem_description']; ?><br>
-                                    <strong>Status:</strong> <?php echo $session['status']; ?><br>
-                                </p>
+            <div class="container">
+                <div class="profile-container">
+                    <form action="useraccount.php" method="POST" enctype="multipart/form-data">
+                        <div class="profile-header">
+                            <div style="position: relative;">
+                                <img src="<?php echo $profile['user_photo']; ?>" alt="User Photo" id="profile-photo" width="150" height="150">
+                                <label for="upload-photo" class="upload-icon" id="photo-upload-icon">
+                                    <i class="fas fa-camera"></i>
+                                </label>
+                                <input type="file" id="upload-photo" name="upload-photo">
                             </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <p>No mentorship sessions available.</p>
-                    <?php endif; ?>
-                </div>
+                            <div class="profile-info">
+                                <h1><?php echo $user['username']; ?></h1>
+                                <h3><i class="fas fa-envelope"></i> <?php echo $user['email']; ?></h3>
+                                <h3><i class="fas fa-user"></i> <?php echo $user['gender']; ?></h3>
+                                <h3><i class="fas fa-phone"></i> <?php echo $user['mobilenumber']; ?></h3>
+                            </div>
+                        </div>
 
-                <button class="contact-button" onclick="location.href='uiusupplementhomepage.php'">Back to Homepage</button>
+                        <div class="bio-section">
+                            <h2>Bio</h2>
+                            <textarea name="user_bio" id="user-bio" placeholder="Write a short bio..."><?php echo $profile['user_bio']; ?></textarea>
+                            <button type="submit" class="save-bio-button" id="save-bio-button">Save Bio</button>
+                        </div>
+                    </form>
+
+                    <div class="profile-section">
+                        <h2>My Sell List</h2>
+                        <?php if (!empty($products)): ?>
+                            <ul>
+                                <?php foreach ($products as $product): ?>
+                                    <?php
+                                    // Determine the CSS class for the product status
+                                    $statusClass = '';
+                                    if ($product['status'] == 'On Hold') {
+                                        $statusClass = 'on-hold';
+                                    } elseif ($product['status'] == 'Sold') {
+                                        $statusClass = 'sold';
+                                    }
+                                    ?>
+                                    <li>
+                                        <strong>Product Name:</strong> <?php echo $product['product_name']; ?><br>
+                                        <strong>Price:</strong> $<?php echo $product['price']; ?><br>
+                                        <strong>Status:</strong> <span class="status <?php echo $statusClass; ?>"><?php echo $product['status']; ?></span><br>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php else: ?>
+                            <p>No products listed for sale.</p>
+                        <?php endif; ?>
+
+                        <h2>My Buying List</h2>
+                        <p>No details available.</p>
+
+                        <h2>Lost Product update</h2>
+                        <p>No details available.</p>
+
+                        <h2>My Rented Rooms</h2>
+                        <?php if (!empty($appointedRooms)): ?>
+                            <?php foreach ($appointedRooms as $room): ?>
+                                <p>
+                                    <strong>Room ID:</strong> <?php echo $room['appointed_room_id']; ?><br>
+                                    <strong>User ID:</strong> <?php echo $room['appointed_user_id']; ?><br>
+                                    <strong>User Name:</strong> <?php echo $room['appointed_user_name']; ?><br>
+                                    <strong>User Email:</strong> <?php echo $room['appointed_user_email']; ?><br>
+                                </p>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p>No rented rooms available.</p>
+                        <?php endif; ?>
+
+                        <h2>My Mentors Request Session</h2>
+                        <?php if (!empty($mentorSessions)): ?>
+                            <?php foreach ($mentorSessions as $session): ?>
+                                <div class="session-details">
+                                    <p>
+                                        <strong>Session ID:</strong> <?php echo $session['session_id']; ?><br>
+                                        <strong>Mentor Name:</strong> <?php echo $session['mentor_name']; ?><br>
+                                        <strong>Session Time:</strong> <?php echo $session['session_time']; ?><br>
+                                        <strong>Session Price:</strong> <?php echo $session['session_price']; ?><br>
+                                        <strong>Communication Method:</strong> <?php echo $session['communication_method']; ?><br>
+                                        <strong>Session Date:</strong> <?php echo $session['session_date']; ?><br>
+                                        <strong>Problem Description:</strong> <?php echo $session['problem_description']; ?><br>
+                                        <strong>Status:</strong> <?php echo $session['status']; ?><br>
+                                    </p>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p>No mentorship sessions available.</p>
+                        <?php endif; ?>
+                    </div>
+
+                    <button class="contact-button" onclick="location.href='uiusupplementhomepage.php'">Back to Homepage</button>
+                </div>
             </div>
         </div>
-    </div>
-    <script>
-    document.getElementById('upload-photo').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.getElementById('profile-photo');
-                img.src = e.target.result;
+        <script>
+            document.getElementById('upload-photo').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.getElementById('profile-photo');
+                        img.src = e.target.result;
 
-                // Hide upload icon after successful upload
-                document.getElementById('photo-upload-icon').classList.add('hidden');
-            };
-            reader.readAsDataURL(file);
-        }
-    });
+                        // Hide upload icon after successful upload
+                        document.getElementById('photo-upload-icon').classList.add('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
 
-    // Show 'Save Bio' button only when the bio is changed
-    const bioTextArea = document.getElementById('user-bio');
-    const saveBioButton = document.getElementById('save-bio-button');
-    const originalBio = bioTextArea.value;
+            // Show 'Save Bio' button only when the bio is changed
+            const bioTextArea = document.getElementById('user-bio');
+            const saveBioButton = document.getElementById('save-bio-button');
+            const originalBio = bioTextArea.value;
 
-    bioTextArea.addEventListener('input', function() {
-        if (bioTextArea.value !== originalBio) {
-            saveBioButton.style.display = 'block';
-        } else {
-            saveBioButton.style.display = 'none';
-        }
-    });
-</script>
+            bioTextArea.addEventListener('input', function() {
+                if (bioTextArea.value !== originalBio) {
+                    saveBioButton.style.display = 'block';
+                } else {
+                    saveBioButton.style.display = 'none';
+                }
+            });
+        </script>
 </body>
+
 </html>

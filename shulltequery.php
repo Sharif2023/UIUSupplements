@@ -36,8 +36,8 @@ if ($result->num_rows > 0) {
             <th>Next Destination</th>
             <th>Last Updated</th>
           </tr>";
-          
-    while($row = $result->fetch_assoc()) {
+
+    while ($row = $result->fetch_assoc()) {
         echo "<tr>
                 <td>{$row['id']}</td>
                 <td>{$row['car_no']}</td>
@@ -55,4 +55,3 @@ if ($result->num_rows > 0) {
 
 // Close the connection
 $conn->close();
-?>

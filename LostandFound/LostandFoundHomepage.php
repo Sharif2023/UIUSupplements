@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $sql = "INSERT INTO claims ( user_id, email, identification_info) 
                 VALUES ('$user_id', '$email', '$identification_info')";
         $conn->query($sql);
-        
+
         // Update claim status
         $conn->query("UPDATE lost_and_found SET claim_status = 1 WHERE id = '$item_id'");
     }
@@ -54,11 +54,12 @@ $items = $conn->query("SELECT * FROM lost_and_found");
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lost and Found</title>
-    
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Font Awesome -->
@@ -82,7 +83,7 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         }
     </script>
 
-<style>
+    <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
 
         * {
@@ -94,14 +95,18 @@ $items = $conn->query("SELECT * FROM lost_and_found");
 
         body {
             background-color: #f0f0f5;
-            display: flex; /* Use flexbox to align side by side */
-            margin: 0; /* Remove default margin */
+            display: flex;
+            /* Use flexbox to align side by side */
+            margin: 0;
+            /* Remove default margin */
         }
+
         .left-side {
             display: flex;
             flex-wrap: wrap;
             min-height: 100vh;
         }
+
         /* Fixed Left Navigation */
         nav {
             width: 100%;
@@ -113,7 +118,8 @@ $items = $conn->query("SELECT * FROM lost_and_found");
             position: fixed;
             top: 0;
             left: 0;
-            overflow: auto; /* Allow scrolling within the nav if necessary */
+            overflow: auto;
+            /* Allow scrolling within the nav if necessary */
         }
 
         .styled-title {
@@ -175,14 +181,19 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         }
 
         a {
-        text-decoration: none; /* Removes underline */
-        color: inherit; /* Keeps the color the same as non-hovered */
+            text-decoration: none;
+            /* Removes underline */
+            color: inherit;
+            /* Keeps the color the same as non-hovered */
         }
 
         a:hover {
-        text-decoration: none; /* Ensures no underline on hover */
-        color: inherit; /* Prevents color change on hover */
+            text-decoration: none;
+            /* Ensures no underline on hover */
+            color: inherit;
+            /* Prevents color change on hover */
         }
+
         .header-icons {
             display: flex;
             align-items: center;
@@ -199,7 +210,8 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         }
 
         .icon:hover {
-            color: #ff5722; /* Change color on hover */
+            color: #ff5722;
+            /* Change color on hover */
         }
 
         /* Profile Icon Dropdown */
@@ -216,16 +228,19 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         }
 
         .dropdown {
-            display: none; /* Hidden by default */
+            display: none;
+            /* Hidden by default */
             position: absolute;
             right: 0;
             background-color: #fff;
             font-size: medium;
-            min-width: 220px; /* Slightly wider for aesthetics */
+            min-width: 220px;
+            /* Slightly wider for aesthetics */
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             border-radius: 5px;
             z-index: 1;
-            margin-top: 5px; /* Add space between the profile icon and dropdown */
+            margin-top: 5px;
+            /* Add space between the profile icon and dropdown */
         }
 
         .dropdown a {
@@ -233,20 +248,24 @@ $items = $conn->query("SELECT * FROM lost_and_found");
             padding: 12px 16px;
             text-decoration: none;
             display: block;
-            transition: background-color 0.3s; /* Smooth background color change */
+            transition: background-color 0.3s;
+            /* Smooth background color change */
         }
 
         .dropdown a:hover {
-            background-color: #f0f0f5; /* Highlight on hover */
+            background-color: #f0f0f5;
+            /* Highlight on hover */
         }
 
         .dropdown.show {
-            display: block; /* Show dropdown when it has the "show" class */
+            display: block;
+            /* Show dropdown when it has the "show" class */
         }
 
         /* Main Content */
         .main {
-            margin-left: 250px; /* Keep space for fixed nav */
+            margin-left: 250px;
+            /* Keep space for fixed nav */
             padding: 40px;
         }
 
@@ -301,7 +320,8 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         .container {
             flex: 1;
             padding: 40px;
-            margin-left: 250px; /* Adjust the margin to accommodate the fixed nav */
+            margin-left: 250px;
+            /* Adjust the margin to accommodate the fixed nav */
         }
 
         .card {
@@ -320,22 +340,30 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         .row {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px; /* Adds gap between the cards */
-            justify-content: space-between; /* Aligns items properly */
+            gap: 20px;
+            /* Adds gap between the cards */
+            justify-content: space-between;
+            /* Aligns items properly */
         }
 
         .item {
-            flex: 1 1 30%; /* Adjust for 3 cards per row */
-            max-width: 30%; /* Ensure cards don't exceed 3 per row */
-            margin-bottom: 20px; /* Add space below each card */
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Shadow for card */
-            transition: transform 0.3s; /* Smooth hover effect */
+            flex: 1 1 30%;
+            /* Adjust for 3 cards per row */
+            max-width: 30%;
+            /* Ensure cards don't exceed 3 per row */
+            margin-bottom: 20px;
+            /* Add space below each card */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            /* Shadow for card */
+            transition: transform 0.3s;
+            /* Smooth hover effect */
         }
 
         /* For screens smaller than 768px */
         @media (max-width: 768px) {
             .item {
-                flex: 1 1 45%; /* 2 cards per row */
+                flex: 1 1 45%;
+                /* 2 cards per row */
                 max-width: 48%;
             }
         }
@@ -343,63 +371,65 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         /* For very small screens */
         @media (max-width: 576px) {
             .item {
-                flex: 1 1 100%; /* Stack cards vertically */
+                flex: 1 1 100%;
+                /* Stack cards vertically */
                 max-width: 100%;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="left-side">
         <nav>
-        <ul>
-            <li><a href="#" class="logo">
-            <h1 class="styled-title">UIU Supplement</h1>
-            </a></li>
-            <li><a href="#">
-            <i class="fas fa-home"></i>
-            <span class="nav-item">Home</span>
-            </a></li>
-            <li><a href="SellandExchange/index.php">
-            <i class="fas fa-exchange-alt"></i>
-            <span class="nav-item">Sell or Exchange</span>
-            </a></li>
-            <li><a href="availablerooms.html">
-            <i class="fas fa-building"></i>
-            <span class="nav-item">Room Rent</span>
-        </a></li>
-            <li><a href="browsementors.html">
-            <i class="fas fa-user"></i>
-            <span class="nav-item">Mentorship</span>
-            </a></li>
-            <li><a href="parttimejob.html">
-            <i class="fas fa-briefcase"></i>
-            <span class="nav-item">Jobs</span>
-            </a></li>
-            <li><a href="LostandFound/lostandfound.php">
-            <i class="fas fa-dumpster"></i>
-            <span class="nav-item">Lost and Found</span>
-            </a></li>
-            <li><a href="shuttle_service.php">
-            <i class="fas fa-bus"></i>
-            <span class="nav-item">Shuttle Services</span>
-            </a></li>
-            <li><a href="#">
-            <i class="fas fa-ad"></i>
-            <span class="nav-item">Promotions</span>
-            </a></li>
-        </ul>
+            <ul>
+                <li><a href="#" class="logo">
+                        <h1 class="styled-title">UIU Supplement</h1>
+                    </a></li>
+                <li><a href="#">
+                        <i class="fas fa-home"></i>
+                        <span class="nav-item">Home</span>
+                    </a></li>
+                <li><a href="SellandExchange/index.php">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span class="nav-item">Sell or Exchange</span>
+                    </a></li>
+                <li><a href="availablerooms.html">
+                        <i class="fas fa-building"></i>
+                        <span class="nav-item">Room Rent</span>
+                    </a></li>
+                <li><a href="browsementors.html">
+                        <i class="fas fa-user"></i>
+                        <span class="nav-item">Mentorship</span>
+                    </a></li>
+                <li><a href="parttimejob.html">
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Jobs</span>
+                    </a></li>
+                <li><a href="LostandFound/lostandfound.php">
+                        <i class="fas fa-dumpster"></i>
+                        <span class="nav-item">Lost and Found</span>
+                    </a></li>
+                <li><a href="shuttle_service.php">
+                        <i class="fas fa-bus"></i>
+                        <span class="nav-item">Shuttle Services</span>
+                    </a></li>
+                <li><a href="#">
+                        <i class="fas fa-ad"></i>
+                        <span class="nav-item">Promotions</span>
+                    </a></li>
+            </ul>
 
-        <!-- Log Out Button -->
-        <a href="uiusupplementlogin.html" class="logout-btn">
-            <i class="fas fa-sign-out-alt"></i>
-            Log Out
-        </a>
+            <!-- Log Out Button -->
+            <a href="uiusupplementlogin.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Log Out
+            </a>
         </nav>
     </div>
     <div class="container">
         <h1 class="mt-4">Lost and Found Items</h1>
-        
+
         <!-- Add Found Item Button -->
         <button class="btn btn-primary mb-4" onclick="openModal('foundItemModal')">Add Found Item</button>
 
@@ -432,19 +462,19 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         <!-- Display Found Items -->
         <?php while ($item = $items->fetch_assoc()) { ?>
             <div class="row">
-            <div class="item col-md-3">
-            <div class="card">
-                <img src="<?= $item['image_path'] ?>" alt="Item Image" class="card-img-top">
-                <div class="card-body">
-                    <p><strong>Category:</strong> <?= $item['category'] ?></p>
-                    <p><strong>Found at:</strong> <?= $item['foundPlace'] ?></p>
-                    <p><strong>Date and Time:</strong> <?= $item['date_time'] ?></p>
-                    <button class="btn btn-warning" onclick="openClaimModal(<?= $item['id'] ?>)">
-                        <i class="fa-solid fa-hand"></i> Claim
-                    </button>
+                <div class="item col-md-3">
+                    <div class="card">
+                        <img src="<?= $item['image_path'] ?>" alt="Item Image" class="card-img-top">
+                        <div class="card-body">
+                            <p><strong>Category:</strong> <?= $item['category'] ?></p>
+                            <p><strong>Found at:</strong> <?= $item['foundPlace'] ?></p>
+                            <p><strong>Date and Time:</strong> <?= $item['date_time'] ?></p>
+                            <button class="btn btn-warning" onclick="openClaimModal(<?= $item['id'] ?>)">
+                                <i class="fa-solid fa-hand"></i> Claim
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            </div>
             </div>
         <?php } ?>
     </div>
@@ -465,4 +495,5 @@ $items = $conn->query("SELECT * FROM lost_and_found");
     </div>
 
 </body>
+
 </html>

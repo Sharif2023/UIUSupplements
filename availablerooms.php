@@ -57,4 +57,3 @@ $conn->close();
 // Output data in JSON format
 header('Content-Type: application/json');
 echo json_encode($rooms);
-?>

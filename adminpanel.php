@@ -53,7 +53,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <style>
         * {
             margin: 0;
@@ -61,14 +61,15 @@ $conn->close();
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
-        .admin-panel-title{
+
+        .admin-panel-title {
             flex: 1;
             text-align: center;
             font-size: 30px;
             color: #333;
             padding-top: 10px;
         }
-        
+
         body {
             min-height: 100vh;
             color: #555;
@@ -78,15 +79,77 @@ $conn->close();
         a {
             text-decoration: none;
         }
-     
+
         li {
             list-style: none;
         }
 
         h1 {
-            color: #555;
             padding-top: 20px;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 800;
+            font-size: 1.5vw;
+            text-transform: uppercase;
         }
+
+        .title-word {
+            animation: color-animation 4s linear infinite;
+        }
+
+        .title-word-1 {
+            --color-1: #DF8453;
+            --color-2: #3D8DAE;
+            --color-3: #E4A9A8;
+        }
+
+        .title-word-2 {
+            --color-1: #DBAD4A;
+            --color-2: #ACCFCB;
+            --color-3: #17494D;
+        }
+
+        .title-word-3 {
+            --color-1: #ACCFCB;
+            --color-2: #E4A9A8;
+            --color-3: #ACCFCB;
+        }
+
+        .title-word-4 {
+            --color-1: #3D8DAE;
+            --color-2: #DF8453;
+            --color-3: #E4A9A8;
+        }
+
+        @keyframes color-animation {
+            0% {
+                color: var(--color-1)
+            }
+
+            32% {
+                color: var(--color-1)
+            }
+
+            33% {
+                color: var(--color-2)
+            }
+
+            65% {
+                color: var(--color-2)
+            }
+
+            66% {
+                color: var(--color-3)
+            }
+
+            99% {
+                color: var(--color-3)
+            }
+
+            100% {
+                color: var(--color-1)
+            }
+        }
+
         h2 {
             color: #555;
         }
@@ -96,7 +159,7 @@ $conn->close();
         }
 
         .btn {
-            background: #ff5722;
+            background: #ff3300;
             color: white;
             padding: 5px 10px;
             text-align: center;
@@ -104,10 +167,10 @@ $conn->close();
         }
 
         .btn:hover {
-            color: #ff5722;
+            color: #ff3300;
             background: white;
             padding: 3px 8px;
-            border: 2px solid #ff5722;
+            border: 2px solid #ff3300;
         }
 
         .title {
@@ -131,12 +194,12 @@ $conn->close();
 
         .side-menu {
             position: fixed;
-            background: #f5f5f5;
+            background: #1F1F1F;
             width: 20vw;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 0px 20px;
+            padding: 20px 0px;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         }
 
@@ -148,29 +211,36 @@ $conn->close();
         }
 
         .side-menu ul {
-            padding: 0; /* Reset padding */
-            margin: 0; /* Reset margin */
-            flex-grow: 1; /* Allow the list to grow and take available space */
+            padding: 0;
+            /* Reset padding */
+            margin: 0;
+            /* Reset margin */
+            flex-grow: 1;
+            /* Allow the list to grow and take available space */
         }
 
         .side-menu li {
-            font-size: 24px;
-            padding: 15px 20px; /* Add more padding for better spacing */
-            color: #555;
+            font-size: 18px;
+            padding: 15px 20px;
+            /* Add more padding for better spacing */
+            color: #f1f1f1;
             display: flex;
             align-items: center;
-            gap: 15px; /* Increased gap for better spacing */
-            transition: background 0.3s; /* Add a transition effect for hover */
+            gap: 15px;
+            /* Increased gap for better spacing */
+            transition: background 0.3s;
+            /* Add a transition effect for hover */
         }
 
         .side-menu li:hover {
-            background: rgba(255, 255, 255, 0.2); /* Slightly transparent background on hover */
+            background: rgba(255, 255, 255, 0.2);
+            /* Slightly transparent background on hover */
         }
 
         .logout-btn {
-            background-color: #ff5722;
+            background-color: #ff3300;
             color: white;
-            padding: 10px 20px;
+            padding: 10px 30px;
             text-align: center;
             border-radius: 5px;
             display: flex;
@@ -180,11 +250,13 @@ $conn->close();
             margin: 20px 10px;
             cursor: pointer;
             text-decoration: none;
+            margin-right: 30px;
         }
 
         .logout-btn:hover {
             background-color: #e64a19;
         }
+
         .container {
             position: absolute;
             right: 0;
@@ -192,7 +264,7 @@ $conn->close();
             height: 100vh;
             background: #f1f1f1;
         }
-        
+
         .container .header {
             position: relative;
             top: 0;
@@ -269,9 +341,11 @@ $conn->close();
             width: 100%;
             height: 100%;
         }
-        .header{
+
+        .header {
             margin: 10px 20px;
         }
+
         .container .content {
             position: relative;
             margin-top: 10vh;
@@ -319,22 +393,32 @@ $conn->close();
         }
 
         .container .content .content-2 .new-mentors table {
-            width: 100%; /* Ensure table uses the full width */
-            table-layout: fixed; /* Set table layout to fixed */
+            width: 100%;
+            /* Ensure table uses the full width */
+            table-layout: fixed;
+            /* Set table layout to fixed */
         }
 
         .container .content .content-2 .new-mentors table td {
-            overflow: hidden; /* Prevent overflow */
-            text-overflow: ellipsis; /* Add ellipsis for overflow text */
-            white-space: nowrap; /* Prevent text wrapping */
+            overflow: hidden;
+            /* Prevent overflow */
+            text-overflow: ellipsis;
+            /* Add ellipsis for overflow text */
+            white-space: nowrap;
+            /* Prevent text wrapping */
         }
 
         .container .content .content-2 .new-mentors table td:nth-child(1) img {
-            height: 50px; /* Reduced height */
-            width: 50px;  /* Reduced width */
-            object-fit: cover; /* Ensures images are resized correctly */
-            border-radius: 50%; /* Optional: Makes the images circular */
-            max-width: 100%; /* Ensure images do not exceed container */
+            height: 50px;
+            /* Reduced height */
+            width: 50px;
+            /* Reduced width */
+            object-fit: cover;
+            /* Ensures images are resized correctly */
+            border-radius: 50%;
+            /* Optional: Makes the images circular */
+            max-width: 100%;
+            /* Ensure images do not exceed container */
         }
 
         .cards {
@@ -387,56 +471,80 @@ $conn->close();
 
         /* Specific colors for each card */
         .card.users {
-            background-color: #ff6666; /* Red */
+            background-color: #ff6666;
+            /* Red */
         }
 
         .card.admins {
-            background-color: #66b3ff; /* Blue */
+            background-color: #66b3ff;
+            /* Blue */
         }
 
         .card.rooms {
-            background-color: #66ff66; /* Green */
+            background-color: #66ff66;
+            /* Green */
         }
 
         .card.mentors {
-            background-color: #ffcc66; /* Yellow */
+            background-color: #ffcc66;
+            /* Yellow */
         }
+
         .mentor-profile {
-            height: 50px; /* Height for the mentor photo */
-            width: 50px; /* Width for the mentor photo */
-            object-fit: cover; /* Ensures images are resized correctly */
-            border-radius: 50%; /* Circular profile image */
+            height: 50px;
+            /* Height for the mentor photo */
+            width: 50px;
+            /* Width for the mentor photo */
+            object-fit: cover;
+            /* Ensures images are resized correctly */
+            border-radius: 50%;
+            /* Circular profile image */
         }
+
         /* New Mentor Container */
         .container-mentors {
-            background-color: white; /* White background */
-            padding: 20px; /* Padding inside the container */
-            margin: 20px 40px; /* Add margin at the top for spacing */
-            border-radius: 10px; /* Rounded corners for the container */
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1); /* Light shadow for a subtle 3D effect */
+            background-color: white;
+            /* White background */
+            padding: 20px;
+            /* Padding inside the container */
+            margin: 20px 40px;
+            /* Add margin at the top for spacing */
+            border-radius: 10px;
+            /* Rounded corners for the container */
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+            /* Light shadow for a subtle 3D effect */
         }
 
         /* Table inside Mentor Container */
         .container-mentors table {
-            width: 100%; /* Make table fill the width of the container */
-            table-layout: fixed; /* Ensure table columns have fixed width */
+            width: 100%;
+            /* Make table fill the width of the container */
+            table-layout: fixed;
+            /* Ensure table columns have fixed width */
         }
 
         .container-mentors table td {
-            overflow: hidden; /* Prevent content from overflowing */
-            text-overflow: ellipsis; /* Add ellipsis for overflow text */
-            white-space: nowrap; /* Prevent text wrapping */
+            overflow: hidden;
+            /* Prevent content from overflowing */
+            text-overflow: ellipsis;
+            /* Add ellipsis for overflow text */
+            white-space: nowrap;
+            /* Prevent text wrapping */
         }
 
         .container-mentors table td:nth-child(1) img {
-            height: 50px; /* Image size */
+            height: 50px;
+            /* Image size */
             width: 50px;
             object-fit: cover;
-            border-radius: 50%; /* Circular image */
+            border-radius: 50%;
+            /* Circular image */
         }
+
         /* Container for room data */
         .container-rooms {
-            background-color: white; /* White background */
+            background-color: white;
+            /* White background */
             padding: 20px;
             margin: 20px 40px;
             border-radius: 10px;
@@ -453,7 +561,8 @@ $conn->close();
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             padding: 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
@@ -462,8 +571,10 @@ $conn->close();
         th {
             background-color: #f2f2f2;
         }
+
         /* Add styles for the pop-up form and admin panel */
-        .popup, .message-popup {
+        .popup,
+        .message-popup {
             display: none;
             position: fixed;
             left: 0;
@@ -474,7 +585,9 @@ $conn->close();
             justify-content: center;
             align-items: center;
         }
-        .popup-content, .message-content {
+
+        .popup-content,
+        .message-content {
             background: #fff;
             padding: 20px;
             border-radius: 10px;
@@ -482,31 +595,36 @@ $conn->close();
             max-width: 400px;
             width: 100%;
         }
+
         .popup input {
             width: 80%;
             padding: 10px;
             margin: 10px 0;
         }
-        .popup .btn, .message-popup .btn {
+
+        .popup .btn,
+        .message-popup .btn {
             padding: 10px 20px;
             background-color: #ff0000;
             color: #fff;
             border: none;
             cursor: pointer;
         }
-        button{
-            background: #ff5722;
+
+        button {
+            background: #ff3300;
             color: white;
             padding: 6px 10px;
             text-align: center;
             border-radius: 10px;
             border: none;
         }
-        button:hover{
-            color: #ff5722;
+
+        button:hover {
+            color: #ff3300;
             background: white;
             padding: 3px 8px;
-            border: 2px solid #ff5722;
+            border: 2px solid #ff3300;
         }
     </style>
     <title>Admin Panel</title>
@@ -515,7 +633,11 @@ $conn->close();
 <body>
     <div class="side-menu">
         <div class="title-name">
-            <h1>UIU Supplement</h1>
+            <h1 class="title"><span class="title-word title-word-1">U</span>
+                <span class="title-word title-word-2">I</span>
+                <span class="title-word title-word-3">U</span>
+                <span class="title-word title-word-4">Supplement</span>
+            </h1>
         </div>
         <ul>
             <li><i class="fas fa-tachometer-alt"></i> <span>Home</span></li>
@@ -538,7 +660,7 @@ $conn->close();
                     <button type="submit"><i class="fas fa-search"></i></button>
                 </div>
                 <div class="add-driver-button">
-                <a href="#" class="btn">Add Driver</a>
+                    <a href="#" class="btn">Add Driver</a>
                 </div>
                 <div class="user">
                     <a href="addnewmentor.php" class="btn">Add New Mentor</a>
@@ -601,13 +723,13 @@ $conn->close();
                             <th>Email</th>
                             <th>Mobile Number</th>
                         </tr>
-                        <?php while($row = $new_users_result->fetch_assoc()): ?>
-                        <tr>
-                            <td><?php echo $row['id']; ?></td>
-                            <td><?php echo $row['username']; ?></td>
-                            <td><?php echo $row['email']; ?></td>
-                            <td><?php echo $row['mobilenumber']; ?></td>
-                        </tr>
+                        <?php while ($row = $new_users_result->fetch_assoc()): ?>
+                            <tr>
+                                <td><?php echo $row['id']; ?></td>
+                                <td><?php echo $row['username']; ?></td>
+                                <td><?php echo $row['email']; ?></td>
+                                <td><?php echo $row['mobilenumber']; ?></td>
+                            </tr>
                         <?php endwhile; ?>
                     </table>
                 </div>
@@ -617,8 +739,8 @@ $conn->close();
                     <div class="title">
                         <h2>New Mentors</h2>
                         <div>
-                        <a href="browsementors.html" class="btn">View All</a>
-                        <button onclick="openPopup('deleteMentorPopup')">Delete Mentors</button>
+                            <a href="browsementors.html" class="btn">View All</a>
+                            <button onclick="openPopup('deleteMentorPopup')">Delete Mentors</button>
                         </div>
                     </div>
                     <table>
@@ -667,8 +789,8 @@ $conn->close();
                 <div class="title">
                     <h2>Rented Rooms</h2>
                     <div>
-                    <a href="appointedrooms.html" class="btn">View All</a>
-                    <button onclick="openPopup('deleteRentalPopup')">Remove Rental Status</button>
+                        <a href="appointedrooms.html" class="btn">View All</a>
+                        <button onclick="openPopup('deleteRentalPopup')">Remove Rental Status</button>
                     </div>
                 </div>
                 <table>
@@ -734,7 +856,7 @@ $conn->close();
     </div>
 
     <script>
-                // JavaScript to open and close popups
+        // JavaScript to open and close popups
         function openPopup(popupId) {
             document.getElementById(popupId).style.display = 'flex';
         }
@@ -748,7 +870,7 @@ $conn->close();
             openPopup('messagePopup');
             setTimeout(function() {
                 closePopup('messagePopup');
-            }, 3000);  // Close after 3 seconds
+            }, 3000); // Close after 3 seconds
         }
 
         // Function to handle form submission via AJAX
@@ -756,22 +878,22 @@ $conn->close();
             var form = document.getElementById(formId);
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
+
                 var formData = new FormData(form);
 
                 fetch('delete.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.text())
-                .then(data => {
-                    closePopup(popupId);  // Close the specific popup
-                    showMessagePopup(data);  // Show success or error message in popup
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showMessagePopup('An error occurred. Please try again.');
-                });
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        closePopup(popupId); // Close the specific popup
+                        showMessagePopup(data); // Show success or error message in popup
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showMessagePopup('An error occurred. Please try again.');
+                    });
             });
         }
 
@@ -781,4 +903,5 @@ $conn->close();
         handleFormSubmission('deleteMentorForm', 'deleteMentorPopup');
     </script>
 </body>
+
 </html>

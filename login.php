@@ -66,4 +66,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Please fill in both fields.";
     }
 }
-?>
