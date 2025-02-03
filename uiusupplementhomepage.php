@@ -396,6 +396,17 @@ echo $html_content;
       flex-direction: column;
       justify-content: space-between;
       font-size: 14px;
+      /*transform*/
+      transition-property: transform;
+      transition-duration: 150ms;
+      /* Default Tailwind duration */
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      /* Default Tailwind easing */
+      transform: scale(1);
+    }
+
+    .card:hover {
+      transform: scale(1.05);
     }
 
     .card h3 {
@@ -622,7 +633,7 @@ echo $html_content;
       /* Pointer cursor on hover */
     }
 
-    .view-rooms-btn:hover.view-mentor-btn {
+    .view-rooms-btn:hover,.view-mentor-btn:hover {
       background-color: #1F1F1F;
       /* Darker blue on hover */
     }
@@ -651,6 +662,16 @@ echo $html_content;
       transition: transform 0.3s ease;
       position: relative;
       /* Positioning for the buttons */
+      transition-property: transform;
+      transition-duration: 150ms;
+      /* Default Tailwind duration */
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      /* Default Tailwind easing */
+      transform: scale(1);
+    }
+
+    .mentor-card:hover {
+      transform: scale(1.05);
     }
 
     .mentor-card img {
