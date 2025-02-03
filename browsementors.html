@@ -74,7 +74,7 @@
 
         /* Log Out Button */
         .logout-btn {
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
             padding: 10px 20px;
             text-align: center;
@@ -89,7 +89,7 @@
         }
 
         .logout-btn:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
         }
 
         /* Main Section */
@@ -151,7 +151,17 @@
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
             position: relative;
-            /* Positioning for the buttons */
+            /* Transform effect card */
+            transition-property: transform;
+            transition-duration: 150ms;
+            /* Default Tailwind duration */
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            /* Default Tailwind easing */
+            transform: scale(1);
+        }
+
+        .mentor-card:hover {
+            transform: scale(1.05);
         }
 
         .mentor-card img {
@@ -196,6 +206,9 @@
             align-items: center;
             text-decoration: none;
             /* Remove underline */
+        }
+        .contact-button:hover{
+            background-color: #0062b3;
         }
 
         .contact-button img {
@@ -256,12 +269,12 @@
         }
 
         button.view-profile {
-            background-color: #ff5722;
+            background-color: #FF3300;
             /* Match with logout button */
         }
 
         button.view-profile:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
             /* Darker shade on hover */
         }
 

@@ -135,7 +135,7 @@ echo $html_content;
 
     /* Log Out Button */
     .logout-btn {
-      background-color: #ff5722;
+      background-color: #FF3300;
       color: white;
       padding: 10px 20px;
       text-align: center;
@@ -154,7 +154,7 @@ echo $html_content;
     }
 
     .logout-btn:hover {
-      background-color: #e64a19;
+      background-color: #1F1F1F;
     }
 
     .header-icons {
@@ -182,7 +182,7 @@ echo $html_content;
     }
 
     .icon:hover {
-      color: #ff5722;
+      color: #FF3300;
       /* Change color on hover */
     }
 
@@ -196,7 +196,7 @@ echo $html_content;
     }
 
     .profile-icon:hover {
-      color: #ff5722;
+      color: #FF3300;
     }
 
     .dropdown {
@@ -350,7 +350,7 @@ echo $html_content;
     }
 
     .manual-btn {
-      border: 2px solid #ff5722;
+      border: 2px solid #FF3300;
       padding: 5px;
       border-radius: 50%;
       cursor: pointer;
@@ -359,12 +359,12 @@ echo $html_content;
     }
 
     .manual-btn:hover {
-      background-color: #ff5722;
+      background-color: #FF3300;
     }
 
     /* Active state for the manual navigation */
     .manual-btn.active {
-      background-color: #ff5722;
+      background-color: #FF3300;
     }
 
     /* Grid Layout for Available Rooms */
@@ -397,7 +397,7 @@ echo $html_content;
     }
 
     .card-btn {
-      background-color: #ff5722;
+      background-color: #FF3300;
       color: white;
       padding: 8px 10px;
       border: none;
@@ -408,7 +408,7 @@ echo $html_content;
     }
 
     .card-btn:hover {
-      background-color: #e64a19;
+      background-color: #1F1F1F;
     }
 
     /* Adjusting image container */
@@ -444,7 +444,7 @@ echo $html_content;
     /* Aligning Rent button below the room details */
     .card-btn,
     .card-btn-appointed {
-      background-color: #ff5722;
+      background-color: #FF3300;
       color: white;
       padding: 8px 12px;
       border: none;
@@ -544,7 +544,7 @@ echo $html_content;
     }
 
     .card-btn {
-      background-color: #ff5722;
+      background-color: #FF3300;
       color: white;
       padding: 8px 12px;
       border: none;
@@ -554,7 +554,7 @@ echo $html_content;
     }
 
     .card-btn:hover {
-      background-color: #e64a19;
+      background-color: #1F1F1F;
     }
 
     /* Navigation buttons */
@@ -578,7 +578,7 @@ echo $html_content;
     }
 
     .view-rooms-btn {
-      background-color: #ff5722;
+      background-color: #FF3300;
       /* Button background color */
       color: white;
       /* Text color */
@@ -595,7 +595,7 @@ echo $html_content;
     }
 
     .view-mentor-btn {
-      background-color: #ff5722;
+      background-color: #FF3300;
       /* Button background color */
       color: white;
       /* Text color */
@@ -612,7 +612,7 @@ echo $html_content;
     }
 
     .view-rooms-btn:hover.view-mentor-btn {
-      background-color: #e64a19;
+      background-color: #1F1F1F;
       /* Darker blue on hover */
     }
 
@@ -744,12 +744,12 @@ echo $html_content;
     }
 
     button.view-profile {
-      background-color: #ff5722;
+      background-color: #FF3300;
       /* Match with logout button */
     }
 
     button.view-profile:hover {
-      background-color: #e64a19;
+      background-color: #1F1F1F;
       /* Darker shade on hover */
     }
 

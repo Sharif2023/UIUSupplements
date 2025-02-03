@@ -254,7 +254,7 @@ $conn->close();
         }
 
         .logout-btn:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
         }
 
         .container {

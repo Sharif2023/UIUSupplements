@@ -87,7 +87,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
         /* Log Out Button */
         .logout-btn {
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
             padding: 10px 20px;
             text-align: center;
@@ -102,7 +102,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         }
 
         .logout-btn:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
         }
 
         /* Styling for profile page */
@@ -180,7 +180,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
         .back-button,
         .browse-mentors-button {
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
             padding: 10px 20px;
             border-radius: 5px;
@@ -190,9 +190,12 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             margin-bottom: 20px;
             /* Space below the back button */
         }
+        .back-button:hover{
+            background-color: #1F1F1F;
+        }
 
         .browse-mentors-button {
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
             padding: 10px 20px;
             border-radius: 5px;
@@ -208,7 +211,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         }
 
         .browse-mentors-button:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
         }
 
 
@@ -237,7 +240,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         }
 
         .contact-info a:hover {
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
         }
 

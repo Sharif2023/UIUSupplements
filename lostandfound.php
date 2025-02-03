@@ -140,7 +140,7 @@ $items = $conn->query("SELECT * FROM lost_and_found");
 
         /* Log Out Button */
         .logout-btn {
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
             padding: 10px 20px;
             text-align: center;
@@ -155,7 +155,7 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         }
 
         .logout-btn:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
         }
 
         .main {
@@ -187,7 +187,7 @@ $items = $conn->query("SELECT * FROM lost_and_found");
 
         .submit-claim-btn,
         .add-lost-item-btn {
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -198,7 +198,7 @@ $items = $conn->query("SELECT * FROM lost_and_found");
 
         .submit-claim-btn:hover,
         .add-lost-item-btn:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
         }
 
         .main-items {
@@ -231,7 +231,7 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         }
 
         .card-btn {
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
             padding: 8px 12px;
             border: none;
@@ -243,7 +243,7 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         }
 
         .card-btn:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
         }
 
         /* Modal styles */

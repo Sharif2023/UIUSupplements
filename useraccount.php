@@ -218,7 +218,7 @@ if ($productsResult->num_rows > 0) {
         }
 
         .logout-btn {
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
             padding: 10px 20px;
             text-align: center;
@@ -237,7 +237,7 @@ if ($productsResult->num_rows > 0) {
         }
 
         .logout-btn:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
         }
 
         .main {
@@ -309,7 +309,7 @@ if ($productsResult->num_rows > 0) {
         }
 
         .save-bio-button {
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -319,7 +319,7 @@ if ($productsResult->num_rows > 0) {
         }
 
         .save-bio-button:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
         }
 
         /* Initially hide save bio button */
@@ -328,7 +328,7 @@ if ($productsResult->num_rows > 0) {
         }
 
         .contact-button {
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -338,12 +338,12 @@ if ($productsResult->num_rows > 0) {
         }
 
         .contact-button:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
         }
 
         .profile-section h2 {
             font-size: medium;
-            color: #ff5722;
+            color: #FF3300;
             margin-bottom: 10px;
         }
 

@@ -158,7 +158,7 @@ $items = $conn->query("SELECT * FROM lost_and_found");
 
         /* Log Out Button */
         .logout-btn {
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
             padding: 10px 20px;
             text-align: center;
@@ -177,7 +177,7 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         }
 
         .logout-btn:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
         }
 
         a {
@@ -210,7 +210,7 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         }
 
         .icon:hover {
-            color: #ff5722;
+            color: #FF3300;
             /* Change color on hover */
         }
 
@@ -224,7 +224,7 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         }
 
         .profile-icon:hover {
-            color: #ff5722;
+            color: #FF3300;
         }
 
         .dropdown {

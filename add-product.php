@@ -175,7 +175,7 @@ $conn->close();
 
         /* Log Out Button */
         .logout-btn {
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
             padding: 10px 20px;
             text-align: center;
@@ -190,7 +190,7 @@ $conn->close();
         }
 
         .logout-btn:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
         }
 
         /* Main Section */
@@ -252,13 +252,13 @@ $conn->close();
             margin: 5px;
             border: none;
             border-radius: 4px;
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
             cursor: pointer;
         }
 
         button:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
         }
     </style>
 </head>

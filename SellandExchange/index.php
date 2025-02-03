@@ -129,7 +129,7 @@ $bargain_list_result = $conn->query($bargain_list_sql);
 
         /* Log Out Button */
         .logout-btn {
-            background-color: #ff5722;
+            background-color: #FF3300;
             color: white;
             padding: 10px 20px;
             text-align: center;
@@ -144,7 +144,7 @@ $bargain_list_result = $conn->query($bargain_list_sql);
         }
 
         .logout-btn:hover {
-            background-color: #e64a19;
+            background-color: #1F1F1F;
         }
 
         /* Main Content */
