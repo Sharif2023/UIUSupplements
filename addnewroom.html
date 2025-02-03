@@ -41,15 +41,15 @@
             max-width: 250px;
             background-color: #fff;
             padding: 20px;
-            height: auto;
-            /* Change from 100vh to auto */
+            height: 100vh;
+            /* Keep it full height */
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            position: absolute;
-            /* Change from fixed to absolute */
+            position: fixed;
+            /* Fixed initially */
             top: 0;
             left: 0;
-            bottom: 0;
-            /* Ensures it extends down but moves up when content ends */
+            transition: top 0.3s ease-in-out;
+            /* Smooth transition */
         }
 
         .styled-title {
@@ -326,15 +326,15 @@
     </div>
     <footer class="footer">
         <div class="social-icons">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.facebook.com/sharif.me2018"><i class="fab fa-facebook-f"></i></a>
             <a href="#"><i class="fab fa-twitter"></i></a>
             <a href="#"><i class="fab fa-google"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.instagram.com/shariful_islam10"><i class="fab fa-instagram"></i></a>
             <a href="#"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="https://www.github.com/sharif2023"><i class="fab fa-github"></i></a>
         </div>
         <div class="copyright">
-            &copy; 2020 Copyright: <a href="https://mdbootstrap.com/">MDBootstrap.com</a>
+            &copy; 2020 Copyright: <a href="https://www.youtube.com/@SHARIFsCODECORNER">Sharif Code Corner</a>
         </div>
     </footer>
     <script>
@@ -362,7 +362,22 @@
                 });
         });
     </script>
+    <!--footer script-->
+    <script>
+        window.addEventListener("scroll", function () {
+            let nav = document.querySelector("nav");
+            let footer = document.querySelector(".footer");
+            let footerRect = footer.getBoundingClientRect();
 
+            if (footerRect.top <= window.innerHeight) {
+                nav.style.position = "absolute";
+                nav.style.top = (window.scrollY + footerRect.top - nav.offsetHeight) + "px";
+            } else {
+                nav.style.position = "fixed";
+                nav.style.top = "0";
+            }
+        });
+    </script>
 </body>
 
 </html>
