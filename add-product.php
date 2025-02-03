@@ -140,9 +140,20 @@ $conn->close();
         }
 
         .styled-title {
-            font-size: 22px;
-            font-weight: bold;
-            color: #333;
+            font-size: 1.4rem;
+            color: #1F1F1F;
+            text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
+            }
+
+            100% {
+                text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff, 0 0 160px #00d4ff;
+            }
         }
 
         nav ul {

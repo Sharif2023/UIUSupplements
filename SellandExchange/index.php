@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bargain_price'])) {
         $insert_sql = "INSERT INTO bargains (product_id, email, user_id, bargain_price) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($insert_sql);
         $stmt->bind_param("issi", $product_id, $email, $user_id, $bargain_price);
-        
+
         // Check if the bargain price is less than the current price
         $check_price_sql = "SELECT price FROM products WHERE id = ?";
         $check_stmt = $conn->prepare($check_price_sql);
@@ -61,6 +61,7 @@ $bargain_list_result = $conn->query($bargain_list_sql);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,6 +77,7 @@ $bargain_list_result = $conn->query($bargain_list_sql);
             box-sizing: border-box;
             font-family: "Poppins", sans-serif;
         }
+
         body {
             background-color: #f0f0f5;
         }
@@ -99,9 +101,20 @@ $bargain_list_result = $conn->query($bargain_list_sql);
         }
 
         .styled-title {
-            font-size: 22px;
-            font-weight: bold;
-            color: #333;
+            font-size: 1.4rem;
+            color: #1F1F1F;
+            text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
+            }
+
+            100% {
+                text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff, 0 0 160px #00d4ff;
+            }
         }
 
         nav ul {
@@ -169,7 +182,8 @@ $bargain_list_result = $conn->query($bargain_list_sql);
 
         .card {
             width: 100%;
-            max-width: 300px; /* Set a max width for cards */
+            max-width: 300px;
+            /* Set a max width for cards */
             margin-bottom: 20px;
         }
 
@@ -192,45 +206,46 @@ $bargain_list_result = $conn->query($bargain_list_sql);
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <nav>
             <ul>
                 <li><a href="#" class="logo">
-                    <h1 class="styled-title">UIU Supplement</h1>
-                </a></li>
+                        <h1 class="styled-title">UIU Supplement</h1>
+                    </a></li>
                 <li><a href="uiusupplementhomepage.html">
-                    <i class="fas fa-home"></i>
-                    <span class="nav-item">Home</span>
-                </a></li>
+                        <i class="fas fa-home"></i>
+                        <span class="nav-item">Home</span>
+                    </a></li>
                 <li><a href="SellandExchange/index.php">
-                    <i class="fas fa-exchange-alt"></i>
-                    <span class="nav-item">Sell or Exchange</span>
-                </a></li>
+                        <i class="fas fa-exchange-alt"></i>
+                        <span class="nav-item">Sell or Exchange</span>
+                    </a></li>
                 <li><a href="availablerooms.html">
-                    <i class="fas fa-building"></i>
-                    <span class="nav-item">Room Rent</span>
-                </a></li>
+                        <i class="fas fa-building"></i>
+                        <span class="nav-item">Room Rent</span>
+                    </a></li>
                 <li><a href="browsementors.html">
-                    <i class="fas fa-user"></i>
-                    <span class="nav-item">Mentorship</span>
-                </a></li>
+                        <i class="fas fa-user"></i>
+                        <span class="nav-item">Mentorship</span>
+                    </a></li>
                 <li><a href="parttimejob.html">
-                    <i class="fas fa-briefcase"></i>
-                    <span class="nav-item">Jobs</span>
-                </a></li>
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Jobs</span>
+                    </a></li>
                 <li><a href="LostandFound/lostandfound.php">
-                    <i class="fas fa-dumpster"></i>
-                    <span class="nav-item">Lost and Found</span>
-                </a></li>
+                        <i class="fas fa-dumpster"></i>
+                        <span class="nav-item">Lost and Found</span>
+                    </a></li>
                 <li><a href="shuttle_service.php">
-                    <i class="fas fa-bus"></i>
-                    <span class="nav-item">Shuttle Services</span>
-                </a></li>
+                        <i class="fas fa-bus"></i>
+                        <span class="nav-item">Shuttle Services</span>
+                    </a></li>
                 <li><a href="#">
-                    <i class="fas fa-ad"></i>
-                    <span class="nav-item">Promotions</span>
-                </a></li>
+                        <i class="fas fa-ad"></i>
+                        <span class="nav-item">Promotions</span>
+                    </a></li>
             </ul>
 
             <!-- Log Out Button -->
@@ -281,6 +296,7 @@ $bargain_list_result = $conn->query($bargain_list_sql);
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
 
 <?php $conn->close(); ?>
