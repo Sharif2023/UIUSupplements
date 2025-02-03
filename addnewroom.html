@@ -17,12 +17,22 @@
         }
 
         body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             background-color: #f0f0f5;
+        }
+
+        .content {
+            flex: 1;
         }
 
         .container {
             display: flex;
             min-height: 100vh;
+            position: relative;
         }
 
         /* Sidebar Navigation */
@@ -31,11 +41,15 @@
             max-width: 250px;
             background-color: #fff;
             padding: 20px;
-            height: 100vh;
+            height: auto;
+            /* Change from 100vh to auto */
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            position: fixed;
+            position: absolute;
+            /* Change from fixed to absolute */
             top: 0;
             left: 0;
+            bottom: 0;
+            /* Ensures it extends down but moves up when content ends */
         }
 
         .styled-title {
@@ -166,7 +180,54 @@
         button:hover {
             background-color: #1F1F1F;
         }
+
+        /*footer*/
+        .footer {
+            background-color: #1F1F1F;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            position: relative;
+            /* Change from fixed to relative */
+        }
+
+        .social-icons {
+            margin: 20px 0;
+        }
+
+        .social-icons a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            margin: 5px;
+            background-color: transparent;
+            color: white;
+            border: 1px solid white;
+            border-radius: 50%;
+            text-align: center;
+            text-decoration: none;
+            font-size: 20px;
+        }
+
+        .social-icons a:hover {
+            background-color: white;
+            color: #FF3300;
+        }
+
+        .copyright {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .copyright a {
+            color: white;
+            text-decoration: none;
+        }
     </style>
+    <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -263,7 +324,19 @@
             </form>
         </section>
     </div>
-
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-google"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+        </div>
+        <div class="copyright">
+            &copy; 2020 Copyright: <a href="https://mdbootstrap.com/">MDBootstrap.com</a>
+        </div>
+    </footer>
     <script>
         function goBack() {
             window.location.href = "availablerooms.html";
@@ -289,6 +362,7 @@
                 });
         });
     </script>
+
 </body>
 
 </html>
