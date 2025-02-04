@@ -206,7 +206,7 @@ $conn->close();
         .side-menu .title-name {
             height: 10vh;
             display: flex;
-            align-items: center;
+            align-items: left;
             justify-content: center;
         }
 
@@ -222,19 +222,17 @@ $conn->close();
         .side-menu li {
             font-size: 18px;
             padding: 15px 20px;
-            /* Add more padding for better spacing */
             color: #f1f1f1;
             display: flex;
             align-items: center;
             gap: 15px;
-            /* Increased gap for better spacing */
             transition: background 0.3s;
-            /* Add a transition effect for hover */
         }
 
         .side-menu li:hover {
             background: rgba(255, 255, 255, 0.2);
-            /* Slightly transparent background on hover */
+            color: #FF3300;
+            cursor: pointer;
         }
 
         .logout-btn {
@@ -254,7 +252,7 @@ $conn->close();
         }
 
         .logout-btn:hover {
-            background-color: #1F1F1F;
+            background-color: rgb(196, 39, 0);
         }
 
         .container {
@@ -805,7 +803,7 @@ $conn->close();
                         </tr>
                     <?php } ?>
                 </table>
-            </div>
+            </div><br><br>
         </div>
     </div>
     <!-- Pop-up for deleting user -->
