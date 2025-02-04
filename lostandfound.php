@@ -83,12 +83,18 @@ $items = $conn->query("SELECT * FROM lost_and_found");
         }
 
         body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             background-color: #f0f0f5;
         }
 
         .container {
             display: flex;
             min-height: 100vh;
+            position: relative;
         }
 
         /* Sidebar Navigation */
@@ -102,6 +108,7 @@ $items = $conn->query("SELECT * FROM lost_and_found");
             position: fixed;
             top: 0;
             left: 0;
+            transition: top 0.3s ease-in-out;
         }
 
         .styled-title {
@@ -296,6 +303,56 @@ $items = $conn->query("SELECT * FROM lost_and_found");
             width: 100%;
             margin-bottom: 10px;
         }
+
+        /*footer*/
+        .content {
+            flex: 1;
+        }
+
+        .footer {
+            background-color: #1F1F1F;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            position: relative;
+            /* Change from fixed to relative */
+        }
+
+        .social-icons {
+            margin: 20px 0;
+        }
+
+        .social-icons a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            margin: 5px;
+            background-color: transparent;
+            color: white;
+            border: 1px solid white;
+            border-radius: 50%;
+            text-align: center;
+            text-decoration: none;
+            font-size: 20px;
+        }
+
+        .social-icons a:hover {
+            background-color: white;
+            color: #FF3300;
+        }
+
+        .copyright {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .copyright a {
+            color: white;
+            text-decoration: none;
+        }
     </style>
 </head>
 
@@ -322,7 +379,7 @@ $items = $conn->query("SELECT * FROM lost_and_found");
                         <i class="fas fa-user"></i>
                         <span class="nav-item">Mentorship</span>
                     </a></li>
-                <li><a href="#">
+                <li><a href="parttimejob.html">
                         <i class="fas fa-briefcase"></i>
                         <span class="nav-item">Jobs</span>
                     </a></li>
@@ -505,6 +562,36 @@ $items = $conn->query("SELECT * FROM lost_and_found");
                 document.getElementById('claimModal').style.display = 'none';
             }
         </script>
+    </div>
 </body>
+<footer class="footer">
+    <div class="social-icons">
+        <a href="https://www.facebook.com/sharif.me2018"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-google"></i></a>
+        <a href="https://www.instagram.com/shariful_islam10"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://www.github.com/sharif2023"><i class="fab fa-github"></i></a>
+    </div>
+    <div class="copyright">
+        &copy; 2020 Copyright: <a href="https://www.youtube.com/@SHARIFsCODECORNER">Sharif Code Corner</a>
+    </div>
+</footer>
+<!--footer script-->
+<script>
+    window.addEventListener("scroll", function() {
+        let nav = document.querySelector("nav");
+        let footer = document.querySelector(".footer");
+        let footerRect = footer.getBoundingClientRect();
+
+        if (footerRect.top <= window.innerHeight) {
+            nav.style.position = "absolute";
+            nav.style.top = (window.scrollY + footerRect.top - nav.offsetHeight) + "px";
+        } else {
+            nav.style.position = "fixed";
+            nav.style.top = "0";
+        }
+    });
+</script>
 
 </html>

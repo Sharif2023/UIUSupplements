@@ -17,32 +17,54 @@
     }
 
     body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
       background-color: #f0f0f5;
     }
 
     .container {
       display: flex;
       min-height: 100vh;
+      position: relative;
     }
 
-    /* Left Navigation */
+    /* Sidebar Navigation */
     nav {
-      width: 250px;
+      width: 100%;
+      max-width: 250px;
       background-color: #fff;
       padding: 20px;
       height: 100vh;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      left: 0;
+      transition: top 0.3s ease-in-out;
     }
 
-    nav .nav-logo {
-      font-size: 22px;
-      font-weight: bold;
-      color: #333;
+    .styled-title {
+      font-size: 1.4rem;
+      color: #1F1F1F;
+      text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
+      animation: glow 1.5s infinite alternate;
+    }
+
+    @keyframes glow {
+      0% {
+        text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
+      }
+
+      100% {
+        text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff, 0 0 160px #00d4ff;
+      }
     }
 
     nav ul {
       list-style-type: none;
-      margin-top: 20px;
+      padding-top: 20px;
     }
 
     nav ul li {
@@ -52,17 +74,36 @@
     nav ul li a {
       color: #555;
       font-size: 18px;
+      display: flex;
+      align-items: center;
+      padding: 10px;
       text-decoration: none;
     }
 
+    nav ul li a.active,
+    nav ul li a:hover {
+      background-color: #f0f0f5;
+      border-radius: 10px;
+    }
+
+    nav ul li a .nav-item {
+      margin-left: 15px;
+    }
+
+    /* Log Out Button */
     .logout-btn {
       background-color: #FF3300;
       color: white;
       padding: 10px 20px;
       text-align: center;
       border-radius: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
       margin-top: 20px;
-      display: block;
+      cursor: pointer;
+      text-decoration: none;
     }
 
     .logout-btn:hover {
@@ -71,6 +112,7 @@
 
     .main {
       flex: 1;
+      margin-left: 250px;
       padding: 40px;
     }
 
@@ -108,6 +150,56 @@
 
     .accept-btn:hover {
       background-color: #1F1F1F;
+    }
+
+    /*footer*/
+    .content {
+      flex: 1;
+    }
+
+    .footer {
+      background-color: #1F1F1F;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      width: 100%;
+      position: relative;
+      /* Change from fixed to relative */
+    }
+
+    .social-icons {
+      margin: 20px 0;
+    }
+
+    .social-icons a {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      margin: 5px;
+      background-color: transparent;
+      color: white;
+      border: 1px solid white;
+      border-radius: 50%;
+      text-align: center;
+      text-decoration: none;
+      font-size: 20px;
+    }
+
+    .social-icons a:hover {
+      background-color: white;
+      color: #FF3300;
+    }
+
+    .copyright {
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    .copyright a {
+      color: white;
+      text-decoration: none;
     }
   </style>
   <!-- Font Awesome CDN Link -->
@@ -200,5 +292,34 @@
     }
   </script>
 </body>
+<footer class="footer">
+  <div class="social-icons">
+    <a href="https://www.facebook.com/sharif.me2018"><i class="fab fa-facebook-f"></i></a>
+    <a href="#"><i class="fab fa-twitter"></i></a>
+    <a href="#"><i class="fab fa-google"></i></a>
+    <a href="https://www.instagram.com/shariful_islam10"><i class="fab fa-instagram"></i></a>
+    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+    <a href="https://www.github.com/sharif2023"><i class="fab fa-github"></i></a>
+  </div>
+  <div class="copyright">
+    &copy; 2020 Copyright: <a href="https://www.youtube.com/@SHARIFsCODECORNER">Sharif Code Corner</a>
+  </div>
+</footer>
+<!--footer script-->
+<script>
+  window.addEventListener("scroll", function () {
+    let nav = document.querySelector("nav");
+    let footer = document.querySelector(".footer");
+    let footerRect = footer.getBoundingClientRect();
+
+    if (footerRect.top <= window.innerHeight) {
+      nav.style.position = "absolute";
+      nav.style.top = (window.scrollY + footerRect.top - nav.offsetHeight) + "px";
+    } else {
+      nav.style.position = "fixed";
+      nav.style.top = "0";
+    }
+  });
+</script>
 
 </html>

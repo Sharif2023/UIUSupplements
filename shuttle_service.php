@@ -105,10 +105,10 @@
                         <i class="fas fa-user"></i>
                         <span class="nav-item">Mentorship</span>
                     </a></li>
-                <li><a href="#">
-                        <i class="fas fa-briefcase"></i>
-                        <span class="nav-item">Jobs</span>
-                    </a></li>
+                <li><a href="parttimejob.html">
+            <i class="fas fa-briefcase"></i>
+            <span class="nav-item">Jobs</span>
+          </a></li>
                 <li><a href="lostandfound.php">
                         <i class="fas fa-dumpster"></i>
                         <span class="nav-item">Lost and Found</span>

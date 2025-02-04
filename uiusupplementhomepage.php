@@ -915,7 +915,7 @@ echo $html_content;
             <a href="#">Lost Product Update</a>
             <a href="#">My Mentors</a>
             <a href="uiusupplementlogin.html" class="logout-btn">
-              <i class="fas fa-sign-out-alt"></i> Log Out
+              <i class="fas fa-sign-out-alt"></i>Log Out
             </a>
           </div>
         </div>
