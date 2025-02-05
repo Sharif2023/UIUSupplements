@@ -176,6 +176,10 @@ $items = $conn->query("SELECT * FROM lost_and_found");
             margin-right: 10px;
         }
 
+        .logout-btn i {
+            margin-right: 10px;
+        }
+
         .logout-btn:hover {
             background-color: #1F1F1F;
         }

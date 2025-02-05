@@ -131,6 +131,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             animation: glow 1.5s infinite alternate;
         }
 
+        .styled-title:hover {
+            transform: translateY(-5px);
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        }
+
         @keyframes glow {
             0% {
                 text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
@@ -183,6 +188,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-top: 20px;
             cursor: pointer;
             text-decoration: none;
+        }
+
+        .logout-btn i {
+            margin-right: 10px;
         }
 
         .logout-btn:hover {

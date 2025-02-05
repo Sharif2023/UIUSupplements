@@ -190,6 +190,11 @@ if ($productsResult->num_rows > 0) {
             animation: glow 1.5s infinite alternate;
         }
 
+        .styled-title:hover {
+            transform: translateY(-5px);
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        }
+
         @keyframes glow {
             0% {
                 text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
@@ -241,6 +246,10 @@ if ($productsResult->num_rows > 0) {
             margin-top: 20px;
             cursor: pointer;
             text-decoration: none;
+        }
+
+        .logout-btn i {
+            margin-right: 10px;
         }
 
         .logout-btn i {
@@ -420,9 +429,9 @@ if ($productsResult->num_rows > 0) {
                         <span class="nav-item">Mentorship</span>
                     </a></li>
                 <li><a href="parttimejob.html">
-            <i class="fas fa-briefcase"></i>
-            <span class="nav-item">Jobs</span>
-          </a></li>
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Jobs</span>
+                    </a></li>
                 <li><a href="lostandfound.php">
                         <i class="fas fa-dumpster"></i>
                         <span class="nav-item">Lost and Found</span>
