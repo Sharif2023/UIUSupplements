@@ -910,7 +910,7 @@ echo $html_content;
       <!-- Notification and Profile Icons -->
       <div class="header-icons">
         <a href="#" class="icon"><i class="fas fa-bell"></i></a>
-        <a href="#" class="icon"><i class="fas fa-comments"></i></a>
+        <a href="chat.html" class="icon"><i class="fas fa-comments"></i></a>
         <!-- Profile Icon Dropdown -->
         <div class="profile-icon">
           <span id="userIdDisplay"><?php echo htmlspecialchars($_SESSION['user_id']); ?></span>

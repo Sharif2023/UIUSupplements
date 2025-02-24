@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbox</title>
+    <style>
+        /* Chat Icon */
+        .chat-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Modal Chatbox */
+        .chat-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .chat-container {
+            background: white;
+            width: 350px;
+            height: 400px;
+            margin: 10% auto;
+            border-radius: 10px;
+            padding: 15px;
+            position: relative;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h3 {
+            margin: 0;
+        }
+
+        .close {
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Chat Search */
+        .chat-search {
+            margin: 10px 0;
+            display: flex;
+        }
+
+        .chat-search input {
+            flex: 1;
+            padding: 5px;
+        }
+
+        .chat-box {
+            height: 250px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .chat-box input {
+            width: 80%;
+            padding: 5px;
+        }
+
+        .chat-box button {
+            padding: 5px 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Chat Icon -->
+    <div class="chat-icon" onclick="openChat()">
+        💬
+    </div>
+
+    <!-- Modal Chatbox -->
+    <div id="chatModal" class="chat-modal">
+        <div class="chat-container">
+            <div class="chat-header">
+                <h3>Chat</h3>
+                <span class="close" onclick="closeChat()">&times;</span>
+            </div>
+
+            <div class="chat-search">
+                <input type="text" id="searchId" placeholder="Enter ID to search">
+                <button onclick="searchUser()">Search</button>
+            </div>
+
+            <div id="chatBox" class="chat-box">
+                <div id="messages"></div>
+                <input type="text" id="messageInput" placeholder="Type a message...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = 11221078; // Assume logged-in user ID
+        let chatUser = null;
+
+        // Open Chat
+        function openChat() {
+            document.getElementById("chatModal").style.display = "block";
+        }
+
+        // Close Chat
+        function closeChat() {
+            document.getElementById("chatModal").style.display = "none";
+        }
+
+        // Search User
+        function searchUser() {
+            let userId = document.getElementById("searchId").value;
+
+            fetch("chat.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "check_user=1&user_id=" + userId
+            })
+                .then(response => response.text())
+                .then(data => {
+                    if (data === "exists") {
+                        chatUser = userId;
+                        document.getElementById("chatBox").style.display = "block";
+                        loadMessages();
+                    } else {
+                        alert("User not found!");
+                    }
+                });
+        }
+
+        // Send Message
+        function sendMessage() {
+            let message = document.getElementById("messageInput").value;
+            if (!message || !chatUser) return;
+
+            fetch("chat.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `send_message=1&sender_id=${currentUser}&receiver_id=${chatUser}&message=${message}`
+            })
+                .then(response => response.text())
+                .then(data => {
+                    if (data === "sent") {
+                        document.getElementById("messageInput").value = "";
+                        loadMessages();
+                    }
+                });
+        }
+
+        // Load Messages
+        function loadMessages() {
+            fetch("chat.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `get_messages=1&sender_id=${currentUser}&receiver_id=${chatUser}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    let messagesDiv = document.getElementById("messages");
+                    messagesDiv.innerHTML = "";
+                    data.forEach(msg => {
+                        messagesDiv.innerHTML += `<p><b>${msg.sender_id}:</b> ${msg.message}</p>`;
+                    });
+                });
+        }
+    </script>
+</body>
+
+</html>
