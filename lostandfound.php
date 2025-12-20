@@ -61,8 +61,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Retrieve all found items
-$items = $conn->query("SELECT * FROM lost_and_found");
+// Handle delete
+if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
+    $deleteId = (int)$_GET['delete'];
+    $stmt = $conn->prepare("DELETE FROM lost_and_found WHERE id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $deleteId, $user_id);
+    if ($stmt->execute()) {
+        header("Location: lostandfound.php?my=1&deleted=1");
+        exit();
+    }
+}
+
+// Check if showing user's own items
+$showMyItems = isset($_GET['my']) && $_GET['my'] == '1';
+
+// Retrieve items - either all or just user's
+if ($showMyItems) {
+    $stmt = $conn->prepare("SELECT * FROM lost_and_found WHERE user_id = ? ORDER BY id DESC");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $items = $stmt->get_result();
+} else {
+    $items = $conn->query("SELECT * FROM lost_and_found ORDER BY id DESC");
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -212,28 +233,62 @@ $items = $conn->query("SELECT * FROM lost_and_found");
 
         <section class="main">
             <div class="main-top">
-                <h1 class="center-title">Lost and Found Items</h1>
-                <a href="">
+                <h1 class="center-title"><?php echo $showMyItems ? 'My Lost Item Listings' : 'Lost and Found Items'; ?></h1>
+                <a href="#" onclick="openModal(); return false;">
                     <button class="add-listing-btn"><i class="fa fa-plus"></i> Add Listing</button></a>
             </div>
+
+            <!-- Tabs for All Items / My Items -->
+            <div style="display: flex; gap: 15px; margin-bottom: 25px;">
+                <a href="lostandfound.php" 
+                   style="padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 500; <?php echo !$showMyItems ? 'background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%); color: white;' : 'background: #f0f0f5; color: #555;'; ?>">
+                    <i class="fas fa-list"></i> All Items
+                </a>
+                <a href="lostandfound.php?my=1" 
+                   style="padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 500; <?php echo $showMyItems ? 'background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%); color: white;' : 'background: #f0f0f5; color: #555;'; ?>">
+                    <i class="fas fa-user"></i> My Listings
+                </a>
+            </div>
+
+            <?php if (isset($_GET['deleted'])): ?>
+                <div style="padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-check-circle"></i> Item deleted successfully!
+                </div>
+            <?php endif; ?>
 
             <div class="main-items">
                 <?php
                 if ($items->num_rows > 0) {
                     while ($row = $items->fetch_assoc()) {
+                        $isOwner = ($row['user_id'] == $user_id);
                         echo '<div class="card">';
-                        echo '<img class="item-image" src="' . $row["image_path"] . '" alt="Lost item">';
+                        echo '<img class="item-image" src="' . htmlspecialchars($row["image_path"] ?? 'https://via.placeholder.com/150') . '" alt="Lost item">';
                         echo '<div class="item-details">';
                         echo '<p><strong>Item:</strong> ' . htmlspecialchars($row["category"] ?? 'N/A') . '</p>';
                         echo '<p><strong>Found at:</strong> ' . htmlspecialchars($row["foundPlace"] ?? 'N/A') . '</p>';
                         echo '<p><strong>Date:</strong> ' . htmlspecialchars($row["date_time"] ?? 'N/A') . '</p>';
                         echo '<p><strong>Where now:</strong> ' . htmlspecialchars($row["where_now"] ?? 'Not specified') . '</p>';
                         echo '</div>';
-                        echo '<button class="card-btn" onclick="openClaimModal(' . $row['id'] . ')">Claim</button>';
+                        echo '<div style="display: flex; gap: 10px; margin-top: 10px;">';
+                        if (!$isOwner) {
+                            echo '<button class="card-btn" onclick="openClaimModal(' . $row['id'] . ')">Claim</button>';
+                        } else {
+                            echo '<a href="lostandfound.php?my=1&delete=' . $row['id'] . '" class="card-btn" style="background: #dc3545; text-decoration: none;" onclick="return confirm(\'Delete this listing?\')"><i class="fas fa-trash"></i> Delete</a>';
+                        }
+                        echo '</div>';
                         echo '</div>';
                     }
                 } else {
-                    echo '<p>No lost and found items available.</p>';
+                    if ($showMyItems) {
+                        echo '<div style="text-align: center; padding: 40px; background: white; border-radius: 12px;">
+                            <i class="fas fa-box-open" style="font-size: 48px; color: #ccc; margin-bottom: 15px;"></i>
+                            <h3>No Listings Yet</h3>
+                            <p style="color: #666;">You haven\'t posted any lost item listings.</p>
+                            <a href="#" onclick="openModal(); return false;" class="add-listing-btn" style="display: inline-block; margin-top: 15px;"><i class="fa fa-plus"></i> Add Listing</a>
+                        </div>';
+                    } else {
+                        echo '<p>No lost and found items available.</p>';
+                    }
                 }
                 ?>
             </div>

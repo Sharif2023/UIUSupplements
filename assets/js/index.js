@@ -8,12 +8,12 @@
  * Adjusts sidebar navigation position when scrolling near footer
  * to prevent sidebar from overlapping the footer
  */
-window.addEventListener("scroll", function() {
+window.addEventListener("scroll", function () {
     const nav = document.querySelector("nav");
     const footer = document.querySelector(".footer");
-    
+
     if (!nav || !footer) return;
-    
+
     const footerRect = footer.getBoundingClientRect();
 
     if (footerRect.top <= window.innerHeight) {
@@ -29,15 +29,46 @@ window.addEventListener("scroll", function() {
  * DOM Ready Handler
  * Runs initialization code when DOM is fully loaded
  */
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     // Add active class to current nav item based on URL
     const currentPage = window.location.pathname.split('/').pop();
     const navLinks = document.querySelectorAll('nav ul li a');
-    
+
     navLinks.forEach(link => {
         const href = link.getAttribute('href');
         if (href === currentPage) {
             link.classList.add('active');
         }
     });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function (event) {
+        const dropdown = document.getElementById('profileDropdown');
+        const profileIcon = document.querySelector('.profile-icon');
+
+        if (dropdown && profileIcon && !profileIcon.contains(event.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
 });
+
+/**
+ * Profile Dropdown Toggle
+ * Toggles the visibility of the profile dropdown menu
+ */
+function toggleDropdown() {
+    const dropdown = document.getElementById('profileDropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('show');
+    }
+}
+
+/**
+ * Notification Dropdown Toggle
+ */
+function toggleNotifications() {
+    const dropdown = document.getElementById('notificationDropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('show');
+    }
+}

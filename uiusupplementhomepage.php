@@ -143,6 +143,37 @@ echo $html_content;
       /* Show dropdown when it has the "show" class */
     }
 
+    /* Notification Badge */
+    .notification-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .notification-wrapper {
+      position: relative;
+    }
+
+    .notification-dropdown {
+      min-width: 280px;
+    }
+
+    .dropdown a i {
+      margin-right: 10px;
+      width: 18px;
+      text-align: center;
+    }
+
     /* Main Content */
     .main {
       flex: 1;
@@ -788,22 +819,44 @@ echo $html_content;
     <section class="main">
       <!-- Notification and Profile Icons -->
       <div class="header-icons">
-        <a href="#" class="icon"><i class="fas fa-bell"></i></a>
-        <a href="chat.html" class="icon"><i class="fas fa-comments"></i></a>
+        <!-- Notification Icon with Badge -->
+        <div class="notification-wrapper" style="position: relative;">
+          <a href="#" class="icon" onclick="toggleNotifications(); return false;">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+          </a>
+          <div class="dropdown notification-dropdown" id="notificationDropdown">
+            <div style="padding: 15px; border-bottom: 1px solid #eee; font-weight: 600; display: flex; justify-content: space-between;">
+              <span>Notifications</span>
+              <a href="#" onclick="markAllRead(); return false;" style="font-size: 12px; color: #FF3300;">Mark all read</a>
+            </div>
+            <div id="notificationList">
+              <div style="padding: 20px; text-align: center; color: #888;">Loading...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Icon -->
+        <!-- Chat Icon with Badge -->
+        <a href="chat.php" class="icon" title="Messages" style="position: relative;">
+          <i class="fas fa-comments"></i>
+          <span class="notification-badge" id="chatBadge" style="display: none;">0</span>
+        </a>
+
         <!-- Profile Icon Dropdown -->
         <div class="profile-icon">
           <span id="userIdDisplay"><?php echo htmlspecialchars($_SESSION['user_id']); ?></span>
           <i class="far fa-user-circle" onclick="toggleDropdown()"></i>
-          <i class="bx bx-user"></i>
 
           <div class="dropdown" id="profileDropdown">
-            <a href="uiusupplementhomepage.php">Dashboard</a>
-            <a href="useraccount.php">My Profile</a>
-            <a href="#">My Sell list</a>
-            <a href="#">Lost Product Update</a>
-            <a href="#">My Mentors</a>
-            <a href="uiusupplementlogin.html" class="logout-btn">
-              <i class="fas fa-sign-out-alt"></i>Log Out
+            <a href="uiusupplementhomepage.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="useraccount.php"><i class="fas fa-user"></i> My Profile</a>
+            <a href="myselllist.php"><i class="fas fa-store"></i> My Sell List</a>
+            <a href="lostandfound.php?my=1"><i class="fas fa-search"></i> My Lost Items</a>
+            <a href="mymentors.php"><i class="fas fa-user-graduate"></i> My Mentors</a>
+            <div style="border-top: 1px solid #eee; margin: 5px 0;"></div>
+            <a href="uiusupplementlogin.html" style="color: #FF3300;">
+              <i class="fas fa-sign-out-alt"></i> Log Out
             </a>
           </div>
         </div>
@@ -945,6 +998,96 @@ echo $html_content;
         }
       }
     }
+
+    // Notification functions
+    function toggleNotifications() {
+      const dropdown = document.getElementById('notificationDropdown');
+      dropdown.classList.toggle('show');
+      if (dropdown.classList.contains('show')) {
+        loadNotifications();
+      }
+    }
+
+    function loadNotifications() {
+      fetch('api/notifications.php')
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            const badge = document.getElementById('notificationBadge');
+            if (data.unreadCount > 0) {
+              badge.textContent = data.unreadCount;
+              badge.style.display = 'flex';
+            } else {
+              badge.style.display = 'none';
+            }
+            
+            const list = document.getElementById('notificationList');
+            if (data.notifications.length === 0) {
+              list.innerHTML = '<div style="padding: 20px; text-align: center; color: #888;">No notifications</div>';
+            } else {
+              list.innerHTML = data.notifications.map(n => `
+                <a href="${n.link || '#'}" style="${n.is_read ? 'opacity: 0.6;' : ''}" onclick="markRead(${n.id})">
+                  <i class="fas ${getNotifIcon(n.type)}" style="color: ${getNotifColor(n.type)};"></i> ${n.title}
+                </a>
+              `).join('');
+            }
+          }
+        });
+    }
+
+    function getNotifIcon(type) {
+      switch(type) {
+        case 'message': return 'fa-envelope';
+        case 'bargain': return 'fa-tag';
+        case 'session': return 'fa-user-check';
+        case 'claim': return 'fa-search';
+        default: return 'fa-bell';
+      }
+    }
+
+    function getNotifColor(type) {
+      switch(type) {
+        case 'message': return '#17a2b8';
+        case 'bargain': return '#FF3300';
+        case 'session': return '#28a745';
+        case 'claim': return '#ffc107';
+        default: return '#666';
+      }
+    }
+
+    function markRead(id) {
+      fetch('api/notifications.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'mark_read', id: id})
+      });
+    }
+
+    function markAllRead() {
+      fetch('api/notifications.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'mark_all_read'})
+      }).then(() => loadNotifications());
+    }
+
+    function loadChatBadge() {
+      fetch('api/messages.php?action=unread_count')
+        .then(r => r.json())
+        .then(data => {
+          if (data.success && data.count > 0) {
+            const badge = document.getElementById('chatBadge');
+            badge.textContent = data.count;
+            badge.style.display = 'flex';
+          }
+        });
+    }
+
+    // Load on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadNotifications();
+      loadChatBadge();
+    });
   </script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
