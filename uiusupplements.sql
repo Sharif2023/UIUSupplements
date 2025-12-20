@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Oct 06, 2024 at 07:21 PM
+-- Host: 127.0.0.1:3306
+-- Generation Time: Dec 20, 2025 at 12:47 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -167,6 +167,7 @@ CREATE TABLE `lost_and_found` (
   `foundPlace` varchar(255) DEFAULT NULL,
   `date_time` datetime DEFAULT NULL,
   `contact_info` varchar(255) DEFAULT NULL,
+  `where_now` varchar(255) DEFAULT NULL,
   `claim_status` tinyint(4) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -174,9 +175,57 @@ CREATE TABLE `lost_and_found` (
 -- Dumping data for table `lost_and_found`
 --
 
-INSERT INTO `lost_and_found` (`id`, `user_id`, `email`, `category`, `image_path`, `foundPlace`, `date_time`, `contact_info`, `claim_status`) VALUES
-(1, 11111111, 'shariful@gmail.com', 'Others', 'imgOfLost/robert-bye-tG36rvCeqng-unsplash.jpg', '6th floor near room 631.', '2024-10-01 00:00:00', '01855222222', 1),
-(2, 11111112, 'abcd@gmail.com', 'ID card', 'imgOfLost/book2.jpeg', 'Canteen', '2024-10-09 16:04:00', '01700871179', 1);
+INSERT INTO `lost_and_found` (`id`, `user_id`, `email`, `category`, `image_path`, `foundPlace`, `date_time`, `contact_info`, `where_now`, `claim_status`) VALUES
+(1, 11111111, 'shariful@gmail.com', 'Others', 'imgOfLost/robert-bye-tG36rvCeqng-unsplash.jpg', '6th floor near room 631.', '2024-10-01 00:00:00', '01855222222', NULL, 1),
+(2, 11111112, 'abcd@gmail.com', 'ID card', 'imgOfLost/book2.jpeg', 'Canteen', '2024-10-09 16:04:00', '01700871179', NULL, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `messages`
+--
+
+CREATE TABLE `messages` (
+  `id` int(11) NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `message` text NOT NULL,
+  `is_read` tinyint(4) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `messages`
+--
+
+INSERT INTO `messages` (`id`, `sender_id`, `receiver_id`, `message`, `is_read`, `created_at`) VALUES
+(1, 11221122, 11221369, 'hii', 1, '2025-12-20 11:45:02'),
+(2, 11221369, 11221122, 'hello', 0, '2025-12-20 11:46:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `type` varchar(50) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `message` text DEFAULT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `is_read` tinyint(4) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES
+(1, 11221369, 'message', 'New message from Test', 'hii', 'chat.php?user=11221122', 0, '2025-12-20 11:45:02'),
+(2, 11221122, 'message', 'New message from Md Shakib', 'hello', 'chat.php?user=11221369', 0, '2025-12-20 11:46:00');
 
 -- --------------------------------------------------------
 
@@ -192,16 +241,17 @@ CREATE TABLE `products` (
   `description` text DEFAULT NULL,
   `image_path` varchar(255) NOT NULL,
   `bargain_price` decimal(10,2) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL
+  `user_id` int(11) DEFAULT NULL,
+  `status` enum('available','sold','pending') DEFAULT 'available'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `product_name`, `category`, `price`, `description`, `image_path`, `bargain_price`, `user_id`) VALUES
-(1, 'jbl', 'gadget', 5000.00, 'no Scratch ', 'imgOfSell/gadgets2.jpeg', NULL, NULL),
-(2, 'Intensive English', 'book', 300.00, 'Full Fresh Condition', 'imgOfSell/book1.jpeg', NULL, NULL);
+INSERT INTO `products` (`id`, `product_name`, `category`, `price`, `description`, `image_path`, `bargain_price`, `user_id`, `status`) VALUES
+(1, 'jbl', 'gadget', 5000.00, 'no Scratch ', 'imgOfSell/gadgets2.jpeg', NULL, NULL, 'available'),
+(2, 'Intensive English', 'book', 300.00, 'Full Fresh Condition', 'imgOfSell/book1.jpeg', NULL, NULL, 'available');
 
 -- --------------------------------------------------------
 
@@ -346,6 +396,7 @@ INSERT INTO `users` (`id`, `username`, `email`, `Gender`, `password_hash`, `mobi
 (11221078, 'Shariful Islam', '011221078', 'm', '$2y$10$zAuEsUA/9M0LKmWbBRHL5Oz7n6hFc7uEIoNQtrxaxnXg5F0wKeZvW', '1700871179', '2024-10-03 18:41:30'),
 (11221080, 'Ashiquzzaman Khan', 'akhan@gmail.com', 'm', '$2y$10$hCxASzzhgf.8RAvORxPHtuCYYPPCppfv6DPuurHwB/XKwJyD4YDBy', '01712345562', '2024-09-29 16:56:24'),
 (11221090, 'Abul Kalam', 'abulkalam@gmail.com', 'm', '$2y$10$W.zxwFk7YRDynnVpPHjfm.CyBxMwuVPlyOOBl1MIuuijlilSrse/W', '01232356898', '2024-09-29 16:56:24'),
+(11221122, 'Test', 'test@gmail.com', 'm', '$2y$10$qhcf.xJGsps4lRvlFKNjjOhh8aZ7j6Sm3WbEgVoICtMPFEB4WDoI.', '1700871179', '2025-12-20 09:47:06'),
 (11221369, 'Md Shakib', 'shakib@gmail.com', 'm', '$2y$10$SidrsHBPPrhRi6JZRPzsDuqhCMzl3.yA1uevDZqZOrwo1AIDdtiN6', '01112233445', '2024-09-29 16:56:24'),
 (11223344, 'anjuma tasnim', 'anjuma@gmail.com', 'f', '$2y$10$gd9oGsM6/3liBWe8ok4/TOhwodu0OOCeQSC9zJjXhgXUN5Zn3g6.6', '01122334444', '2024-09-29 16:56:24');
 
@@ -419,6 +470,21 @@ ALTER TABLE `events`
 --
 ALTER TABLE `lost_and_found`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_messages_sender` (`sender_id`),
+  ADD KEY `idx_messages_receiver` (`receiver_id`);
+
+--
+-- Indexes for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_notifications_user` (`user_id`,`is_read`);
 
 --
 -- Indexes for table `products`
@@ -507,6 +573,18 @@ ALTER TABLE `lost_and_found`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `messages`
+--
+ALTER TABLE `messages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
@@ -565,6 +643,19 @@ ALTER TABLE `claims`
 --
 ALTER TABLE `events`
   ADD CONSTRAINT `events_ibfk_1` FOREIGN KEY (`organizer_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `messages`
+--
+ALTER TABLE `messages`
+  ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `products`
