@@ -988,7 +988,8 @@ echo $html_content;
 
     // Close the dropdown if the user clicks outside of it
     window.onclick = function(event) {
-      if (!event.target.matches('.profile-icon, .profile-icon *')) {
+      // Don't close if clicking on profile icon or notification wrapper
+      if (!event.target.matches('.profile-icon, .profile-icon *, .notification-wrapper, .notification-wrapper *')) {
         const dropdowns = document.getElementsByClassName("dropdown");
         for (let i = 0; i < dropdowns.length; i++) {
           const openDropdown = dropdowns[i];
