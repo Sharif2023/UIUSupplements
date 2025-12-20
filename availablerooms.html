@@ -6,171 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Available Rooms | UIU Supplement</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="assets/css/index.css" />
     <style>
-        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            background-color: #f0f0f5;
-        }
-
-        .container {
-            display: flex;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* Sidebar Navigation */
-        nav {
-            width: 100%;
-            max-width: 250px;
-            background-color: #fff;
-            padding: 20px;
-            height: 100vh;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
-            transition: top 0.3s ease-in-out;
-        }
-
-        .styled-title {
-            font-size: 1.4rem;
-            color: #1F1F1F;
-            text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
-            animation: glow 1.5s infinite alternate;
-        }
-
-        .styled-title:hover {
-            transform: translateY(-5px);
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        @keyframes glow {
-            0% {
-                text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
-            }
-
-            100% {
-                text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff, 0 0 160px #00d4ff;
-            }
-        }
-
-        nav ul {
-            list-style-type: none;
-            padding-top: 20px;
-        }
-
-        nav ul li {
-            margin: 15px 0;
-        }
-
-        nav ul li a {
-            color: #555;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            text-decoration: none;
-        }
-
-        nav ul li a.active,
-        nav ul li a:hover {
-            background-color: #f0f0f5;
-            border-radius: 10px;
-        }
-
-        nav ul li a .nav-item {
-            margin-left: 15px;
-        }
-
-        /* Log Out Button */
-        .logout-btn {
-            background-color: #FF3300;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 16px;
-            margin-top: 20px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .logout-btn i {
-            margin-right: 10px;
-        }
-
-        .logout-btn:hover {
-            background-color: #1F1F1F;
-        }
-
-        /* Main Section */
-        .main {
-            flex: 1;
-            margin-left: 250px;
-            padding: 40px;
-        }
-
+        /* Page-specific styles for Available Rooms */
         .main-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
             padding: 5px;
-        }
-
-        .back-btn {
-            background-color: #2196F3;
-            /* New color */
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-right: 20px;
-        }
-
-        .back-btn:hover {
-            background-color: #1976D2;
-            /* Darker shade on hover */
+            margin-bottom: 40px;
         }
 
         .main-content {
             margin-top: 20px;
             text-align: center;
-        }
-
-        .card {
-            display: flex;
-            flex-direction: column;
-            /* Ensure vertical layout for each card */
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            padding: 15px;
-            background-color: #fff;
-            transition-property: transform;
-            transition-duration: 150ms;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transform: scale(1);
-        }
-
-        .card:hover {
-            transform: scale(1.05);
         }
 
         .room-details {
@@ -183,20 +29,9 @@
             justify-content: flex-end;
         }
 
-        /* Adjusting image container */
-        .image-container {
-            width: 150px;
-            height: 100px;
-            overflow: hidden;
-            border-radius: 10px;
-            margin-left: 20px;
-            /* Space between details and carousel */
-        }
-
         .carousel {
             width: 100%;
             height: 200px;
-            /* Set height for the carousel */
             overflow: hidden;
             position: relative;
         }
@@ -213,37 +48,20 @@
             height: 100%;
         }
 
-        /* Button Group */
         .button-group {
             display: flex;
             justify-content: center;
             gap: 10px;
-            /* Reduced gap between buttons */
         }
 
-        /* Centered Title with Space for Search and Sort */
-        .main-top {
-            position: relative;
-        }
-
-        /* Search and Sort Container aligned to the right */
         .search-sort-container {
             display: flex;
             align-items: center;
             gap: 10px;
             position: absolute;
             right: 20px;
-            /* Aligns the search and sort to the right corner */
         }
 
-        /* Adjusted width to match available rooms container */
-        .search-bar,
-        .sort-bar {
-            width: auto;
-            /* Let it be auto to avoid fixed width issues */
-        }
-
-        /* Search Bar Styling */
         .search-bar {
             position: relative;
             display: flex;
@@ -255,17 +73,14 @@
             left: 10px;
             color: #888;
             pointer-events: none;
-            /* Prevents clicks on the icon */
         }
 
         #search-room {
             padding: 8px 35px;
-            /* Space for the search icon */
             border-radius: 5px;
             border: 1px solid #ccc;
             font-size: 14px;
             width: 200px;
-            /* Adjust width as needed */
         }
 
         .search-btn {
@@ -275,7 +90,6 @@
             border: none;
             border-radius: 5px;
             margin-left: 10px;
-            /* Space between the input and button */
             cursor: pointer;
         }
 
@@ -283,7 +97,6 @@
             background-color: #1F1F1F;
         }
 
-        /* Sort Bar Styling */
         .sort-bar {
             position: relative;
             display: flex;
@@ -298,12 +111,10 @@
 
         #sort-options {
             padding: 8px 8px 8px 20px;
-            /* Space for the sort icon */
             border-radius: 5px;
             border: 1px solid #ccc;
             font-size: 14px;
             width: 150px;
-            /* Fixed width for sort options */
         }
 
         .carousel-nav {
@@ -327,24 +138,7 @@
             background-color: rgba(0, 0, 0, 0.8);
         }
 
-        .card-btn {
-            background-color: #FF3300;
-            color: white;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 15px;
-            /* Ensure the button is below the room details */
-            width: 100px;
-            /* Set button width to prevent it from being too wide */
-            align-self: flex-end;
-        }
-
         .card-btn:hover {
-            animation: pulse 2s infinite;
-            box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
-            transform: scale(1);
             animation: pulse 2s infinite;
         }
 
@@ -377,7 +171,6 @@
             align-self: flex-end;
         }
 
-        /* Adjust the main title */
         .center-title {
             text-align: center;
             font-size: 30px;
@@ -385,106 +178,11 @@
             flex-grow: 1;
         }
 
-        /* Adjust the rooms container margin */
         .main-skills {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            /* Adjust the minimum card size and allow auto-fill */
             grid-gap: 20px;
-            /* Gap between cards */
             margin-top: 70px;
-            /* Keep enough space between search/sort and rooms container */
-        }
-
-        /* Media Queries for responsiveness */
-        @media (max-width: 768px) {
-            .main-top {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            #search-room,
-            #sort-options {
-                width: 100%;
-            }
-
-            /* Adjust margin for mobile view */
-            .main-skills {
-                margin-top: 40px;
-                /* Smaller margin for mobile view */
-            }
-
-            .card {
-                grid-template-rows: auto 1fr auto;
-                /* Same layout for smaller screens */
-            }
-
-            .carousel {
-                height: 150px;
-                /* Adjust carousel height for mobile */
-            }
-
-            .card-btn {
-                width: 100%;
-                /* Full width button for smaller screens */
-            }
-
-            .image-container {
-                width: 100%;
-                /* Full width for small screens */
-                height: auto;
-                /* Auto height for images */
-            }
-        }
-
-        /*footer*/
-        .content {
-            flex: 1;
-        }
-
-        .footer {
-            background-color: #1F1F1F;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            width: 100%;
-            position: relative;
-            /* Change from fixed to relative */
-        }
-
-        .social-icons {
-            margin: 20px 0;
-        }
-
-        .social-icons a {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            margin: 5px;
-            background-color: transparent;
-            color: white;
-            border: 1px solid white;
-            border-radius: 50%;
-            text-align: center;
-            text-decoration: none;
-            font-size: 20px;
-        }
-
-        .social-icons a:hover {
-            background-color: white;
-            color: #FF3300;
-        }
-
-        .copyright {
-            background-color: rgba(0, 0, 0, 0.2);
-            padding: 10px;
-            margin-top: 10px;
-        }
-
-        .copyright a {
-            color: white;
-            text-decoration: none;
         }
     </style>
 </head>
@@ -785,21 +483,6 @@
         &copy; 2020 Copyright: <a href="https://www.youtube.com/@SHARIFsCODECORNER">Sharif Code Corner</a>
     </div>
 </footer>
-<!--footer script-->
-<script>
-    window.addEventListener("scroll", function () {
-        let nav = document.querySelector("nav");
-        let footer = document.querySelector(".footer");
-        let footerRect = footer.getBoundingClientRect();
-
-        if (footerRect.top <= window.innerHeight) {
-            nav.style.position = "absolute";
-            nav.style.top = (window.scrollY + footerRect.top - nav.offsetHeight) + "px";
-        } else {
-            nav.style.position = "fixed";
-            nav.style.top = "0";
-        }
-    });
-</script>
+<script src="assets/js/index.js"></script>
 
 </html>

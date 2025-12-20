@@ -107,130 +107,9 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Product</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="assets/css/index.css" />
     <style>
-        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-
-            background-color: #f0f0f5;
-        }
-
-        .container {
-            display: flex;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* Sidebar Navigation */
-        nav {
-            width: 100%;
-            max-width: 250px;
-            background-color: #fff;
-            padding: 20px;
-            height: 100vh;
-            /* Keep it full height */
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            /* Fixed initially */
-            top: 0;
-            left: 0;
-            transition: top 0.3s ease-in-out;
-            /* Smooth transition */
-        }
-
-        .styled-title {
-            font-size: 1.4rem;
-            color: #1F1F1F;
-            text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
-            animation: glow 1.5s infinite alternate;
-        }
-
-        .styled-title:hover {
-            transform: translateY(-5px);
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        @keyframes glow {
-            0% {
-                text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
-            }
-
-            100% {
-                text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff, 0 0 160px #00d4ff;
-            }
-        }
-
-        nav ul {
-            list-style-type: none;
-            padding-top: 20px;
-        }
-
-        nav ul li {
-            margin: 15px 0;
-        }
-
-        nav ul li a {
-            color: #555;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            text-decoration: none;
-        }
-
-        nav ul li a:hover,
-        nav ul li a.active {
-            background-color: #f0f0f5;
-            border-radius: 10px;
-        }
-
-        nav ul li a .nav-item {
-            margin-left: 15px;
-        }
-
-        /* Log Out Button */
-        .logout-btn {
-            background-color: #FF3300;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 16px;
-            margin-top: 20px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .logout-btn i {
-            margin-right: 10px;
-        }
-
-        .logout-btn:hover {
-            background-color: #1F1F1F;
-        }
-
-        /* Main Section */
-        .main {
-            flex: 1;
-            margin-left: 250px;
-            padding: 40px;
-        }
-
+        /* Page-specific styles for Add Product form */
         .main h1 {
             font-size: 30px;
             color: #333;
@@ -249,8 +128,7 @@ $conn->close();
             padding: 5px;
         }
 
-        /*for option select*/
-
+        /* Category select styling */
         #category {
             width: 100%;
             padding: 10px;
@@ -263,37 +141,28 @@ $conn->close();
             outline: none;
             transition: all 0.3s ease-in-out;
             appearance: none;
-            /* Hides default arrow */
             cursor: pointer;
-        }
-
-        /* Add custom dropdown arrow */
-        #category {
             background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath d='M7 10l5 5 5-5z' fill='%233498db'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 10px center;
             background-size: 15px;
         }
 
-        /* Hover effect */
         #category:hover {
             border-color: #FF3300;
         }
 
-        /* Focus effect */
         #category:focus {
             border-color: #2c3e50;
             box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
         }
 
-        /* Style the options */
         #category option {
             background: #ffffff;
             color: #333;
             padding: 10px;
         }
 
-        /* Disabled state */
         #category:disabled {
             background: #e9ecef;
             color: #999;
@@ -351,56 +220,6 @@ $conn->close();
 
         button:hover {
             background-color: #1F1F1F;
-        }
-
-        /*footer*/
-        .content {
-            flex: 1;
-        }
-
-        .footer {
-            background-color: #1F1F1F;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            width: 100%;
-            position: relative;
-            /* Change from fixed to relative */
-        }
-
-        .social-icons {
-            margin: 20px 0;
-        }
-
-        .social-icons a {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            margin: 5px;
-            background-color: transparent;
-            color: white;
-            border: 1px solid white;
-            border-radius: 50%;
-            text-align: center;
-            text-decoration: none;
-            font-size: 20px;
-        }
-
-        .social-icons a:hover {
-            background-color: white;
-            color: #FF3300;
-        }
-
-        .copyright {
-            background-color: rgba(0, 0, 0, 0.2);
-            padding: 10px;
-            margin-top: 10px;
-        }
-
-        .copyright a {
-            color: white;
-            text-decoration: none;
         }
     </style>
 </head>
@@ -530,22 +349,7 @@ $conn->close();
             &copy; 2020 Copyright: <a href="https://www.youtube.com/@SHARIFsCODECORNER">Sharif Code Corner</a>
         </div>
     </footer>
-    <!--footer script-->
-    <script>
-        window.addEventListener("scroll", function() {
-            let nav = document.querySelector("nav");
-            let footer = document.querySelector(".footer");
-            let footerRect = footer.getBoundingClientRect();
-
-            if (footerRect.top <= window.innerHeight) {
-                nav.style.position = "absolute";
-                nav.style.top = (window.scrollY + footerRect.top - nav.offsetHeight) + "px";
-            } else {
-                nav.style.position = "fixed";
-                nav.style.top = "0";
-            }
-        });
-    </script>
+    <script src="assets/js/index.js"></script>
 </body>
 
 </html>

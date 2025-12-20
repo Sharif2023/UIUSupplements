@@ -62,6 +62,8 @@ echo $html_content;
   <title>Home Page | UIU Supplement</title>
   <!-- Font Awesome CDN Link -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <!-- Centralized CSS -->
+  <link rel="stylesheet" href="assets/css/index.css" />
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
 
@@ -1250,21 +1252,6 @@ echo $html_content;
   </div>
 </footer>
 
-<!--footer script-->
-<script>
-  window.addEventListener("scroll", function() {
-    let nav = document.querySelector("nav");
-    let footer = document.querySelector(".footer");
-    let footerRect = footer.getBoundingClientRect();
-
-    if (footerRect.top <= window.innerHeight) {
-      nav.style.position = "absolute";
-      nav.style.top = (window.scrollY + footerRect.top - nav.offsetHeight) + "px";
-    } else {
-      nav.style.position = "fixed";
-      nav.style.top = "0";
-    }
-  });
-</script>
+<script src="assets/js/index.js"></script>
 
 </html>

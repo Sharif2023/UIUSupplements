@@ -65,141 +65,11 @@ $bargain_list_result = $conn->query($bargain_list_sql);
     <title>UIU Supplements - Product Listings</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="assets/css/index.css" />
     <style>
-        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            background-color: #f0f0f5;
-        }
-
-        .container {
-            display: flex;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* Sidebar Navigation */
-        nav {
-            width: 100%;
-            max-width: 250px;
-            background-color: #fff;
-            padding: 20px;
-            height: 100vh;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
-            transition: top 0.3s ease-in-out;
-        }
-
-        .styled-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #1F1F1F;
-            text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
-            animation: glow 1.5s infinite alternate;
-        }
-
-        .styled-title:hover {
-            transform: translateY(-5px);
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        @keyframes glow {
-            0% {
-                text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
-            }
-
-            100% {
-                text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff, 0 0 160px #00d4ff;
-            }
-        }
-
-        nav ul {
-            list-style-type: none;
-            padding-top: 20px;
-            padding-left: 0px;
-        }
-
-        nav ul li {
-            margin: 15px 0;
-        }
-
-        nav ul li a {
-            color: #555;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            text-decoration: none;
-        }
-
-        nav ul li a:hover,
-        nav ul li a.active {
-            background-color: #f0f0f5;
-            border-radius: 10px;
-        }
-
-        nav ul li a .nav-item {
-            margin-left: 15px;
-        }
-
-        /* Log Out Button */
-        .logout-btn {
-            background-color: #FF3300;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 16px;
-            margin-top: 20px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .logout-btn i {
-            margin-right: 10px;
-        }
-
-        .logout-btn:hover {
-            background-color: #1F1F1F;
-        }
-
-        /* Styling for profile page */
+        /* Page-specific styles for Sell and Exchange */
         .main {
-            flex: 1;
-            margin-left: 250px;
-            padding: 40px;
             background-color: #f0f0f5;
-        }
-
-        .main-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .center-title {
-            font-size: 24px;
-            font-weight: bold;
-            flex: 1;
-            text-align: center;
         }
 
         .add-product-btn {
@@ -256,7 +126,6 @@ $bargain_list_result = $conn->query($bargain_list_sql);
             border-radius: 5px;
             font-size: 14px;
             display: none;
-            /* Initially hidden */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
@@ -273,87 +142,9 @@ $bargain_list_result = $conn->query($bargain_list_sql);
 
         .bargain-list-btn {
             font-size: 0.8rem;
-            /* Smaller text */
             position: absolute;
-            /* Positioning to the corner */
             bottom: 10px;
-            /* Adjusts the vertical position */
             right: 10px;
-            /* Adjusts the horizontal position */
-        }
-
-        /* Media Queries for Responsiveness */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: row;
-            }
-
-            nav {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-
-            .main {
-                margin-left: 0;
-                padding: 20px;
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .main {
-                padding: 20px;
-            }
-        }
-
-        /*footer*/
-        .content {
-            flex: 1;
-        }
-
-        .footer {
-            background-color: #1F1F1F;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            width: 100%;
-            position: relative;
-            /* Change from fixed to relative */
-        }
-
-        .social-icons {
-            margin: 20px 0;
-        }
-
-        .social-icons a {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            margin: 5px;
-            background-color: transparent;
-            color: white;
-            border: 1px solid white;
-            border-radius: 50%;
-            text-align: center;
-            text-decoration: none;
-            font-size: 20px;
-        }
-
-        .social-icons a:hover {
-            background-color: white;
-            color: #FF3300;
-        }
-
-        .copyright {
-            background-color: rgba(0, 0, 0, 0.2);
-            padding: 10px;
-            margin-top: 10px;
-        }
-
-        .copyright a {
-            color: white;
-            text-decoration: none;
         }
     </style>
 </head>
@@ -535,21 +326,6 @@ $bargain_list_result = $conn->query($bargain_list_sql);
         &copy; 2020 Copyright: <a href="https://www.youtube.com/@SHARIFsCODECORNER">Sharif Code Corner</a>
     </div>
 </footer>
-<!--footer script-->
-<script>
-    window.addEventListener("scroll", function() {
-        let nav = document.querySelector("nav");
-        let footer = document.querySelector(".footer");
-        let footerRect = footer.getBoundingClientRect();
-
-        if (footerRect.top <= window.innerHeight) {
-            nav.style.position = "absolute";
-            nav.style.top = (window.scrollY + footerRect.top - nav.offsetHeight) + "px";
-        } else {
-            nav.style.position = "fixed";
-            nav.style.top = "0";
-        }
-    });
-</script>
+<script src="assets/js/index.js"></script>
 
 </html>
