@@ -409,31 +409,23 @@
             // Trigger search on button click
             document.getElementById('search-button').addEventListener('click', filterRooms);
 
-            // Sorting Functionality
+            // Sorting Functionality - Client-side sorting for better UX
             function sortRooms() {
                 const sortOption = document.getElementById('sort-options').value;
-                let sortParam = '';
+                let sortedRooms = [...roomsData]; // Create a copy to sort
 
                 if (sortOption === 'low-to-high') {
-                    sortParam = 'low-to-high';
+                    sortedRooms.sort((a, b) => parseFloat(a.room_rent) - parseFloat(b.room_rent));
                 } else if (sortOption === 'high-to-low') {
-                    sortParam = 'high-to-low';
+                    sortedRooms.sort((a, b) => parseFloat(b.room_rent) - parseFloat(a.room_rent));
                 }
 
-                const url = `availablerooms.php?sort=${sortParam}`;
-                console.log('Fetching sorted data from: ', url);  // Log the URL for debugging
-
-                // Fetch sorted data
-                fetch(url)
-                    .then(response => response.json())
-                    .then(sortedRooms => {
-                        console.log('Sorted Rooms Data:', sortedRooms);  // Log the sorted rooms data
-                        displayRooms(sortedRooms);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching sorted room data:', error);
-                    });
+                console.log('Sorted Rooms:', sortedRooms);
+                displayRooms(sortedRooms);
             }
+
+            // Trigger sort on dropdown change
+            document.getElementById('sort-options').addEventListener('change', sortRooms);
 
 
             function rentRoom(roomId, button) {

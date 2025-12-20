@@ -42,229 +42,255 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shuttle Tracking System</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/index.css" />
     <script src="https://maps.gomaps.pro/maps/api/js?key=AlzaSygAfpRH_g78jn6CrKdPpNZivYCddRS7LRz&libraries=places"></script>
 
     <style>
-        #map {
-            height: 400px;
-            width: 70%;
-        }
-
-        #controls {
-            margin-top: 10px;
-        }
-
-        .seat-container {
+        /* Page-specific styles for Shuttle Tracking */
+        .shuttle-container {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            justify-items: center;
-            margin: 10px 0;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .shuttle-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .shuttle-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f5;
+        }
+
+        /* Map Container */
+        #map {
+            height: 350px;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* Control Buttons */
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .control-panel .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-start:hover {
+            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+            transform: translateY(-2px);
+        }
+
+        .btn-pick {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-pick:hover {
+            background: linear-gradient(135deg, #218838 0%, #1aa179 100%);
+        }
+
+        .btn-drop {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-drop:hover {
+            background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+        }
+
+        .btn-query {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            color: white;
+            border: none;
+        }
+
+        /* Destination Select */
+        #destination {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            font-size: 14px;
+            min-width: 200px;
+            transition: border-color 0.3s ease;
+        }
+
+        #destination:focus {
+            border-color: #2196F3;
+            outline: none;
+        }
+
+        /* Status Info Cards */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .status-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .status-item label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-item .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        /* Seat Layout */
+        .seat-section {
+            margin-top: 20px;
+        }
+
+        .seat-legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-dot.available {
+            background-color: #9ce3f3;
+        }
+
+        .legend-dot.booked {
+            background-color: #ff9f43;
+        }
+
+        .bus-container {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 280px;
+        }
+
+        .bus-front {
+            background: #1a252f;
+            height: 30px;
+            border-radius: 15px 15px 0 0;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .seat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            column-gap: 15px;
+        }
+
+        .seat-grid::after {
+            content: '';
+            grid-column: 2 / 3;
         }
 
         .seat {
-            font-size: 20px;
+            font-size: 22px;
             color: #9ce3f3;
+            text-align: center;
+            transition: all 0.2s ease;
         }
 
         .seat.taken {
-            color: orange;
-            /* Color for PICK */
+            color: #ff9f43;
         }
 
         .seat.dropped {
             color: #9ce3f3;
-            /* Color for DROP */
         }
 
-        .btn-custom {
-            width: 100px;
+        /* Shuttle Info Table */
+        .shuttle-table {
+            margin-top: 30px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-        }
-
-        body {
-            background-color: #f0f0f5;
-        }
-
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar Navigation */
-        nav {
+        .shuttle-table table {
             width: 100%;
-            max-width: 250px;
-            background-color: #fff;
-            padding: 20px;
-            height: 100vh;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         }
 
-        .styled-title {
-            font-size: 1.4rem;
-            color: #1F1F1F;
-            text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
-            animation: glow 1.5s infinite alternate;
-        }
-
-        .styled-title:hover {
-            transform: translateY(-5px);
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        @keyframes glow {
-            0% {
-                text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
-            }
-
-            100% {
-                text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff, 0 0 160px #00d4ff;
-            }
-        }
-
-        nav ul {
-            list-style-type: none;
-            padding-top: 20px;
-        }
-
-        nav ul li {
-            margin: 15px -15px;
-        }
-
-        nav ul li a {
-            color: #555;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            text-decoration: none;
-        }
-
-        nav ul li a.active,
-        nav ul li a:hover {
-            background-color: #f0f0f5;
-            border-radius: 10px;
-        }
-
-        nav ul li a .nav-item {
-            margin-left: 15px;
-        }
-
-        /* Log Out Button */
-        .logout-btn {
-            background-color: #FF3300;
+        .shuttle-table th {
+            background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
             color: white;
-            padding: 10px 20px;
-            text-align: center;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 16px;
-            margin-top: 20px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .logout-btn i {
-            margin-right: 10px;
-        }
-
-        .logout-btn:hover {
-            background-color: #1F1F1F;
-        }
-
-        /* Main content */
-        .main {
-            margin-left: 260px;
-            /* Add margin to the right of the sidebar */
-            padding: 20px;
-            width: calc(100% - 260px);
-            /* Adjust width to prevent overlapping */
-        }
-
-        .main-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .center-title {
-            font-size: 24px;
-            font-weight: bold;
-            flex: 1;
-            text-align: center;
-        }
-
-        .add-mentor-btn {
-            margin-bottom: 20px;
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            border-radius: 5px;
-            display: inline-block;
-            font-size: 16px;
-            text-decoration: none;
-        }
-
-        .add-mentor-btn:hover {
-            background-color: #218838;
-        }
-
-        /* Cards Section */
-        .product-cards {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .product-cards .card {
-            flex: 1 1 30%;
-            max-width: 30%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-img-top {
-            max-height: 200px;
-            object-fit: cover;
-        }
-
-        .card-body {
             padding: 15px;
+            font-weight: 600;
+            text-align: left;
         }
 
-        .card-title {
-            font-size: 18px;
-            font-weight: bold;
+        .shuttle-table td {
+            padding: 15px;
+            background: white;
+            border-bottom: 1px solid #f0f0f5;
         }
 
-        #bargain-success {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border-radius: 5px;
-            font-size: 14px;
-            display: none;
-            /* Initially hidden */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .shuttle-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        @media (max-width: 992px) {
+            .shuttle-container {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -683,5 +709,6 @@ $conn->close();
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
+<script src="assets/js/index.js"></script>
 
 </html>

@@ -196,9 +196,9 @@ $items = $conn->query("SELECT * FROM lost_and_found");
                         <i class="fas fa-briefcase"></i>
                         <span class="nav-item">Jobs</span>
                     </a></li>
-                <li><a href="lostandfound.php">
+                <li><a href="lostandfound.php" class="active">
                         <i class="fas fa-dumpster"></i>
-                        <span class="nav-item" class="active">Lost and Found</span>
+                        <span class="nav-item">Lost and Found</span>
                     </a></li>
                 <li><a href="shuttle_tracking_system.php">
                         <i class="fas fa-bus"></i>
@@ -224,10 +224,10 @@ $items = $conn->query("SELECT * FROM lost_and_found");
                         echo '<div class="card">';
                         echo '<img class="item-image" src="' . $row["image_path"] . '" alt="Lost item">';
                         echo '<div class="item-details">';
-                        echo '<p><strong>Item:</strong> ' . $row["category"] . '</p>';
-                        echo '<p><strong>Found at:</strong> ' . $row["foundPlace"] . '</p>';
-                        echo '<p><strong>Date:</strong> ' . $row["date_time"] . '</p>';
-                        echo '<p><strong>Where now:</strong> ' . $row["where_now"] . '</p>';
+                        echo '<p><strong>Item:</strong> ' . htmlspecialchars($row["category"] ?? 'N/A') . '</p>';
+                        echo '<p><strong>Found at:</strong> ' . htmlspecialchars($row["foundPlace"] ?? 'N/A') . '</p>';
+                        echo '<p><strong>Date:</strong> ' . htmlspecialchars($row["date_time"] ?? 'N/A') . '</p>';
+                        echo '<p><strong>Where now:</strong> ' . htmlspecialchars($row["where_now"] ?? 'Not specified') . '</p>';
                         echo '</div>';
                         echo '<button class="card-btn" onclick="openClaimModal(' . $row['id'] . ')">Claim</button>';
                         echo '</div>';

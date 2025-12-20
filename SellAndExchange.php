@@ -72,47 +72,99 @@ $bargain_list_result = $conn->query($bargain_list_sql);
             background-color: #f0f0f5;
         }
 
-        .add-product-btn {
-            margin-bottom: 20px;
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            border-radius: 5px;
-            display: inline-block;
-            font-size: 16px;
-            text-decoration: none;
-        }
-
-        .add-product-btn:hover {
-            background-color: #218838;
-        }
-
         /* Cards Section */
         .product-cards {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
         }
 
         .product-cards .card {
-            flex: 1 1 30%;
-            max-width: 30%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .product-cards .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
         }
 
         .card-img-top {
-            max-height: 150px;
+            height: 180px;
             object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-cards .card:hover .card-img-top {
+            transform: scale(1.05);
         }
 
         .card-body {
-            padding: 15px;
+            padding: 20px;
         }
 
         .card-title {
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Price Badge */
+        .price-badge {
+            background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 16px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        /* Category Tag */
+        .category-tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        /* Button group in cards */
+        .card-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-bargain {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-bargain:hover {
+            background: linear-gradient(135deg, #5a6268 0%, #4e555b 100%);
+            color: white;
         }
 
         #bargain-success {
@@ -120,24 +172,46 @@ $bargain_list_result = $conn->query($bargain_list_sql);
             top: 20px;
             right: 20px;
             z-index: 9999;
-            padding: 10px 20px;
-            background-color: #28a745;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             color: white;
-            border-radius: 5px;
+            border-radius: 10px;
             font-size: 14px;
+            font-weight: 500;
             display: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         #drop-area {
-            border: 2px dashed #007bff;
-            padding: 20px;
+            border: 2px dashed #2196F3;
+            padding: 30px;
             text-align: center;
             cursor: pointer;
+            border-radius: 12px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        #drop-area:hover {
+            border-color: #FF3300;
+            background: #fff5f2;
         }
 
         #drop-area.dragging {
-            background-color: #f0f8ff;
+            background-color: #e3f2fd;
+            border-color: #1976D2;
         }
 
         .bargain-list-btn {
@@ -145,6 +219,22 @@ $bargain_list_result = $conn->query($bargain_list_sql);
             position: absolute;
             bottom: 10px;
             right: 10px;
+        }
+
+        /* Modal styling */
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #f0f0f5;
+            padding: 20px 25px;
+        }
+
+        .modal-body {
+            padding: 25px;
         }
     </style>
 </head>
