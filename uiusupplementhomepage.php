@@ -854,6 +854,7 @@ echo $html_content;
             <a href="myselllist.php"><i class="fas fa-store"></i> My Sell List</a>
             <a href="lostandfound.php?my=1"><i class="fas fa-search"></i> My Lost Items</a>
             <a href="mymentors.php"><i class="fas fa-user-graduate"></i> My Mentors</a>
+            <a href="settings.php"><i class="fas fa-cog"></i> Settings & Privacy</a>
             <div style="border-top: 1px solid #eee; margin: 5px 0;"></div>
             <a href="uiusupplementlogin.html" style="color: #FF3300;">
               <i class="fas fa-sign-out-alt"></i> Log Out

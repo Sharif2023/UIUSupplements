@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 20, 2025 at 12:47 PM
+-- Generation Time: Dec 20, 2025 at 01:37 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -200,7 +200,7 @@ CREATE TABLE `messages` (
 
 INSERT INTO `messages` (`id`, `sender_id`, `receiver_id`, `message`, `is_read`, `created_at`) VALUES
 (1, 11221122, 11221369, 'hii', 1, '2025-12-20 11:45:02'),
-(2, 11221369, 11221122, 'hello', 0, '2025-12-20 11:46:00');
+(2, 11221369, 11221122, 'hello', 1, '2025-12-20 11:46:00');
 
 -- --------------------------------------------------------
 
@@ -224,8 +224,8 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES
-(1, 11221369, 'message', 'New message from Test', 'hii', 'chat.php?user=11221122', 0, '2025-12-20 11:45:02'),
-(2, 11221122, 'message', 'New message from Md Shakib', 'hello', 'chat.php?user=11221369', 0, '2025-12-20 11:46:00');
+(1, 11221369, 'message', 'New message from Test', 'hii', 'chat.php?user=11221122', 1, '2025-12-20 11:45:02'),
+(2, 11221122, 'message', 'New message from Md Shakib', 'hello', 'chat.php?user=11221369', 1, '2025-12-20 11:46:00');
 
 -- --------------------------------------------------------
 
@@ -396,7 +396,7 @@ INSERT INTO `users` (`id`, `username`, `email`, `Gender`, `password_hash`, `mobi
 (11221078, 'Shariful Islam', '011221078', 'm', '$2y$10$zAuEsUA/9M0LKmWbBRHL5Oz7n6hFc7uEIoNQtrxaxnXg5F0wKeZvW', '1700871179', '2024-10-03 18:41:30'),
 (11221080, 'Ashiquzzaman Khan', 'akhan@gmail.com', 'm', '$2y$10$hCxASzzhgf.8RAvORxPHtuCYYPPCppfv6DPuurHwB/XKwJyD4YDBy', '01712345562', '2024-09-29 16:56:24'),
 (11221090, 'Abul Kalam', 'abulkalam@gmail.com', 'm', '$2y$10$W.zxwFk7YRDynnVpPHjfm.CyBxMwuVPlyOOBl1MIuuijlilSrse/W', '01232356898', '2024-09-29 16:56:24'),
-(11221122, 'Test', 'test@gmail.com', 'm', '$2y$10$qhcf.xJGsps4lRvlFKNjjOhh8aZ7j6Sm3WbEgVoICtMPFEB4WDoI.', '1700871179', '2025-12-20 09:47:06'),
+(11221122, 'Test', 'test@gmail.com', 'm', '$2y$10$qhcf.xJGsps4lRvlFKNjjOhh8aZ7j6Sm3WbEgVoICtMPFEB4WDoI.', '01700000000', '2025-12-20 09:47:06'),
 (11221369, 'Md Shakib', 'shakib@gmail.com', 'm', '$2y$10$SidrsHBPPrhRi6JZRPzsDuqhCMzl3.yA1uevDZqZOrwo1AIDdtiN6', '01112233445', '2024-09-29 16:56:24'),
 (11223344, 'anjuma tasnim', 'anjuma@gmail.com', 'f', '$2y$10$gd9oGsM6/3liBWe8ok4/TOhwodu0OOCeQSC9zJjXhgXUN5Zn3g6.6', '01122334444', '2024-09-29 16:56:24');
 
@@ -418,7 +418,32 @@ CREATE TABLE `user_profiles` (
 
 INSERT INTO `user_profiles` (`user_id`, `user_photo`, `user_bio`) VALUES
 (11111111, '', 'Hello This is me 1'),
-(11221011, 'uploads/2.jpg', 'Hello I\'m Ashik Khan.');
+(11221011, 'uploads/2.jpg', 'Hello I\'m Ashik Khan.'),
+(11221122, 'uploads/1766232983_IMG_99950 (1).jpg', 'I\'m Shakib'),
+(11221369, 'uploads/1766233021_IMG_99950 (1).jpg', 'Hello I\'m Shakib');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_settings`
+--
+
+CREATE TABLE `user_settings` (
+  `user_id` int(11) NOT NULL,
+  `email_notifications` tinyint(1) DEFAULT 1,
+  `push_notifications` tinyint(1) DEFAULT 1,
+  `profile_visibility` enum('public','private') DEFAULT 'public',
+  `two_factor_auth` tinyint(1) DEFAULT 0,
+  `marketing_emails` tinyint(1) DEFAULT 0,
+  `show_online_status` tinyint(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_settings`
+--
+
+INSERT INTO `user_settings` (`user_id`, `email_notifications`, `push_notifications`, `profile_visibility`, `two_factor_auth`, `marketing_emails`, `show_online_status`) VALUES
+(11221122, 1, 1, 'public', 0, 0, 1);
 
 --
 -- Indexes for dumped tables
@@ -536,6 +561,12 @@ ALTER TABLE `users`
 -- Indexes for table `user_profiles`
 --
 ALTER TABLE `user_profiles`
+  ADD PRIMARY KEY (`user_id`);
+
+--
+-- Indexes for table `user_settings`
+--
+ALTER TABLE `user_settings`
   ADD PRIMARY KEY (`user_id`);
 
 --
