@@ -156,38 +156,218 @@ if ($showMyItems) {
         .modal {
             position: fixed;
             top: 0;
-            margin-left: 250px;
-            padding: 40px;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+            margin: 0;
+            padding: 20px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         .modal-content {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slideUp 0.4s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #FF3300, #ff6b4a);
+            padding: 25px 30px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-header h2 i {
+            font-size: 28px;
         }
 
         .close-button {
-            font-size: 20px;
-            font-weight: bold;
-            float: right;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .close-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 25px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-content form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .modal-content label {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-content label i {
+            color: #FF3300;
+            font-size: 16px;
+        }
+
+        .modal-content input[type="email"],
+        .modal-content input[type="file"],
+        .modal-content textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .modal-content input[type="email"]:focus,
+        .modal-content textarea:focus {
+            outline: none;
+            border-color: #FF3300;
+            box-shadow: 0 0 0 3px rgba(255, 51, 0, 0.1);
+        }
+
+        .modal-content textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .modal-content input[type="file"] {
+            padding: 10px;
             cursor: pointer;
         }
 
-        .modal-content label,
-        .modal-content input,
-        .modal-content select {
-            display: block;
-            width: 100%;
-            margin-bottom: 10px;
+        .modal-content input[type="file"]::file-selector-button {
+            background: linear-gradient(135deg, #FF3300, #ff6b4a);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 10px;
+            transition: all 0.3s;
+        }
+
+        .modal-content input[type="file"]::file-selector-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 51, 0, 0.3);
+        }
+
+        .submit-claim-btn {
+            background: linear-gradient(135deg, #FF3300, #ff6b4a);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-claim-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 51, 0, 0.4);
+        }
+
+        .submit-claim-btn i {
+            font-size: 18px;
+        }
+
+        .info-text {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #1565c0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .info-text i {
+            margin-top: 2px;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -334,27 +514,6 @@ if ($showMyItems) {
             </div>
         </div>
 
-        <!-- Claim Modal -->
-        <div id="claimModal" class="modal" style="display: none;">
-            <div class="modal-content">
-                <span class="close-button" onclick="closeClaimModal()">&times;</span>
-                <form action="lostandfound.php" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" id="claim_item_id" name="item_id">
-
-                    <label for="claimant_email">Email Address:</label>
-                    <input type="email" id="claimant_email" name="claimant_email" required>
-
-                    <label for="id_upload">Upload Your ID:</label>
-                    <input type="file" id="id_upload" name="id_upload" accept="image/*" required>
-
-                    <label for="identification_info">Describe the Item (unique features, color, markings):</label>
-                    <textarea id="identification_info" name="identification_info" required></textarea>
-
-                    <button type="submit" name="submit_claim" class="submit-claim-btn">Submit Claim</button>
-                </form>
-            </div>
-        </div>
-
         <script>
             // JavaScript for searching and sorting lost and found items
             function filterItems() {
@@ -433,6 +592,60 @@ if ($showMyItems) {
             }
         </script>
     </div>
+
+    <!-- Claim Modal (Outside Container for Full Screen Centering) -->
+    <div id="claimModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>
+                    <i class="fas fa-hand-holding"></i>
+                    Claim This Item
+                </h2>
+                <button class="close-button" onclick="closeClaimModal()" type="button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="info-text">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Please provide accurate information to verify your claim. All details will be reviewed before approval.</span>
+                </div>
+                <form action="lostandfound.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" id="claim_item_id" name="item_id">
+
+                    <div class="form-group">
+                        <label for="claimant_email">
+                            <i class="fas fa-envelope"></i>
+                            Email Address
+                        </label>
+                        <input type="email" id="claimant_email" name="claimant_email" placeholder="your.email@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_upload">
+                            <i class="fas fa-id-card"></i>
+                            Upload Your ID
+                        </label>
+                        <input type="file" id="id_upload" name="id_upload" accept="image/*" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="identification_info">
+                            <i class="fas fa-clipboard-list"></i>
+                            Describe the Item
+                        </label>
+                        <textarea id="identification_info" name="identification_info" placeholder="Describe unique features, color, markings, or any identifying details..." required></textarea>
+                    </div>
+
+                    <button type="submit" name="submit_claim" class="submit-claim-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit Claim
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </body>
 <footer class="footer">
     <div class="social-icons">
