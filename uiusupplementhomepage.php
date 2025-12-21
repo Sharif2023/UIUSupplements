@@ -1,5 +1,12 @@
 <?php
 session_start();
+
+// Authentication check - redirect to login if not logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: uiusupplementlogin.html");
+    exit();
+}
+
 // Database connection
 $conn = new mysqli('localhost', 'root', '', 'uiusupplements');
 
@@ -788,15 +795,15 @@ echo $html_content;
             <i class="fas fa-exchange-alt"></i>
             <span class="nav-item">Sell</span>
           </a></li>
-        <li><a href="availablerooms.html">
+        <li><a href="availablerooms.php">
             <i class="fas fa-building"></i>
             <span class="nav-item">Room Rent</span>
           </a></li>
-        <li><a href="browsementors.html">
+        <li><a href="browsementors.php">
             <i class="fas fa-user"></i>
             <span class="nav-item">Mentorship</span>
           </a></li>
-        <li><a href="parttimejob.html">
+        <li><a href="parttimejob.php">
             <i class="fas fa-briefcase"></i>
             <span class="nav-item">Jobs</span>
           </a></li>
@@ -873,17 +880,17 @@ echo $html_content;
             </a>
           </div>
           <div class="slide">
-            <a href="availablerooms.html">
+            <a href="availablerooms.php">
               <img src="dashboard_image_slider/room_rent.png" alt="Image 2">
             </a>
           </div>
           <div class="slide">
-            <a href="browsementors.html">
+            <a href="browsementors.php">
               <img src="dashboard_image_slider/find_mentor.png" alt="Image 3">
             </a>
           </div>
           <div class="slide">
-            <a href="parttimejob.html">
+            <a href="parttimejob.php">
               <img src="dashboard_image_slider/part_time.png" alt="Image 4">
             </a>
           </div>
@@ -919,7 +926,7 @@ echo $html_content;
         <div class="available-rooms-container">
           <div class="header">
             <h2>Available Rooms</h2>
-            <a href="availablerooms.html" class="view-rooms-btn">View All</a>
+            <a href="availablerooms.php" class="view-rooms-btn">View All</a>
           </div>
 
           <div class="room-slider" id="roomSlider">
@@ -933,7 +940,7 @@ echo $html_content;
         <div class="container-mentors">
           <div class="header">
             <h2>Browse Mentors</h2>
-            <a href="browsementors.html" class="view-mentor-btn">View All</a>
+            <a href="browsementors.php" class="view-mentor-btn">View All</a>
           </div>
           <div class="mentor-cards" id="mentor-list">
             <!-- Mentor cards will be dynamically inserted here from database-->

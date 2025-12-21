@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+// Authentication check - redirect to login if not logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: uiusupplementlogin.html");
+    exit();
+}
+
 // Database connection
 $conn = new mysqli('localhost', 'root', '', 'uiusupplements');
 
@@ -297,7 +305,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                         <i class="fas fa-user"></i>
                         <span class="nav-item">Mentorship</span>
                     </a></li>
-                <li><a href="parttimejob.html">
+                <li><a href="parttimejob.php">
                         <i class="fas fa-briefcase"></i>
                         <span class="nav-item">Jobs</span>
                     </a></li>
@@ -319,7 +327,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
         <section class="main">
             <div class="profile-container">
-                <a href="browsementors.html" class="back-button">
+                <a href="browsementors.php" class="back-button">
                     <i class="fas fa-arrow-left"></i> Back
                 </a>
                 <?php
@@ -396,7 +404,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                 }
                 ?>
             </div>
-            <a href="browsementors.html" class="browse-mentors-button">
+            <a href="browsementors.php" class="browse-mentors-button">
                 Browse Mentors
             </a>
         </section>

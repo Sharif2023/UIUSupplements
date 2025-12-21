@@ -1,42 +1,380 @@
 <?php
-// Enable error reporting for debugging
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+session_start();
 
-// Database configuration
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "uiusupplements";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+// Authentication check - redirect to login if not logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: uiusupplementlogin.html");
+    exit();
 }
+?>
+<!DOCTYPE html>
+<html lang="en">
 
-// Fetch appointed rooms data with room details
-$sql = "
-    SELECT ar.room_id, ar.room_location, ar.room_rent, ar.status, u.id AS appointed_user_id, u.username AS appointed_user_name, u.email AS appointed_user_email
-    FROM appointedrooms ap
-    JOIN availablerooms ar ON ap.appointed_room_id = ar.room_id
-    JOIN users u ON ap.appointed_user_id = u.id
-    ORDER BY ar.room_id DESC
-";
-$result = $conn->query($sql);
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointed Rooms | UIU Supplement</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
 
-$appointedRooms = array();
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
 
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $appointedRooms[] = $row;
-    }
-}
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
 
-$conn->close();
+            background-color: #f0f0f5;
+        }
 
-// Output data in JSON format
-header('Content-Type: application/json');
-echo json_encode($appointedRooms);
+        .container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 100%;
+            max-width: 250px;
+            background-color: #fff;
+            padding: 20px;
+            height: 100vh;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            transition: top 0.3s ease-in-out;
+        }
+
+
+        .styled-title {
+            font-size: 1.4rem;
+            color: #1F1F1F;
+            text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        .styled-title:hover {
+            transform: translateY(-5px);
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
+            }
+
+            100% {
+                text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff, 0 0 160px #00d4ff;
+            }
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding-top: 20px;
+        }
+
+        nav ul li {
+            margin: 15px 0;
+        }
+
+        nav ul li a {
+            color: #555;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            text-decoration: none;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            background-color: #f0f0f5;
+            border-radius: 10px;
+        }
+
+        nav ul li a .nav-item {
+            margin-left: 15px;
+        }
+
+        /* Log Out Button */
+        .logout-btn {
+            background-color: #FF3300;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logout-btn i {
+            margin-right: 10px;
+        }
+
+        .logout-btn:hover {
+            background-color: #1F1F1F;
+        }
+
+        /* Main Section */
+        .main {
+            flex: 1;
+            margin-left: 250px;
+            padding: 40px;
+        }
+
+        .main-top h1 {
+            font-size: 30px;
+            color: #333;
+            text-align: center;
+        }
+
+        .main-skills .room-item {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .room-item h3 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #FF3300;
+        }
+
+        .room-item p {
+            margin: 5px 0;
+        }
+
+        .room-item p strong {
+            font-weight: bold;
+        }
+
+        /* Button Group */
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .button-group .card-btn {
+            padding: 10px 20px;
+            background-color: #FF3300;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button-group .card-btn:hover {
+            background-color: #1F1F1F;
+        }
+
+        /* Media Queries for responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            nav {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+
+        /*footer*/
+        .content {
+            flex: 1;
+        }
+
+        .footer {
+            background-color: #1F1F1F;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            position: relative;
+            /* Change from fixed to relative */
+        }
+
+        .social-icons {
+            margin: 20px 0;
+        }
+
+        .social-icons a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            margin: 5px;
+            background-color: transparent;
+            color: white;
+            border: 1px solid white;
+            border-radius: 50%;
+            text-align: center;
+            text-decoration: none;
+            font-size: 20px;
+        }
+
+        .social-icons a:hover {
+            background-color: white;
+            color: #FF3300;
+        }
+
+        .copyright {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .copyright a {
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="uiusupplementhomepage.php" class="logo">
+                        <h1 class="styled-title">UIU Supplement</h1>
+                    </a></li>
+                <li><a href="uiusupplementhomepage.php">
+                        <i class="fas fa-home"></i>
+                        <span class="nav-item">Home</span>
+                    </a></li>
+                <li><a href="SellAndExchange.php">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span class="nav-item">Sell or Exchange</span>
+                    </a></li>
+                <li><a href="availablerooms.php">
+                        <i class="fas fa-building"></i>
+                        <span class="nav-item">Room Rent</span>
+                    </a></li>
+                <li><a href="browsementors.php">
+                        <i class="fas fa-user"></i>
+                        <span class="nav-item">Mentorship</span>
+                    </a></li>
+                <li><a href="parttimejob.php">
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Jobs</span>
+                    </a></li>
+                <li><a href="lostandfound.php">
+                        <i class="fas fa-dumpster"></i>
+                        <span class="nav-item">Lost and Found</span>
+                    </a></li>
+                <li><a href="shuttle_tracking_system.php">
+                        <i class="fas fa-bus"></i>
+                        <span class="nav-item">Shuttle Services</span>
+                    </a></li>
+                <li><a href="#">
+                        <i class="fas fa-ad"></i>
+                        <span class="nav-item">Promotions</span>
+                    </a></li>
+            </ul>
+
+            <a href="uiusupplementlogin.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Log Out
+            </a>
+        </nav>
+
+        <section class="main">
+            <div class="main-top">
+                <h1>Rented Rooms</h1>
+            </div>
+            <div id="appointed-room-list" class="main-skills">
+                <!-- Appointed room details will be dynamically inserted here -->
+            </div>
+            <div class="button-group">
+                <button onclick="location.href='availablerooms.php'" class="card-btn">Available Rooms</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('api/appointedrooms.php')
+                .then(response => response.json())
+                .then(appointedRooms => {
+                    const appointedRoomListContainer = document.getElementById('appointed-room-list');
+
+                    if (appointedRooms.length > 0) {
+                        appointedRooms.forEach(room => {
+                            const roomDiv = document.createElement('div');
+                            roomDiv.classList.add('room-item');
+
+                            roomDiv.innerHTML = `
+                                <h3>Room ID: ${room.room_id}</h3>
+                                <p><strong>Location:</strong> ${room.room_location}</p>
+                                <p><strong>Rent:</strong> ${room.room_rent}TK</p>
+                                <p><strong>Status:</strong> ${room.status}</p>
+                                <p><strong>User ID:</strong> ${room.appointed_user_id}</p>
+                                <p><strong>User Name:</strong> ${room.appointed_user_name}</p>
+                                <p><strong>User Email:</strong> ${room.appointed_user_email}</p>
+                            `;
+
+                            appointedRoomListContainer.appendChild(roomDiv);
+                        });
+                    } else {
+                        appointedRoomListContainer.innerHTML = "<p>No appointed rooms found.</p>";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching appointed room data:', error);
+                });
+        });
+    </script>
+</body>
+<footer class="footer">
+    <div class="social-icons">
+        <a href="https://www.facebook.com/sharif.me2018"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-google"></i></a>
+        <a href="https://www.instagram.com/shariful_islam10"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://www.github.com/sharif2023"><i class="fab fa-github"></i></a>
+    </div>
+    <div class="copyright">
+        &copy; 2020 Copyright: <a href="https://www.youtube.com/@SHARIFsCODECORNER">Sharif Code Corner</a>
+    </div>
+</footer>
+<!--footer script-->
+<script>
+    window.addEventListener("scroll", function () {
+        let nav = document.querySelector("nav");
+        let footer = document.querySelector(".footer");
+        let footerRect = footer.getBoundingClientRect();
+
+        if (footerRect.top <= window.innerHeight) {
+            nav.style.position = "absolute";
+            nav.style.top = (window.scrollY + footerRect.top - nav.offsetHeight) + "px";
+        } else {
+            nav.style.position = "fixed";
+            nav.style.top = "0";
+        }
+    });
+</script>
+
+</html>

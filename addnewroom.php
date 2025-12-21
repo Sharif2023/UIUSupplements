@@ -1,58 +1,458 @@
 <?php
-// Database configuration
+session_start();
+
+// Database connection
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "uiusupplements";
 
-// Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Collect form data
-$room_id = $_POST['room-id'];
-$room_location = $_POST['room-location'];
-$room_details = $_POST['room-details'];
-$available_from = $_POST['available-from'];
-$available_to = isset($_POST['available-to']) ? $_POST['available-to'] : null;
-$status = $_POST['available-status'];
-$room_rent = $_POST['room-rent'];
-
-// File upload handling
-$uploaded_files = [];
-$upload_dir = 'uploads/'; // Directory to store uploaded files
-if (!file_exists($upload_dir)) {
-    mkdir($upload_dir, 0777, true); // Create the directory if it doesn't exist
-}
-
-foreach ($_FILES['room-photos']['tmp_name'] as $key => $tmp_name) {
-    $file_name = $_FILES['room-photos']['name'][$key];
-    $file_tmp = $_FILES['room-photos']['tmp_name'][$key];
-    $file_path = $upload_dir . basename($file_name);
-
-    if (move_uploaded_file($file_tmp, $file_path)) {
-        $uploaded_files[] = $file_path; // Store file path in an array
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Check authentication for POST requests
+    if (!isset($_SESSION['user_id'])) {
+        echo "Error: Not authenticated";
+        exit();
     }
+    
+    $roomId = $_POST['room-id'];
+    $location = $_POST['room-location'];
+    $details = $_POST['room-details'];
+    $availableFrom = $_POST['available-from'];
+    $availableTo = isset($_POST['available-to']) ? $_POST['available-to'] : null;
+    $status = $_POST['available-status'];
+    $rent = $_POST['room-rent'];
+    $userId = $_SESSION['user_id'];
+    
+    // Handle file uploads
+    $photoPaths = [];
+    if (isset($_FILES['room-photos']) && $_FILES['room-photos']['error'][0] !== UPLOAD_ERR_NO_FILE) {
+        $uploadDir = 'uploads/rooms/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        
+        foreach ($_FILES['room-photos']['tmp_name'] as $key => $tmpName) {
+            if ($_FILES['room-photos']['error'][$key] === UPLOAD_ERR_OK) {
+                $fileName = uniqid() . '_' . $_FILES['room-photos']['name'][$key];
+                $targetPath = $uploadDir . $fileName;
+                if (move_uploaded_file($tmpName, $targetPath)) {
+                    $photoPaths[] = $targetPath;
+                }
+            }
+        }
+    }
+    
+    $photoPathsStr = implode(',', $photoPaths);
+    
+    $stmt = $conn->prepare("INSERT INTO rooms (room_id, room_location, room_details, room_photos, available_from, available_to, status, room_rent, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssssdi", $roomId, $location, $details, $photoPathsStr, $availableFrom, $availableTo, $status, $rent, $userId);
+    
+    if ($stmt->execute()) {
+        echo "Room added successfully";
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+    exit();
 }
 
-// Convert the array of uploaded file paths to a comma-separated string
-$room_photos = implode(',', $uploaded_files);
-
-// Prepare and bind the statement, including the room_photos column
-$stmt = $conn->prepare("INSERT INTO availablerooms (room_id, room_location, room_details, available_from, available_to, status, room_rent, room_photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("ssssssis", $room_id, $room_location, $room_details, $available_from, $available_to, $status, $room_rent, $room_photos);
-
-// Execute the statement
-if ($stmt->execute()) {
-    echo "New room details added successfully!";
-} else {
-    echo "Error: " . $stmt->error;
+// Authentication check - redirect to login if not logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: uiusupplementlogin.html");
+    exit();
 }
+?>
+<!DOCTYPE html>
+<html lang="en">
 
-// Close the statement and connection
-$stmt->close();
-$conn->close();
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Room | UIU Supplement</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f0f0f5;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 100%;
+            max-width: 250px;
+            background-color: #fff;
+            padding: 20px;
+            height: 100vh;
+            /* Keep it full height */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            /* Fixed initially */
+            top: 0;
+            left: 0;
+            transition: top 0.3s ease-in-out;
+            /* Smooth transition */
+        }
+
+        .styled-title {
+            font-size: 1.4rem;
+            color: #1F1F1F;
+            text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        .styled-title:hover {
+            transform: translateY(-5px);
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
+            }
+
+            100% {
+                text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff, 0 0 160px #00d4ff;
+            }
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding-top: 20px;
+        }
+
+        nav ul li {
+            margin: 15px 0;
+        }
+
+        nav ul li a {
+            color: #555;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            text-decoration: none;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            background-color: #f0f0f5;
+            border-radius: 10px;
+        }
+
+        nav ul li a .nav-item {
+            margin-left: 15px;
+        }
+
+        /* Log Out Button */
+        .logout-btn {
+            background-color: #FF3300;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logout-btn i {
+            margin-right: 10px;
+        }
+
+        .logout-btn:hover {
+            background-color: #1F1F1F;
+        }
+
+        /* Main Section */
+        .main {
+            flex: 1;
+            margin-left: 250px;
+            padding: 40px;
+        }
+
+        .main h1 {
+            font-size: 30px;
+            color: #333;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="file"] {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background-color: #FF3300;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1F1F1F;
+        }
+
+        /*footer*/
+        .footer {
+            background-color: #1F1F1F;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            position: relative;
+            /* Change from fixed to relative */
+        }
+
+        .social-icons {
+            margin: 20px 0;
+        }
+
+        .social-icons a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            margin: 5px;
+            background-color: transparent;
+            color: white;
+            border: 1px solid white;
+            border-radius: 50%;
+            text-align: center;
+            text-decoration: none;
+            font-size: 20px;
+        }
+
+        .social-icons a:hover {
+            background-color: white;
+            color: #FF3300;
+        }
+
+        .copyright {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .copyright a {
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav>
+            <ul>
+                <li><a href="uiusupplementhomepage.php" class="logo">
+                        <h1 class="styled-title">UIU Supplement</h1>
+                    </a></li>
+                <li><a href="uiusupplementhomepage.php">
+                        <i class="fas fa-home"></i>
+                        <span class="nav-item">Home</span>
+                    </a></li>
+                <li><a href="SellAndExchange.php">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span class="nav-item">Sell</span>
+                    </a></li>
+                <li><a href="availablerooms.php">
+                        <i class="fas fa-building"></i>
+                        <span class="nav-item">Room Rent</span>
+                    </a></li>
+                <li><a href="browsementors.php">
+                        <i class="fas fa-user"></i>
+                        <span class="nav-item">Mentorship</span>
+                    </a></li>
+                <li><a href="parttimejob.php">
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Jobs</span>
+                    </a></li>
+                <li><a href="lostandfound.php">
+                        <i class="fas fa-dumpster"></i>
+                        <span class="nav-item">Lost and Found</span>
+                    </a></li>
+                <li><a href="shuttle_tracking_system.php">
+                        <i class="fas fa-bus"></i>
+                        <span class="nav-item">Shuttle Services</span>
+                    </a></li>
+            </ul>
+
+            <a href="uiusupplementlogin.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Log Out
+            </a>
+        </nav>
+
+        <!-- Main Content Section -->
+        <section class="main">
+            <h1>Add New Room Details</h1>
+            <form id="add-room-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="room-id">Room ID</label>
+                    <input type="text" id="room-id" name="room-id" placeholder="Enter Room ID (e.g., uiu-12345)"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="room-location">Location</label>
+                    <input type="text" id="room-location" name="room-location" required>
+                </div>
+                <div class="form-group">
+                    <label for="room-details">Room Details</label>
+                    <input type="text" id="room-details" name="room-details"
+                        placeholder="Enter Room Details (e.g., single, double)" required>
+                </div>
+                <div class="form-group">
+                    <label for="room-photos">Upload Room Photos</label>
+                    <input type="file" id="room-photos" name="room-photos[]" multiple>
+                </div>
+                <div class="form-group">
+                    <label for="available-from">Available From</label>
+                    <input type="date" id="available-from" name="available-from" required>
+                </div>
+                <div class="form-group">
+                    <label for="available-to">Available To (optional)</label>
+                    <input type="date" id="available-to" name="available-to">
+                </div>
+                <div class="form-group">
+                    <label>Status</label><br>
+                    <label for="status-available">
+                        <input type="radio" id="status-available" name="available-status" value="available"
+                            checked>Available</label>
+                    <label for="status-not-available">
+                        <input type="radio" id="status-not-available" name="available-status" value="not-available">Not
+                        Available</label>
+                </div>
+                <div class="form-group">
+                    <label for="room-rent">Rent</label>
+                    <input type="number" id="room-rent" name="room-rent" placeholder="Enter Rent in BDT" required>
+                </div>
+                <div class="button-group">
+                    <button type="submit" id="add-room-btn">Add New Room Details</button>
+                </div>
+                <button type="button" onclick="goBack()">Return Available Rooms</button>
+            </form>
+        </section>
+    </div>
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="https://www.facebook.com/sharif.me2018"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-google"></i></a>
+            <a href="https://www.instagram.com/shariful_islam10"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.github.com/sharif2023"><i class="fab fa-github"></i></a>
+        </div>
+        <div class="copyright">
+            &copy; 2020 Copyright: <a href="https://www.youtube.com/@SHARIFsCODECORNER">Sharif Code Corner</a>
+        </div>
+    </footer>
+    <script>
+        function goBack() {
+            window.location.href = "availablerooms.php";
+        }
+
+        document.getElementById('add-room-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch('addnewroom.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(result => {
+                    alert('New room added successfully!');
+                    document.getElementById('add-room-form').reset();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('There was a problem adding the new room.');
+                });
+        });
+    </script>
+    <!--footer script-->
+    <script>
+        window.addEventListener("scroll", function () {
+            let nav = document.querySelector("nav");
+            let footer = document.querySelector(".footer");
+            let footerRect = footer.getBoundingClientRect();
+
+            if (footerRect.top <= window.innerHeight) {
+                nav.style.position = "absolute";
+                nav.style.top = (window.scrollY + footerRect.top - nav.offsetHeight) + "px";
+            } else {
+                nav.style.position = "fixed";
+                nav.style.top = "0";
+            }
+        });
+    </script>
+</body>
+
+</html>

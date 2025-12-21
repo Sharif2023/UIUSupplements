@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+// Admin authentication check - redirect to login if not logged in as admin
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: uiusupplementlogin.html");
+    exit();
+}
+
 // Database connection
 $conn = new mysqli('localhost', 'root', '', 'uiusupplements');
 
@@ -737,7 +745,7 @@ $conn->close();
                     <div class="title">
                         <h2>New Mentors</h2>
                         <div>
-                            <a href="browsementors.html" class="btn">View All</a>
+                            <a href="browsementors.php" class="btn">View All</a>
                             <button onclick="openPopup('deleteMentorPopup')">Delete Mentors</button>
                         </div>
                     </div>
@@ -762,7 +770,7 @@ $conn->close();
                 <div class="title">
                     <h2>Available Rooms</h2>
                     <div>
-                        <a href="availablerooms.html" class="btn">View All</a>
+                        <a href="availablerooms.php" class="btn">View All</a>
                         <button onclick="openPopup('deleteRoomPopup')">Delete Rooms</button>
                     </div>
                 </div>
@@ -787,7 +795,7 @@ $conn->close();
                 <div class="title">
                     <h2>Rented Rooms</h2>
                     <div>
-                        <a href="appointedrooms.html" class="btn">View All</a>
+                        <a href="appointedrooms.php" class="btn">View All</a>
                         <button onclick="openPopup('deleteRentalPopup')">Remove Rental Status</button>
                     </div>
                 </div>

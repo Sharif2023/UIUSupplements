@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+// Admin authentication check - redirect to login if not logged in as admin
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: uiusupplementlogin.html");
+    exit();
+}
+
 // Database connection
 $servername = "localhost";
 $username = "root";  // Replace with your database username
@@ -372,15 +380,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <i class="fas fa-exchange-alt"></i>
                         <span class="nav-item">Sell</span>
                     </a></li>
-                <li><a href="availablerooms.html">
+                <li><a href="availablerooms.php">
                         <i class="fas fa-building"></i>
                         <span class="nav-item">Room Rent</span>
                     </a></li>
-                <li><a href="browsementors.html">
+                <li><a href="browsementors.php">
                         <i class="fas fa-user"></i>
                         <span class="nav-item">Mentorship</span>
                     </a></li>
-                <li><a href="parttimejob.html">
+                <li><a href="parttimejob.php">
                         <i class="fas fa-briefcase"></i>
                         <span class="nav-item">Jobs</span>
                     </a></li>

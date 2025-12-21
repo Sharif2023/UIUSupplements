@@ -261,15 +261,15 @@ $userData = $userResult->fetch_assoc();
                         <i class="fas fa-exchange-alt"></i>
                         <span class="nav-item">Sell</span>
                     </a></li>
-                <li><a href="availablerooms.html">
+                <li><a href="availablerooms.php">
                         <i class="fas fa-building"></i>
                         <span class="nav-item">Room Rent</span>
                     </a></li>
-                <li><a href="browsementors.html">
+                <li><a href="browsementors.php">
                         <i class="fas fa-user"></i>
                         <span class="nav-item">Mentorship</span>
                     </a></li>
-                <li><a href="parttimejob.html">
+                <li><a href="parttimejob.php">
                         <i class="fas fa-briefcase"></i>
                         <span class="nav-item">Jobs</span>
                     </a></li>

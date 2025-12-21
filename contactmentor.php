@@ -1,9 +1,10 @@
 <?php
 
 session_start();
-$user_id = $_SESSION['user_id']; // Ensure the session is correctly started and set
+$user_id = $_SESSION['user_id'] ?? null; // Ensure the session is correctly started and set
 if (!isset($user_id)) {
-    die("User is not logged in.");
+    header("Location: uiusupplementlogin.html");
+    exit();
 }
 
 // Database connection
@@ -500,15 +501,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <i class="fas fa-exchange-alt"></i>
                         <span class="nav-item">Sell</span>
                     </a></li>
-                <li><a href="availablerooms.html">
+                <li><a href="availablerooms.php">
                         <i class="fas fa-building"></i>
                         <span class="nav-item">Room Rent</span>
                     </a></li>
-                <li><a href="browsementors.html" class="active">
+                <li><a href="browsementors.php" class="active">
                         <i class="fas fa-user"></i>
                         <span class="nav-item">Mentorship</span>
                     </a></li>
-                <li><a href="parttimejob.html">
+                <li><a href="parttimejob.php">
                         <i class="fas fa-briefcase"></i>
                         <span class="nav-item">Jobs</span>
                     </a></li>
