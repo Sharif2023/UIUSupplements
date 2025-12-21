@@ -5,8 +5,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="uiusupplementlogin.css">
+    <link rel="stylesheet" href="uiusupplementlogin.css?v=2.0">
     <title>UIU Supplements | Login & Registration</title>
     <style>
         /* Custom scrollbar styles */
@@ -90,6 +93,8 @@
                             required>
                         <i class="bx bx-user"></i>
                     </div>
+                    <div class="help-text">Enter your Student ID (9-10 digits) or UIU Email</div>
+
                     <div class="input-box">
                         <input type="password" name="password" class="input-field" placeholder="Password" required>
                         <i class="bx bx-lock-alt"></i>
@@ -100,7 +105,7 @@
                     <div class="two-col">
                         <div class="one">
                             <input type="checkbox" id="login-check">
-                            <label for="login-check"> Remember Me</label>
+                            <label for="login-check">Remember Me</label>
                         </div>
                         <div class="two">
                             <label><a href="#">Forgot password?</a></label>
@@ -120,39 +125,89 @@
                     <span>Have an account? <a href="#" onclick="login()">Login</a></span>
                     <header style="margin-top: 10px; color: white;">Sign Up</header>
                 </div>
+
+                <!-- User Type Selection -->
                 <div class="input-box">
-                    <input type="text" class="input-field" id="regId" placeholder="ID">
-                    <i class="bx bx-user"></i>
+                    <label>User Type:</label><br>
+                    <select class="input-field user-type-select" id="userType" onchange="updateValidationHints()">
+                        <option value="student">Student</option>
+                        <option value="faculty">Faculty/Staff/Admin</option>
+                        <option value="department">Departmental Contact</option>
+                    </select>
+                    <i class="bx bx-category field-icon"></i>
                 </div>
+
+                <!-- Student ID -->
                 <div class="input-box">
-                    <input type="text" class="input-field" id="regName" placeholder="Name">
-                    <i class="bx bx-user"></i>
+                    <input type="text" class="input-field" id="regId" placeholder="Enter 9-10 digit Student ID"
+                        pattern="[0-9]{9,10}" required>
+                    <i class="bx bx-id-card field-icon"></i>
+                    <i class="bx bx-info-circle tooltip-icon"
+                        data-tooltip="Enter your Student ID (9 or 10 digits)&#10;Example: 011161024 or 0112410244"></i>
+                    <span class="validation-icon" id="idValidation"></span>
                 </div>
+
+                <!-- Name -->
                 <div class="input-box">
-                    <input type="text" class="input-field" id="regEmail" placeholder="Gmail">
-                    <i class="bx bx-envelope"></i>
+                    <input type="text" class="input-field" id="regName" placeholder="Enter your full name" required>
+                    <i class="bx bx-user field-icon"></i>
+                    <span class="validation-icon" id="nameValidation"></span>
                 </div>
+
+                <!-- Email -->
+                <div class="input-box">
+                    <input type="text" class="input-field" id="regEmail" placeholder="Enter your UIU email" required>
+                    <i class="bx bx-envelope field-icon"></i>
+                    <i class="bx bx-info-circle tooltip-icon" id="emailTooltip"
+                        data-tooltip="Student: [FirstLetter][LastName][Last6digits]@[program].uiu.ac.bd&#10;Example: kshifullah161024@bscse.uiu.ac.bd"></i>
+                    <span class="validation-icon" id="emailValidation"></span>
+                </div>
+
+                <!-- Gender -->
                 <div class="input-box">
                     <label>Gender:</label><br>
-                    <input type="radio" id="male" name="gender" value="m">
-                    <label for="male" style="color: white;">Male</label><br>
-                    <input type="radio" id="female" name="gender" value="f">
-                    <label for="female" style="color: white;">Female</label><br>
-                    <input type="radio" id="other" name="gender" value="o">
-                    <label for="other" style="color: white;">Other</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" id="male" name="gender" value="m">
+                            <span>Male</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" id="female" name="gender" value="f">
+                            <span>Female</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" id="other" name="gender" value="o">
+                            <span>Other</span>
+                        </label>
+                    </div>
                 </div>
+
+                <!-- Password -->
                 <div class="input-box">
-                    <input type="password" class="input-field" id="regPassword" placeholder="Password" required>
-                    <i class="bx bx-lock-alt"></i>
+                    <input type="password" class="input-field" id="regPassword"
+                        placeholder="Create password (min. 6 characters)" minlength="6" required>
+                    <i class="bx bx-lock-alt field-icon"></i>
+                    <i class="bx bx-info-circle tooltip-icon"
+                        data-tooltip="Password must be at least 6 characters long"></i>
+                    <span class="validation-icon" id="passwordValidation"></span>
                 </div>
+
+                <!-- Mobile Number -->
                 <div class="input-box">
-                    <input type="text" class="input-field" id="regMobile" placeholder="Mobile Number" required>
-                    <i class="bx bx-phone"></i>
+                    <input type="text" class="input-field" id="regMobile" placeholder="Enter 11-digit mobile number"
+                        pattern="[0-9]{11}" required>
+                    <i class="bx bx-phone field-icon"></i>
+                    <i class="bx bx-info-circle tooltip-icon"
+                        data-tooltip="Bangladesh mobile number (11 digits)&#10;Example: 01712345678"></i>
+                    <span class="validation-icon" id="mobileValidation"></span>
                 </div>
+
+                <!-- Submit Button -->
                 <div class="input-box">
                     <input type="submit" class="submit" value="Register" style="margin-top: 20px;"
                         onclick="registerUser()">
                 </div>
+
                 <div class="two-col">
                     <div class="one">
                         <input type="checkbox" id="register-check">
@@ -200,21 +255,118 @@
             x.style.opacity = 0;
             y.style.opacity = 1;
         }
+
+        // Update validation hints based on user type
+        function updateValidationHints() {
+            const userType = document.getElementById("userType").value;
+            const emailField = document.getElementById("regEmail");
+            const emailTooltip = document.getElementById("emailTooltip");
+
+            // Update email pattern and tooltip text based on user type
+            if (userType === "student") {
+                emailField.setAttribute("pattern", "[a-z][a-z]+\\d{6}@[a-z]+\\.uiu\\.ac\\.bd");
+                emailTooltip.setAttribute("data-tooltip", "Student: [FirstLetter][LastName][Last6digits]@[program].uiu.ac.bd\nExample: kshifullah161024@bscse.uiu.ac.bd");
+            } else if (userType === "faculty") {
+                emailField.setAttribute("pattern", "[a-zA-Z]+[a-zA-Z]@uiu\\.edu");
+                emailTooltip.setAttribute("data-tooltip", "Faculty/Staff/Admin: LastFirstInitial@uiu.edu\nExample: DoeJ@uiu.edu");
+            } else if (userType === "department") {
+                emailField.setAttribute("pattern", "[a-z]+\\.[a-z]+@uiu\\.edu");
+                emailTooltip.setAttribute("data-tooltip", "Departmental Contact: first.last@uiu.edu\nExample: john.doe@uiu.edu");
+            }
+
+            // Clear validation status when type changes
+            emailField.classList.remove("valid", "invalid");
+            document.getElementById("emailValidation").innerHTML = "";
+        }
+
+        // Real-time validation for fields
+        function validateField(fieldId, validationId) {
+            const field = document.getElementById(fieldId);
+            const validation = document.getElementById(validationId);
+
+            if (field.value === "") {
+                field.classList.remove("valid", "invalid");
+                validation.innerHTML = "";
+                return false;
+            }
+
+            const isValid = field.checkValidity();
+            if (isValid) {
+                field.classList.add("valid");
+                field.classList.remove("invalid");
+                validation.innerHTML = '<i class="bx bx-check-circle"></i>';
+                validation.style.color = "#4CAF50";
+            } else {
+                field.classList.add("invalid");
+                field.classList.remove("valid");
+                validation.innerHTML = '<i class="bx bx-x-circle"></i>';
+                validation.style.color = "#f44336";
+            }
+            return isValid;
+        }
+
+        // Add event listeners for real-time validation
+        document.addEventListener("DOMContentLoaded", function () {
+            // Set initial pattern for student (default)
+            updateValidationHints();
+
+            // Add validation listeners
+            const regId = document.getElementById("regId");
+            const regName = document.getElementById("regName");
+            const regEmail = document.getElementById("regEmail");
+            const regPassword = document.getElementById("regPassword");
+            const regMobile = document.getElementById("regMobile");
+
+            regId.addEventListener("blur", () => validateField("regId", "idValidation"));
+            regId.addEventListener("input", () => validateField("regId", "idValidation"));
+
+            regName.addEventListener("blur", () => validateField("regName", "nameValidation"));
+
+            regEmail.addEventListener("blur", () => validateField("regEmail", "emailValidation"));
+            regEmail.addEventListener("input", () => validateField("regEmail", "emailValidation"));
+
+            regPassword.addEventListener("blur", () => validateField("regPassword", "passwordValidation"));
+            regPassword.addEventListener("input", () => validateField("regPassword", "passwordValidation"));
+
+            regMobile.addEventListener("blur", () => validateField("regMobile", "mobileValidation"));
+            regMobile.addEventListener("input", () => validateField("regMobile", "mobileValidation"));
+        });
+
         function registerUser() {
+            // Validate all fields before submission
+            const idValid = validateField("regId", "idValidation");
+            const nameValid = validateField("regName", "nameValidation");
+            const emailValid = validateField("regEmail", "emailValidation");
+            const passwordValid = validateField("regPassword", "passwordValidation");
+            const mobileValid = validateField("regMobile", "mobileValidation");
+
+            const gender = document.querySelector('input[name="gender"]:checked');
+
+            if (!idValid || !nameValid || !emailValid || !passwordValid || !mobileValid) {
+                alert("Please fill in all fields correctly according to the specified formats.");
+                return;
+            }
+
+            if (!gender) {
+                alert("Please select a gender.");
+                return;
+            }
+
             const id = document.getElementById("regId").value;
             const username = document.getElementById("regName").value;
             const email = document.getElementById("regEmail").value;
             const password = document.getElementById("regPassword").value;
             const mobilenumber = document.getElementById("regMobile").value;
-            const gender = document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : null;
+            const userType = document.getElementById("userType").value;
 
             const data = {
-                id: parseInt(id), // Ensure ID is an integer
+                id: parseInt(id),
                 username: username,
                 email: email,
-                gender: gender,
+                gender: gender.value,
                 password: password,
-                mobilenumber: mobilenumber
+                mobilenumber: mobilenumber,
+                userType: userType
             };
 
             fetch('registeruser.php', {
@@ -227,8 +379,7 @@
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
-                        // Show success message (for example, using an alert)
-                        alert("Registration successful!");
+                        alert("Registration successful! You can now login.");
 
                         // Reset form fields
                         document.getElementById("regId").value = "";
@@ -236,15 +387,23 @@
                         document.getElementById("regEmail").value = "";
                         document.getElementById("regPassword").value = "";
                         document.getElementById("regMobile").value = "";
-                        document.querySelector('input[name="gender"]:checked').checked = false; // Deselect gender
+                        if (gender) gender.checked = false;
+
+                        // Clear validation icons
+                        document.querySelectorAll(".validation-icon").forEach(icon => icon.innerHTML = "");
+                        document.querySelectorAll(".input-field").forEach(field => {
+                            field.classList.remove("valid", "invalid");
+                        });
+
+                        // Switch to login form
+                        login();
                     } else {
-                        // Show error message
                         alert("Registration failed: " + result.message);
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert("An error occurred while registering.");
+                    alert("An error occurred while registering. Please try again.");
                 });
         }
 
@@ -262,7 +421,7 @@
 
             setTimeout(() => {
                 document.body.removeChild(popup);
-            }, 3000); // Popup will disappear after 3 seconds
+            }, 3000);
         }
 
     </script>

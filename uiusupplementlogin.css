@@ -172,30 +172,64 @@ header {
     color: #fff;
 }
 
-.input-box i {
-    position: relative;
-    top: -35px;
+/* Field Icon Positioning - Inside input boxes on the left */
+.field-icon {
+    position: absolute;
     left: 17px;
-    color: #fff;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 18px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Icon positioning for inputs without field-icon class (fallback for login form) */
+.input-box i:not(.tooltip-icon):not(.validation-icon) {
+    position: absolute;
+    left: 17px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 18px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Special positioning for icons in input boxes with labels */
+.input-box:has(label) .field-icon,
+.input-box:has(label) i:not(.tooltip-icon):not(.validation-icon) {
+    top: auto;
+    bottom: 15px;
+    transform: translateY(0);
 }
 
 .submit {
     font-size: 15px;
-    font-weight: 500;
-    color: black;
+    font-weight: 600;
+    color: #000;
     height: 45px;
     width: 100%;
     border: none;
     border-radius: 30px;
     outline: none;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     transition: .3s ease-in-out;
 }
 
 .submit:hover {
-    background: rgba(255, 255, 255, 0.5);
-    box-shadow: 1px 5px 7px 1px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 1px 5px 7px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Help text styling */
+.help-text {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+    margin-top: -8px;
+    margin-bottom: 12px;
+    padding-left: 15px;
 }
 
 .two-col {
@@ -318,4 +352,268 @@ body {
     /* "auto" or "thin" */
     scrollbar-color: rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.1);
     /* Thumb and track color */
+}
+
+/* Tooltip Icon Styling */
+.tooltip-icon {
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: help;
+    transition: all 0.3s ease;
+    z-index: 3;
+}
+
+.tooltip-icon:hover {
+    color: #4CAF50;
+    transform: translateY(-50%) scale(1.2);
+}
+
+/* Tooltip Popup */
+.tooltip-icon::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    min-width: 250px;
+    max-width: 300px;
+    background: rgba(0, 0, 0, 0.95);
+    color: white;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 8px;
+    white-space: pre-line;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    text-align: left;
+    z-index: 1000;
+}
+
+.tooltip-icon::after {
+    content: '';
+    position: absolute;
+    bottom: 95%;
+    right: 15px;
+    border: 6px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.95);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.tooltip-icon:hover::before,
+.tooltip-icon:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Field Icon Positioning - Left side (absolute positioning to avoid flow issues) */
+.field-icon {
+    position: absolute;
+    left: 17px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Validation icon positioning - Right side */
+.validation-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.input-box {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+/* Input field validation states with consistent colors */
+.input-field.valid {
+    background: rgba(76, 175, 80, 0.12);
+    border: 1px solid rgba(76, 175, 80, 0.4);
+}
+
+.input-field.invalid {
+    background: rgba(244, 67, 54, 0.12);
+    border: 1px solid rgba(244, 67, 54, 0.4);
+}
+
+/* User type select dropdown styling */
+.user-type-select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 20px;
+    padding-right: 45px;
+}
+
+/* Dropdown options styling for readability */
+.user-type-select option {
+    background-color: #2c2c2c;
+    color: #ffffff;
+    padding: 10px;
+}
+
+.user-type-select option:hover,
+.user-type-select option:checked {
+    background-color: #404040;
+    color: #ffffff;
+}
+
+/* Radio button group styling */
+.radio-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 5px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: opacity 0.3s ease;
+}
+
+.radio-label:hover {
+    opacity: 0.8;
+}
+
+.radio-label input[type="radio"] {
+    margin-right: 5px;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+
+.radio-label span {
+    user-select: none;
+}
+
+/* Enhanced input box styling */
+.input-box label {
+    display: block;
+    color: white;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Animation for validation */
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.input-field.invalid {
+    animation: shake 0.3s ease;
+}
+
+/* Smooth transitions */
+.input-field {
+    transition: all 0.3s ease;
+}
+
+/* Improved form box for better scrolling */
+.form-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 512px;
+    min-height: 420px;
+    max-height: 580px;
+    overflow: hidden;
+    z-index: 2;
+}
+
+/* Better scrolling for register container */
+.register-container {
+    max-height: 530px;
+    overflow-y: auto;
+    padding-right: 15px;
+}
+
+/* Enhanced scrollbar for register container */
+.register-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.register-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.register-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+}
+
+.register-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+/* Responsive adjustments for mobile */
+@media only screen and (max-width: 540px) {
+    .tooltip-icon::before {
+        min-width: 200px;
+        max-width: 250px;
+        right: -10px;
+    }
+
+    .radio-group {
+        gap: 10px;
+    }
+
+    .validation-icon {
+        right: 10px;
+        font-size: 18px;
+    }
+
+    .tooltip-icon {
+        right: 40px;
+        font-size: 16px;
+    }
+
+    .form-box {
+        max-height: 90vh;
+    }
+
+    .register-container {
+        max-height: 500px;
+    }
 }
