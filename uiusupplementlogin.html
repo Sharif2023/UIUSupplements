@@ -424,7 +424,79 @@
             }, 3000);
         }
 
+        // AJAX Login Handler
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginForm = document.querySelector('#login form');
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    const formData = new FormData(this);
+
+                    fetch('login.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.text())
+                        .then(text => {
+                            // Check if response is JSON
+                            try {
+                                const data = JSON.parse(text);
+                                if (data.success === true && data.redirect) {
+                                    // Successful login - redirect to the appropriate page
+                                    window.location.href = data.redirect;
+                                } else if (data.success === false) {
+                                    // Show error modal
+                                    showErrorModal(data.message);
+                                }
+                            } catch (e) {
+                                // If JSON parsing fails, show generic error
+                                showErrorModal('An unexpected error occurred. Please try again.');
+                            }
+                        })
+                        .catch(error => {
+                            showErrorModal('An error occurred. Please try again.');
+                        });
+                });
+            }
+        });
+
+        // Show Error Modal
+        function showErrorModal(message) {
+            const modal = document.getElementById('errorModal');
+            const messageElement = document.getElementById('errorMessage');
+            messageElement.textContent = message;
+            modal.style.display = 'flex';
+        }
+
+        // Close Error Modal
+        function closeErrorModal() {
+            const modal = document.getElementById('errorModal');
+            modal.style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            const modal = document.getElementById('errorModal');
+            if (event.target === modal) {
+                closeErrorModal();
+            }
+        }
+
     </script>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="error-modal">
+        <div class="error-modal-content">
+            <div class="error-icon">
+                <i class='bx bx-error-circle'></i>
+            </div>
+            <h2>Login Failed</h2>
+            <p id="errorMessage"></p>
+            <button onclick="closeErrorModal()" class="modal-close-btn">Try Again</button>
+        </div>
+    </div>
 
 </body>
 

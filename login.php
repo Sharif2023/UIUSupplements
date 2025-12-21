@@ -44,25 +44,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (password_verify($password, $user['password_hash'])) {
                 // Check if the user is an admin
                 if (!is_null($user['admin_id'])) {
-                    // Set admin session and redirect to admin panel
+                    // Set admin session and return success with redirect URL
                     $_SESSION['admin_id'] = $user['admin_id'];
                     $_SESSION['admin_name'] = $user['admin_name'];
-                    header("Location: adminpanel.php");
+                    echo json_encode([
+                        'success' => true,
+                        'redirect' => 'adminpanel.php'
+                    ]);
                     exit();
                 } else {
-                    // Set user session and redirect to user homepage
+                    // Set user session and return success with redirect URL
                     $_SESSION['user_id'] = $user['user_id'];
                     $_SESSION['username'] = $user['username'];
-                    header("Location: uiusupplementhomepage.php");
+                    echo json_encode([
+                        'success' => true,
+                        'redirect' => 'uiusupplementhomepage.php'
+                    ]);
                     exit();
                 }
             } else {
-                echo "Invalid password.";
+                // Invalid password
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Invalid password. Please try again.'
+                ]);
             }
         } else {
-            echo "No user or admin found with that ID or email.";
+            // User not found
+            echo json_encode([
+                'success' => false,
+                'message' => 'No user or admin found with that ID or email.'
+            ]);
         }
     } else {
-        echo "Please fill in both fields.";
+        // Missing fields
+        echo json_encode([
+            'success' => false,
+            'message' => 'Please fill in both fields.'
+        ]);
     }
 }
