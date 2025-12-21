@@ -14,7 +14,7 @@ if ($conn->connect_error) {
 }
 
 // Fetch available rooms from database
-$sql = "SELECT * FROM availablerooms WHERE status = 'available' ORDER BY room_id DESC";
+$sql = "SELECT * FROM availablerooms ORDER BY room_id DESC";
 $result = $conn->query($sql);
 
 $rooms = [];

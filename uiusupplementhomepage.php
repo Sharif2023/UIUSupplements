@@ -12,52 +12,40 @@ $conn = new mysqli('localhost', 'root', '', 'uiusupplements');
 
 // Check connection
 if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch available rooms in descending order
-$sql_available_rooms = "SELECT room_id, room_location, room_rent FROM availablerooms ORDER BY room_id DESC LIMIT 5"; // Changed to 5
-$result_available_rooms = $conn->query($sql_available_rooms);
+$user_id = $_SESSION['user_id'];
 
-// Fetch new mentors in descending order
-$new_mentors_query = "SELECT * FROM uiumentorlist ORDER BY id DESC LIMIT 6"; // Limit to 6 new mentors
-$new_mentors_result = $conn->query($new_mentors_query);
+// Fetch user information
+$user_query = "SELECT username, email FROM users WHERE id = ?";
+$stmt = $conn->prepare($user_query);
+$stmt->bind_param("s", $user_id);
+$stmt->execute();
+$user_result = $stmt->get_result();
+$user_data = $user_result->fetch_assoc();
+$username = $user_data['username'] ?? 'User';
 
-// Start output buffering
-ob_start();
-$html_content = ob_get_clean(); // Get HTML content
+// Fetch statistics
+$stats = [];
 
-// Generate available rooms cards
-$available_rooms_cards = '';
-while ($row = $result_available_rooms->fetch_assoc()) {
-  $available_rooms_cards .= '
-    <div class="card">
-        <h3>Room ID: ' . htmlspecialchars($row['room_id']) . '</h3>
-        <p>Location: ' . htmlspecialchars($row['room_location']) . '</p>
-        <p>Rent: ' . htmlspecialchars($row['room_rent']) . ' BDT</p>
-        <button class="card-btn">Rent</button>
-    </div>';
-}
+// Total available rooms
+$rooms_query = "SELECT COUNT(*) as total FROM availablerooms";
+$stats['total_rooms'] = $conn->query($rooms_query)->fetch_assoc()['total'];
 
-// Generate new mentor cards (if needed)
-$new_mentors_rows = '';
-while ($mentor = $new_mentors_result->fetch_assoc()) {
-  $new_mentors_rows .= '
-    <div class="mentor-card">
-        <img src="' . htmlspecialchars($mentor['photo']) . '" alt="mentor profile" class="mentor-profile">
-        <p>' . htmlspecialchars($mentor['name']) . '</p>
-    </div>';
-}
+// Total mentors
+$mentors_query = "SELECT COUNT(*) as total FROM uiumentorlist";
+$stats['total_mentors'] = $conn->query($mentors_query)->fetch_assoc()['total'];
 
-// Replace placeholders with dynamic data
-$html_content = str_replace('<!-- Placeholder for available rooms -->', $available_rooms_cards, $html_content);
-$html_content = str_replace('<!-- Placeholder for new mentors -->', $new_mentors_rows, $html_content);
+// Total jobs - set to 0 (table doesn't exist yet)
+$stats['total_jobs'] = 0;
 
-// Close database connection
-$conn->close();
+// Total lost items (with error handling)
+$lost_query = "SELECT COUNT(*) as total FROM lost_and_found WHERE claim_status = 0";
+$lost_result = $conn->query($lost_query);
+$stats['total_lost_items'] = $lost_result ? $lost_result->fetch_assoc()['total'] : 0;
 
-// Output the final content
-echo $html_content;
+// Don't close connection yet - we'll use it in JavaScript for API calls
 ?>
 
 <!DOCTYPE html>
@@ -317,56 +305,95 @@ echo $html_content;
     /* Grid Layout for Available Rooms */
     .room-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 20px;
-      padding: 20px;
+      padding: 20px 0;
+      width: 100%;
+      flex: 1;
     }
 
     .card {
-      background-color: #f5f5f5;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 15px;
-      text-align: left;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      font-size: 14px;
-      /*transform*/
-      transition-property: transform;
-      transition-duration: 150ms;
-      /* Default Tailwind duration */
-      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-      /* Default Tailwind easing */
-      transform: scale(1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(0, 0, 0, 0.06);
     }
 
     .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-image {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      background: #f0f0f5;
+    }
+
+    .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .card:hover .card-image img {
       transform: scale(1.05);
     }
 
+    .card-content {
+      padding: 15px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
     .card h3 {
-      margin-bottom: 10px;
-      font-size: 18px;
+      margin: 0 0 12px 0;
+      font-size: 16px;
+      color: #1F1F1F;
+      font-weight: 600;
     }
 
     .card p {
-      margin: 5px 0;
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card p i {
+      color: #FF3300;
+      font-size: 13px;
     }
 
     .card-btn {
-      background-color: #FF3300;
+      background: linear-gradient(135deg, #FF3300, #ff6b4a);
       color: white;
-      padding: 8px 10px;
+      padding: 10px 16px;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
       text-align: center;
-      margin-top: 10px;
+      margin-top: auto;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
     }
 
     .card-btn:hover {
-      background-color: #1F1F1F;
+      background: linear-gradient(135deg, #1F1F1F, #3d3d3d);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     /* Adjusting image container */
@@ -586,41 +613,30 @@ echo $html_content;
     }
 
     .mentor-card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      display: flex;
       flex-direction: column;
-      /* Stack elements vertically */
-      justify-content: space-between;
-      /* Space between elements */
-      width: 100%;
-      /* Full width */
-      background-color: #f5f5f5;
-      border-radius: 8px;
-      padding: 15px;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease;
-      position: relative;
-      /* Positioning for the buttons */
-      transition-property: transform;
-      transition-duration: 150ms;
-      /* Default Tailwind duration */
-      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-      /* Default Tailwind easing */
-      transform: scale(1);
     }
 
     .mentor-card:hover {
-      transform: scale(1.05);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     }
 
     .mentor-card img {
-      width: 100px;
-      /* Adjusted image size */
-      height: 100px;
-      /* Adjusted image size */
-      border-radius: 50%;
-      /* Round shape */
-      margin-right: 15px;
+      width: 80px;
+      height: 80px;
       object-fit: cover;
-      /* Maintain aspect ratio */
+      border-radius: 50%;
+      margin: 20px auto 0;
+      display: block;
+      border: 3px solid #f0f0f5;
     }
 
     .mentor-card-content {
@@ -628,10 +644,41 @@ echo $html_content;
     }
 
     .mentor-info {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .mentor-info {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mentor-name {
+      font-weight: 600;
+      font-size: 16px;
+      color: #1F1F1F;
+      margin: 0 0 4px 0;
+    }
+
+    .mentor-dept,
+    .mentor-course,
+    .mentor-students {
+      font-size: 13px;
+      color: #555;
+      margin: 4px 0;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
+      gap: 6px;
+    }
+
+    .mentor-dept i,
+    .mentor-course i,
+    .mentor-students i {
+      color: #FF3300;
+      font-size: 12px;
     }
 
     .mentor-info h2 {
@@ -785,7 +832,7 @@ echo $html_content;
     <nav>
       <ul>
         <li><a href="uiusupplementhomepage.php" class="logo">
-            <h1 class="styled-title">UIU Supplement</h1>
+            <h1 class="styled-title" id="dynamicTitle">UIU Supplement</h1>
           </a></li>
         <li><a href="uiusupplementhomepage.php" class="active">
             <i class="fas fa-home"></i>
@@ -931,8 +978,8 @@ echo $html_content;
 
           <div class="room-slider" id="roomSlider">
             <div id="room-list" class="room-grid">
-              <!-- Room details will be dynamically inserted here -->
-              <?php echo $available_rooms_cards; ?>
+              <!-- Room details will be dynamically loaded from API -->
+              <div class="loading-skeleton">Loading rooms...</div>
             </div>
           </div>
         </div>
@@ -1092,10 +1139,136 @@ echo $html_content;
         });
     }
 
+    // Load Rooms from API
+    function loadRooms() {
+      fetch('api/rooms.php')
+        .then(response => response.json())
+        .then(rooms => {
+          const roomList = document.getElementById('room-list');
+          if (rooms.length === 0) {
+            roomList.innerHTML = '<div style="padding: 40px; text-align: center; color: #888;">No rooms available at the moment</div>';
+            return;
+          }
+          
+          roomList.innerHTML = rooms.slice(0, 5).map(room => {
+            // Get first photo from the array or use placeholder
+            let photoUrl = 'assets/images/room-placeholder.jpg';
+            if (room.room_photos && Array.isArray(room.room_photos) && room.room_photos.length > 0) {
+              // Use the path directly from database
+              photoUrl = room.room_photos[0].trim();
+            } else if (room.room_photo) {
+              // Fallback to single photo field if it exists
+              photoUrl = room.room_photo;
+            }
+            
+            return `
+            <div class="card">
+              <div class="card-image">
+                <img src="${photoUrl}" alt="Room ${room.room_id}" onerror="this.src='assets/images/room-placeholder.jpg'">
+              </div>
+              <div class="card-content">
+                <h3>Room ID: ${room.room_id}</h3>
+                <p><i class="fas fa-map-marker-alt"></i> ${room.room_location}</p>
+                <p><i class="fas fa-money-bill-wave"></i> ${room.room_rent} BDT/month</p>
+                <a href="availablerooms.php" class="card-btn">View Details</a>
+              </div>
+            </div>
+          `;
+          }).join('');
+        })
+        .catch(error => {
+          console.error('Error loading rooms:', error);
+          document.getElementById('room-list').innerHTML = '<div style="padding: 40px; text-align: center; color: #888;">Failed to load rooms</div>';
+        });
+    }
+
+    // Load Mentors from API
+    function loadMentors() {
+      fetch('api/mentors.php')
+        .then(response => response.json())
+        .then(mentors => {
+          const mentorList = document.getElementById('mentor-list');
+          if (mentors.length === 0) {
+            mentorList.innerHTML = '<div style="padding: 40px; text-align: center; color: #888;">No mentors available at the moment</div>';
+            return;
+          }
+          
+          mentorList.innerHTML = mentors.slice(0, 6).map(mentor => `
+            <div class="mentor-card">
+              <img src="${mentor.photo}" alt="${mentor.name}" class="mentor-profile" onerror="this.src='assets/images/default-avatar.png'">
+              <div class="mentor-info">
+                <p class="mentor-name">${mentor.name}</p>
+                <p class="mentor-dept"><i class="fas fa-graduation-cap"></i> ${mentor.department || 'CSE'}</p>
+                <p class="mentor-course"><i class="fas fa-book"></i> ${mentor.course || 'Programming'}</p>
+                <p class="mentor-students"><i class="fas fa-users"></i> ${mentor.students || '0'} Students</p>
+              </div>
+            </div>
+          `).join('');
+        })
+        .catch(error => {
+          console.error('Error loading mentors:', error);
+          document.getElementById('mentor-list').innerHTML = '<div style="padding: 40px; text-align: center; color: #888;">Failed to load mentors</div>';
+        });
+    }
+
+    // Dynamic Title Change Function
+    function updateTitle(newTitle) {
+      const titleElement = document.getElementById('dynamicTitle');
+      if (titleElement && newTitle) {
+        titleElement.style.opacity = '0';
+        setTimeout(() => {
+          titleElement.textContent = newTitle;
+          titleElement.style.opacity = '1';
+        }, 300);
+      }
+    }
+
     // Load on page load
     document.addEventListener('DOMContentLoaded', function() {
       loadNotifications();
       loadChatBadge();
+      loadRooms();
+      loadMentors();
+
+      // Add smooth transition to title
+      const titleElement = document.getElementById('dynamicTitle');
+      if (titleElement) {
+        titleElement.style.transition = 'opacity 0.3s ease';
+      }
+
+      // Add click listeners to nav items to change title (except Sell)
+      const navItems = document.querySelectorAll('nav ul li a:not([href*="SellAndExchange"])');
+      navItems.forEach(link => {
+        link.addEventListener('click', function(e) {
+          const navText = this.querySelector('.nav-item')?.textContent.trim();
+          if (navText) {
+            let titleText = '';
+            switch(navText) {
+              case 'Home':
+                titleText = 'UIU Supplement';
+                break;
+              case 'Room Rent':
+                titleText = 'Room Rental';
+                break;
+              case 'Mentorship':
+                titleText = 'Find Your Mentor';
+                break;
+              case 'Jobs':
+                titleText = 'Career Opportunities';
+                break;
+              case 'Lost and Found':
+                titleText = 'Lost & Found';
+                break;
+              case 'Shuttle Services':
+                titleText = 'Shuttle Tracking';
+                break;
+              default:
+                titleText = 'UIU Supplement';
+            }
+            updateTitle(titleText);
+          }
+        });
+      });
     });
   </script>
   <script>

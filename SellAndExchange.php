@@ -252,7 +252,7 @@ $bargain_list_result = $conn->query($bargain_list_sql);
         <nav>
             <ul>
                 <li><a href="uiusupplementhomepage.php" class="logo">
-                        <h1 class="styled-title">UIU Supplement</h1>
+                        <h1 class="styled-title" id="dynamicTitle">UIU Supplement</h1>
                     </a></li>
                 <li><a href="uiusupplementhomepage.php">
                         <i class="fas fa-home"></i>
@@ -398,6 +398,13 @@ $bargain_list_result = $conn->query($bargain_list_sql);
             modalProductIdInput.value = productId;
         });
         document.addEventListener("DOMContentLoaded", function() {
+            // Initialize title with transition effect
+            const titleElement = document.getElementById('dynamicTitle');
+            if (titleElement) {
+                titleElement.style.transition = 'opacity 0.3s ease';
+                // Keep title as "UIU Supplement" for Sell page
+            }
+
             var successMessage = document.getElementById('bargain-success');
 
             if (successMessage) {

@@ -308,7 +308,7 @@ $conn->close();
         <nav>
             <ul>
                 <li><a href="uiusupplementhomepage.php" class="logo">
-                        <h1 class="styled-title">UIU Supplement</h1>
+                        <h1 class="styled-title" id="dynamicTitle">UIU Supplement</h1>
                     </a></li>
                 <li><a href="uiusupplementhomepage.php">
                         <i class="fas fa-home"></i>
