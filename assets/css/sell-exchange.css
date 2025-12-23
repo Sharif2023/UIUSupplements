@@ -1,0 +1,595 @@
+/* ============================================
+   Sell & Exchange System - Professional Styles
+   ============================================ */
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast-notification {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    min-width: 300px;
+    max-width: 400px;
+    animation: slideInRight 0.3s ease;
+}
+
+.toast-success {
+    border-left: 4px solid #28a745;
+}
+
+.toast-error {
+    border-left: 4px solid #dc3545;
+}
+
+.toast-info {
+    border-left: 4px solid #17a2b8;
+}
+
+.toast-icon {
+    font-size: 24px;
+}
+
+.toast-success .toast-icon {
+    color: #28a745;
+}
+
+.toast-error .toast-icon {
+    color: #dc3545;
+}
+
+.toast-info .toast-icon {
+    color: #17a2b8;
+}
+
+.toast-message {
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.toast-close:hover {
+    color: #333;
+}
+
+.toast-notification.fade-out {
+    animation: slideOutRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Notification Badge */
+.notification-badge,
+.bargain-notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(255, 51, 0, 0.4);
+}
+
+/* Bargain Cards */
+.bargain-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border-left: 4px solid #e0e0e0;
+}
+
+.bargain-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.bargain-card.status-pending {
+    border-left-color: #ffc107;
+}
+
+.bargain-card.status-accepted {
+    border-left-color: #28a745;
+}
+
+.bargain-card.status-rejected {
+    border-left-color: #dc3545;
+}
+
+.bargain-card.status-countered {
+    border-left-color: #17a2b8;
+}
+
+.bargain-card.status-completed {
+    border-left-color: #6c757d;
+}
+
+.bargain-product {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.bargain-product img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.bargain-info h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.bargain-info .category {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.bargain-info .price {
+    font-size: 14px;
+    font-weight: 600;
+    color: #FF3300;
+}
+
+.bargain-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f5;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.status-accepted {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-badge.status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-badge.status-countered {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-badge.status-completed {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+.bargain-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.bargain-actions .btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.bargain-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Notification Toast */
+.notification-toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification-toast {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    min-width: 320px;
+    max-width: 400px;
+    overflow: hidden;
+    animation: slideInRight 0.3s ease;
+}
+
+.notification-toast-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
+    color: white;
+}
+
+.notification-toast-header i {
+    font-size: 18px;
+}
+
+.notification-toast-header strong {
+    flex: 1;
+    font-size: 14px;
+}
+
+.close-toast {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0;
+    font-size: 16px;
+}
+
+.notification-toast-body {
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #666;
+}
+
+/* Notification Items */
+.notification-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.notification-item:hover {
+    background: #f8f9fa;
+    transform: translateX(5px);
+}
+
+.notification-item.unread {
+    background: #fff5f2;
+    border-left-color: #FF3300;
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-content h5 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.notification-content p {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.notification-content small {
+    font-size: 11px;
+    color: #999;
+}
+
+.notification-link {
+    color: #FF3300;
+    font-size: 18px;
+    transition: transform 0.2s;
+}
+
+.notification-link:hover {
+    transform: translateX(5px);
+}
+
+/* Counter Offer Modal */
+.counter-offer-form .form-group {
+    margin-bottom: 20px;
+}
+
+.counter-offer-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.counter-offer-form input,
+.counter-offer-form textarea {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.counter-offer-form input:focus,
+.counter-offer-form textarea:focus {
+    outline: none;
+    border-color: #FF3300;
+}
+
+.counter-offer-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Product Filter */
+.product-filter {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.filter-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 14px;
+}
+
+.filter-group select,
+.filter-group input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+    outline: none;
+    border-color: #FF3300;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.empty-state i {
+    font-size: 64px;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+/* Bargain Details */
+.bargain-details-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+}
+
+.bargain-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f0f0f5;
+}
+
+.bargain-details-header h3 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+}
+
+.bargain-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.bargain-timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e0e0e0;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 25px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -26px;
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid #FF3300;
+}
+
+.timeline-item h5 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.timeline-item p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 3px;
+}
+
+.timeline-item small {
+    font-size: 12px;
+    color: #999;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .toast-container,
+    .notification-toast-container {
+        left: 10px;
+        right: 10px;
+    }
+
+    .toast-notification,
+    .notification-toast {
+        min-width: auto;
+        max-width: none;
+    }
+
+    .bargain-product {
+        flex-direction: column;
+    }
+
+    .bargain-product img {
+        width: 100%;
+        height: 200px;
+    }
+
+    .filter-row {
+        flex-direction: column;
+    }
+
+    .filter-group {
+        min-width: 100%;
+    }
+
+    .bargain-actions {
+        flex-direction: column;
+    }
+
+    .bargain-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

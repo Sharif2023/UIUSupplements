@@ -20,7 +20,9 @@ $data = json_decode(file_get_contents("php://input"));
 $errors = array();
 
 // Validate Student ID (9-10 digits)
-if (!preg_match('/^[0-9]{9,10}$/', $data->id)) {
+// Convert to string to handle both string and integer inputs
+$studentId = strval($data->id);
+if (!preg_match('/^[0-9]{9,10}$/', $studentId)) {
     $errors[] = "Student ID must be 9 or 10 digits";
 }
 
@@ -31,6 +33,18 @@ if ($userType === 'student') {
     // Student email pattern: [a-z][a-z]+\d{6}@[a-z]+\.uiu\.ac\.bd
     if (!preg_match('/^[a-z][a-z]+\d{6}@[a-z]+\.uiu\.ac\.bd$/', $data->email)) {
         $errors[] = "Invalid student email format. Expected: [FirstLetter][LastName][Last6DigitOfID]@[ProgramCode].uiu.ac.bd";
+    } else {
+        // Extract last 6 digits from Student ID
+        $last6DigitsOfId = substr($studentId, -6);
+        
+        // Extract the 6 digits from email (before @)
+        preg_match('/(\d{6})@/', $data->email, $matches);
+        $emailDigits = isset($matches[1]) ? $matches[1] : '';
+        
+        // Verify that email digits match last 6 digits of Student ID
+        if ($emailDigits !== $last6DigitsOfId) {
+            $errors[] = "Email digits must match the last 6 digits of your Student ID. Expected: ...{$last6DigitsOfId}@...";
+        }
     }
 } elseif ($userType === 'faculty') {
     // Faculty/Staff/Admin pattern: [a-zA-Z]+[a-zA-Z]@uiu\.edu

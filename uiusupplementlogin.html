@@ -89,11 +89,10 @@
                 </div>
                 <form action="login.php" method="POST">
                     <div class="input-box">
-                        <input type="text" name="userIdOrEmail" class="input-field" placeholder="User ID or Email"
-                            required>
+                        <input type="text" name="userIdOrEmail" class="input-field"
+                            placeholder="UIU Student ID or Email" required>
                         <i class="bx bx-user"></i>
                     </div>
-                    <div class="help-text">Enter your Student ID (9-10 digits) or UIU Email</div>
 
                     <div class="input-box">
                         <input type="password" name="password" class="input-field" placeholder="Password" required>
@@ -359,8 +358,22 @@
             const mobilenumber = document.getElementById("regMobile").value;
             const userType = document.getElementById("userType").value;
 
+            // Additional validation for student: Check if email digits match last 6 digits of ID
+            if (userType === 'student') {
+                const last6DigitsOfId = id.slice(-6);
+                const emailMatch = email.match(/(\d{6})@/);
+
+                if (emailMatch) {
+                    const emailDigits = emailMatch[1];
+                    if (emailDigits !== last6DigitsOfId) {
+                        alert(`Email validation failed: The 6 digits in your email (${emailDigits}) must match the last 6 digits of your Student ID (${last6DigitsOfId}).`);
+                        return;
+                    }
+                }
+            }
+
             const data = {
-                id: parseInt(id),
+                id: id,
                 username: username,
                 email: email,
                 gender: gender.value,

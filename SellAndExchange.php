@@ -20,48 +20,31 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT id, product_name, category, price, bargain_price, description, image_path FROM products";
-$result = $conn->query($sql);
+$userId = $_SESSION['user_id'];
 
-// Handle bargain submissions
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['bargain_price'])) {
-    $product_id = $_POST['product_id'];
-    $email = $_POST['email'];
-    $user_id = $_POST['user_id']; // Ideally, this should come from session data after login.
-    $bargain_price = $_POST['bargain_price'];
+// Get enhanced product list with seller info
+$sql = "SELECT p.id, p.product_name, p.category, p.price, p.bargain_price, p.description, p.image_path, p.user_id, p.status,
+        u.username as seller_name, u.email as seller_email,
+        (SELECT COUNT(*) FROM bargains WHERE product_id = p.id AND buyer_id = ?) as user_bargain_count
+        FROM products p
+        LEFT JOIN users u ON p.user_id = u.id
+        WHERE p.status = 'available'
+        ORDER BY p.created_at DESC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    // Ensure bargain price is less than current price
-    $check_price_sql = "SELECT price FROM products WHERE id = ?";
-    $check_stmt = $conn->prepare($check_price_sql);
-    $check_stmt->bind_param("i", $product_id);
-    $check_stmt->execute();
-    $check_stmt->bind_result($current_price);
-    $check_stmt->fetch();
-    $check_stmt->close();
+// Bargain submissions are now handled via AJAX in bargain-manager.js
+// This section is kept for backward compatibility but should not be used
 
-    if ($bargain_price < $current_price) {
-        // Insert the bargain into the database
-        $insert_sql = "INSERT INTO bargains (product_id, email, user_id, bargain_price) VALUES (?, ?, ?, ?)";
-        $stmt = $conn->prepare($insert_sql);
-        $stmt->bind_param("issi", $product_id, $email, $user_id, $bargain_price);
-
-        if ($stmt->execute()) {
-            echo '<div id="bargain-success" class="alert alert-success" role="alert">Bargain submitted successfully!</div>';
-        } else {
-            echo '<div class="alert alert-danger" role="alert">Error submitting bargain: ' . $stmt->error . '</div>';
-        }
-        $stmt->close();
-    } else {
-        echo '<div class="alert alert-danger" role="alert">Bargain price must be less than the current price.</div>';
-    }
-}
-
-// Fetch bargain list
-$bargain_list_sql = "SELECT b.product_id, b.email, b.user_id, b.bargain_price 
-                    FROM bargains b 
-                    JOIN products 
-                    p ON b.product_id = p.id";
-$bargain_list_result = $conn->query($bargain_list_sql);
+// Get unread bargain notification count for current user
+$notifStmt = $conn->prepare("SELECT COUNT(*) as count FROM notifications WHERE user_id = ? AND is_read = 0 AND type LIKE '%bargain%'");
+$notifStmt->bind_param("i", $userId);
+$notifStmt->execute();
+$notifResult = $notifStmt->get_result();
+$notifData = $notifResult->fetch_assoc();
+$unreadBargainNotifs = $notifData['count'];
 ?>
 
 <!DOCTYPE html>
@@ -74,6 +57,7 @@ $bargain_list_result = $conn->query($bargain_list_sql);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="assets/css/index.css" />
+    <link rel="stylesheet" href="assets/css/sell-exchange.css" />
     <style>
         /* Page-specific styles for Sell and Exchange */
         .main {
@@ -294,23 +278,54 @@ $bargain_list_result = $conn->query($bargain_list_sql);
                 </button>
                 <h1 class="center-title">Sell and Exchange</h1>
             </div>
-            <a href="add-product.php" class="add-product-btn">Add Product</a>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <a href="mybargains.php?view=seller" class="btn" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 500; position: relative;">
+                    <i class="fas fa-tags"></i> My Bargains
+                    <?php if ($unreadBargainNotifs > 0): ?>
+                        <span class="bargain-notification-badge"><?php echo $unreadBargainNotifs; ?></span>
+                    <?php endif; ?>
+                </a>
+                <a href="mydeals.php" class="btn" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 500;">
+                    <i class="fas fa-handshake"></i> My Deals
+                </a>
+                <a href="myselllist.php" class="btn" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 500;">
+                    <i class="fas fa-list"></i> My Listings
+                </a>
+                <a href="add-product.php" class="add-product-btn">Add Product</a>
+            </div>
             <div class="product-cards">
                 <?php
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
+                        $isOwnProduct = ($row['user_id'] == $userId);
+                        $hasBargained = ($row['user_bargain_count'] > 0);
+                        
                         echo '<div class="card">
-                                    <img class="card-img-top" src="' . $row['image_path'] . '" alt="Product Image">
+                                    <img class="card-img-top" src="' . htmlspecialchars($row['image_path']) . '" alt="Product Image">
                                     <div class="card-body">
-                                        <h5 class="card-title">' . $row['product_name'] . '</h5>
-                                        <p class="card-text">Category: ' . $row['category'] . '</p>
-                                        <p class="card-text">Price: ' . $row['price'] . '</p>
-                                        <p class="card-text">Bargain Price: ' . $row['bargain_price'] . '</p>
-                                        <p class="card-text">Description: ' . $row['description'] . '</p>
-                                        <div class="card-buttons">
-                                            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#bargainModal" data-product-id="' . $row['id'] . '">Bargain</button>
-                                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bargainListModal">Bargain List</button>
-                                        </div>
+                                        <h5 class="card-title">' . htmlspecialchars($row['product_name']) . '</h5>
+                                        <p class="card-text"><i class="fas fa-tag"></i> Category: ' . htmlspecialchars($row['category']) . '</p>
+                                        <p class="card-text"><strong style="font-size: 18px; color: #FF3300;">৳' . number_format($row['price']) . '</strong></p>
+                                        <p class="card-text" style="font-size: 13px; color: #666;">' . htmlspecialchars(substr($row['description'], 0, 80)) . '...</p>
+                                        <p class="card-text" style="font-size: 13px; color: #999;"><i class="fas fa-user"></i> Seller: ' . htmlspecialchars($row['seller_name']) . '</p>';
+                        
+                        if ($hasBargained) {
+                            echo '              <div style="background: #d1ecf1; padding: 8px 12px; border-radius: 6px; margin-bottom: 10px;">
+                                                    <small style="color: #0c5460;"><i class="fas fa-info-circle"></i> You have bargained on this product</small>
+                                                </div>';
+                        }
+                        
+                        echo '                  <div class="card-buttons">';
+                        
+                        if ($isOwnProduct) {
+                            echo '                  <button class="btn btn-secondary" disabled><i class="fas fa-lock"></i> Your Product</button>';
+                        } else {
+                            echo '                  <button class="btn btn-warning bargain-btn" data-bs-toggle="modal" data-bs-target="#bargainModal" data-product-id="' . $row['id'] . '" data-product-name="' . htmlspecialchars($row['product_name']) . '" data-product-price="' . $row['price'] . '">
+                                                        <i class="fas fa-tags"></i> Bargain
+                                                    </button>';
+                        }
+                        
+                        echo '              </div>
                                     </div>
                                 </div>';
                     }
@@ -330,18 +345,24 @@ $bargain_list_result = $conn->query($bargain_list_sql);
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form method="POST" action="">
+                            <div id="productInfo" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                                <h6 id="modalProductName" style="font-weight: 600; color: #333;"></h6>
+                                <p id="modalProductPrice" style="font-size: 18px; font-weight: 700; color: #FF3300; margin: 0;"></p>
+                            </div>
+                            <form id="bargainForm">
                                 <input type="hidden" id="product_id" name="product_id">
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
+                                    <label for="bargain_price" class="form-label">Your Offer Price (৳)</label>
+                                    <input type="number" class="form-control" id="bargain_price" name="bargain_price" required min="1" step="0.01">
+                                    <small class="text-muted">Enter your bargain price (must be less than original price)</small>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="bargain_price" class="form-label">Bargain Price</label>
-                                    <input type="number" class="form-control" id="bargain_price" name="bargain_price" required>
+                                    <label for="buyer_message" class="form-label">Message (Optional)</label>
+                                    <textarea class="form-control" id="buyer_message" name="buyer_message" rows="3" placeholder="Add a message to the seller..."></textarea>
                                 </div>
-                                <input type="hidden" name="user_id" value="1"> <!-- Replace with dynamic user_id if available -->
-                                <button type="submit" class="btn btn-primary">Submit Bargain</button>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-paper-plane"></i> Submit Bargain
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -394,9 +415,18 @@ $bargain_list_result = $conn->query($bargain_list_sql);
         bargainModal.addEventListener('show.bs.modal', function(event) {
             var button = event.relatedTarget;
             var productId = button.getAttribute('data-product-id');
-            var modalProductIdInput = document.getElementById('product_id');
-            modalProductIdInput.value = productId;
+            var productName = button.getAttribute('data-product-name');
+            var productPrice = button.getAttribute('data-product-price');
+            
+            // Update modal content
+            document.getElementById('product_id').value = productId;
+            document.getElementById('modalProductName').textContent = productName;
+            document.getElementById('modalProductPrice').textContent = '৳' + parseFloat(productPrice).toLocaleString();
+            
+            // Set max price for bargain
+            document.getElementById('bargain_price').setAttribute('max', productPrice);
         });
+        
         document.addEventListener("DOMContentLoaded", function() {
             // Initialize title with transition effect
             const titleElement = document.getElementById('dynamicTitle');
@@ -417,6 +447,8 @@ $bargain_list_result = $conn->query($bargain_list_sql);
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/bargain-manager.js"></script>
+    <script src="assets/js/notification-handler.js"></script>
 </body>
 <footer class="footer">
     <div class="social-icons">

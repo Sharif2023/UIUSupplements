@@ -223,15 +223,6 @@ header {
     box-shadow: 1px 5px 7px 1px rgba(0, 0, 0, 0.3);
 }
 
-/* Help text styling */
-.help-text {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 13px;
-    margin-top: -8px;
-    margin-bottom: 12px;
-    padding-left: 15px;
-}
-
 .two-col {
     display: flex;
     justify-content: space-between;

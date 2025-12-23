@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 22, 2025 at 06:20 PM
+-- Generation Time: Dec 23, 2025 at 04:24 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -129,17 +129,73 @@ INSERT INTO `availablerooms` (`serial`, `room_id`, `room_location`, `room_detail
 CREATE TABLE `bargains` (
   `id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `user_id` varchar(255) NOT NULL,
-  `bargain_price` decimal(10,2) NOT NULL
+  `buyer_id` int(11) NOT NULL,
+  `seller_id` int(11) NOT NULL,
+  `bargain_price` decimal(10,2) NOT NULL,
+  `status` enum('pending','accepted','rejected','countered','deal_done') DEFAULT 'pending',
+  `buyer_message` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `bargains`
+-- Triggers `bargains`
 --
-
-INSERT INTO `bargains` (`id`, `product_id`, `email`, `user_id`, `bargain_price`) VALUES
-(6, 1, 'sharif@gmail.com', '1', 4000.00);
+DELIMITER $$
+CREATE TRIGGER `after_bargain_insert` AFTER INSERT ON `bargains` FOR EACH ROW BEGIN
+  UPDATE products SET bargain_count = bargain_count + 1 WHERE id = NEW.product_id;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `after_bargain_insert_notification` AFTER INSERT ON `bargains` FOR EACH ROW BEGIN
+  INSERT INTO notifications (user_id, type, title, message, link)
+  SELECT 
+    NEW.seller_id,
+    'bargain',
+    'New Bargain Offer',
+    CONCAT('You received a bargain offer of ৳', NEW.bargain_price, ' on your product'),
+    CONCAT('myselllist.php?product_id=', NEW.product_id)
+  FROM products WHERE id = NEW.product_id;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `after_bargain_update_notification` AFTER UPDATE ON `bargains` FOR EACH ROW BEGIN
+  IF NEW.status != OLD.status THEN
+    -- Notify buyer about status change
+    IF NEW.status = 'accepted' THEN
+      INSERT INTO notifications (user_id, type, title, message, link)
+      VALUES (
+        NEW.buyer_id,
+        'bargain_accepted',
+        'Bargain Accepted!',
+        CONCAT('Your bargain offer of ৳', NEW.bargain_price, ' has been accepted'),
+        CONCAT('mybargains.php?bargain_id=', NEW.id)
+      );
+    ELSEIF NEW.status = 'rejected' THEN
+      INSERT INTO notifications (user_id, type, title, message, link)
+      VALUES (
+        NEW.buyer_id,
+        'bargain_rejected',
+        'Bargain Rejected',
+        'Your bargain offer was rejected by the seller',
+        CONCAT('mybargains.php?bargain_id=', NEW.id)
+      );
+    ELSEIF NEW.status = 'countered' THEN
+      INSERT INTO notifications (user_id, type, title, message, link)
+      VALUES (
+        NEW.buyer_id,
+        'bargain_countered',
+        'Counter Offer Received',
+        'The seller has made a counter offer on your bargain',
+        CONCAT('mybargains.php?bargain_id=', NEW.id)
+      );
+    END IF;
+  END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -161,6 +217,53 @@ CREATE TABLE `claims` (
 
 INSERT INTO `claims` (`id`, `item_id`, `user_id`, `email`, `identification_info`) VALUES
 (4, NULL, '011111111', 'dsa@gmail.com', 'contact: 01855255815');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `deals`
+--
+
+CREATE TABLE `deals` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `seller_id` int(11) NOT NULL,
+  `buyer_id` int(11) NOT NULL,
+  `final_price` decimal(10,2) NOT NULL,
+  `bargain_id` int(11) DEFAULT NULL,
+  `status` enum('pending','completed','cancelled') DEFAULT 'pending',
+  `seller_confirmed` tinyint(1) DEFAULT 0,
+  `buyer_confirmed` tinyint(1) DEFAULT 0,
+  `seller_contact` varchar(255) DEFAULT NULL,
+  `buyer_contact` varchar(255) DEFAULT NULL,
+  `meeting_location` varchar(255) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `completed_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Triggers `deals`
+--
+DELIMITER $$
+CREATE TRIGGER `after_deal_complete` AFTER UPDATE ON `deals` FOR EACH ROW BEGIN
+  IF NEW.status = 'completed' AND OLD.status != 'completed' THEN
+    -- Update product status to sold
+    UPDATE products SET status = 'sold' WHERE id = NEW.product_id;
+    
+    -- Notify both parties
+    INSERT INTO notifications (user_id, type, title, message, link)
+    VALUES 
+      (NEW.seller_id, 'deal_completed', 'Deal Completed!', 
+       CONCAT('Your product has been sold for ৳', NEW.final_price), 
+       CONCAT('deal-details.php?id=', NEW.id)),
+      (NEW.buyer_id, 'deal_completed', 'Deal Completed!', 
+       CONCAT('You successfully purchased the product for ৳', NEW.final_price), 
+       CONCAT('deal-details.php?id=', NEW.id));
+  END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -257,6 +360,38 @@ INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `offers`
+--
+
+CREATE TABLE `offers` (
+  `id` int(11) NOT NULL,
+  `bargain_id` int(11) NOT NULL,
+  `offered_price` decimal(10,2) NOT NULL,
+  `seller_message` text DEFAULT NULL,
+  `status` enum('pending','accepted','rejected') DEFAULT 'pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Triggers `offers`
+--
+DELIMITER $$
+CREATE TRIGGER `after_offer_insert_notification` AFTER INSERT ON `offers` FOR EACH ROW BEGIN
+  INSERT INTO notifications (user_id, type, title, message, link)
+  SELECT 
+    b.buyer_id,
+    'counter_offer',
+    'Counter Offer Received',
+    CONCAT('Seller offered ৳', NEW.offered_price, ' as counter offer'),
+    CONCAT('mybargains.php?bargain_id=', NEW.bargain_id)
+  FROM bargains b WHERE b.id = NEW.bargain_id;
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `products`
 --
 
@@ -269,16 +404,33 @@ CREATE TABLE `products` (
   `image_path` varchar(255) NOT NULL,
   `bargain_price` decimal(10,2) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `status` enum('available','sold','pending') DEFAULT 'available'
+  `status` enum('available','sold','pending') DEFAULT 'available',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `view_count` int(11) DEFAULT 0,
+  `bargain_count` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `product_name`, `category`, `price`, `description`, `image_path`, `bargain_price`, `user_id`, `status`) VALUES
-(1, 'jbl', 'gadget', 5000.00, 'no Scratch ', 'imgOfSell/gadgets2.jpeg', NULL, NULL, 'available'),
-(2, 'Intensive English', 'book', 300.00, 'Full Fresh Condition', 'imgOfSell/book1.jpeg', NULL, NULL, 'available');
+INSERT INTO `products` (`id`, `product_name`, `category`, `price`, `description`, `image_path`, `bargain_price`, `user_id`, `status`, `created_at`, `updated_at`, `view_count`, `bargain_count`) VALUES
+(1, 'jbl', 'gadget', 5000.00, 'no Scratch ', 'imgOfSell/gadgets2.jpeg', NULL, NULL, 'available', '2025-12-23 15:22:16', '2025-12-23 15:22:16', 0, 0),
+(2, 'Intensive English', 'book', 300.00, 'Full Fresh Condition', 'imgOfSell/book1.jpeg', NULL, NULL, 'available', '2025-12-23 15:22:16', '2025-12-23 15:22:16', 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_views`
+--
+
+CREATE TABLE `product_views` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `viewed_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -511,7 +663,10 @@ ALTER TABLE `availablerooms`
 --
 ALTER TABLE `bargains`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `product_id` (`product_id`);
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `buyer_id` (`buyer_id`),
+  ADD KEY `seller_id` (`seller_id`),
+  ADD KEY `idx_bargain_status` (`status`);
 
 --
 -- Indexes for table `claims`
@@ -519,6 +674,17 @@ ALTER TABLE `bargains`
 ALTER TABLE `claims`
   ADD PRIMARY KEY (`id`),
   ADD KEY `item_id` (`item_id`);
+
+--
+-- Indexes for table `deals`
+--
+ALTER TABLE `deals`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `seller_id` (`seller_id`),
+  ADD KEY `buyer_id` (`buyer_id`),
+  ADD KEY `bargain_id` (`bargain_id`),
+  ADD KEY `idx_deal_status` (`status`);
 
 --
 -- Indexes for table `events`
@@ -550,12 +716,28 @@ ALTER TABLE `notifications`
   ADD KEY `idx_notifications_user` (`user_id`,`is_read`);
 
 --
+-- Indexes for table `offers`
+--
+ALTER TABLE `offers`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `bargain_id` (`bargain_id`),
+  ADD KEY `idx_offer_status` (`status`);
+
+--
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_product_user_id` (`user_id`),
   ADD KEY `idx_products_status` (`status`);
+
+--
+-- Indexes for table `product_views`
+--
+ALTER TABLE `product_views`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `request_mentorship_session`
@@ -628,13 +810,19 @@ ALTER TABLE `availablerooms`
 -- AUTO_INCREMENT for table `bargains`
 --
 ALTER TABLE `bargains`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `claims`
 --
 ALTER TABLE `claims`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `deals`
+--
+ALTER TABLE `deals`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `events`
@@ -661,10 +849,22 @@ ALTER TABLE `notifications`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `offers`
+--
+ALTER TABLE `offers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `product_views`
+--
+ALTER TABLE `product_views`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `request_mentorship_session`
@@ -712,13 +912,24 @@ ALTER TABLE `appointedrooms`
 -- Constraints for table `bargains`
 --
 ALTER TABLE `bargains`
-  ADD CONSTRAINT `bargains_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `bargains_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `bargains_ibfk_2` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `bargains_ibfk_3` FOREIGN KEY (`seller_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `claims`
 --
 ALTER TABLE `claims`
   ADD CONSTRAINT `claims_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `lost_and_found` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `deals`
+--
+ALTER TABLE `deals`
+  ADD CONSTRAINT `deals_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `deals_ibfk_2` FOREIGN KEY (`seller_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `deals_ibfk_3` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `deals_ibfk_4` FOREIGN KEY (`bargain_id`) REFERENCES `bargains` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `events`
@@ -740,10 +951,23 @@ ALTER TABLE `notifications`
   ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `offers`
+--
+ALTER TABLE `offers`
+  ADD CONSTRAINT `offers_ibfk_1` FOREIGN KEY (`bargain_id`) REFERENCES `bargains` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `products`
 --
 ALTER TABLE `products`
   ADD CONSTRAINT `fk_product_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `product_views`
+--
+ALTER TABLE `product_views`
+  ADD CONSTRAINT `product_views_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `product_views_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `request_mentorship_session`
