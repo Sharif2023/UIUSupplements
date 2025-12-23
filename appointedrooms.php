@@ -1,11 +1,8 @@
 <?php
 session_start();
 
-// Authentication check - redirect to login if not logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: uiusupplementlogin.html");
-    exit();
-}
+// Check if user is admin (optional - can show to all but only admins can take action)
+$isAdmin = isset($_SESSION['admin_id']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,242 +10,177 @@ if (!isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Appointed Rooms | UIU Supplement</title>
+    <title>Rented Rooms<?php echo $isAdmin ? ' - Admin Panel' : ''; ?> | UIU Supplement</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="assets/css/index.css" />
     <style>
-        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-
-            background-color: #f0f0f5;
-        }
-
-        .container {
-            display: flex;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* Sidebar Navigation */
-        nav {
-            width: 100%;
-            max-width: 250px;
-            background-color: #fff;
+        .room-card {
+            background: white;
+            border-radius: 8px;
             padding: 20px;
-            height: 100vh;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
-            transition: top 0.3s ease-in-out;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
-
-        .styled-title {
-            font-size: 1.4rem;
-            color: #1F1F1F;
-            text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
-            animation: glow 1.5s infinite alternate;
+        
+        .room-card.expired {
+            border-left: 4px solid #FF3300;
+            background-color: #fff5f5;
         }
-
-        .styled-title:hover {
-            transform: translateY(-5px);
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        
+        .room-card.active {
+            border-left: 4px solid #4CAF50;
         }
-
-        @keyframes glow {
-            0% {
-                text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
-            }
-
-            100% {
-                text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff, 0 0 160px #00d4ff;
-            }
-        }
-
-        nav ul {
-            list-style-type: none;
-            padding-top: 20px;
-        }
-
-        nav ul li {
-            margin: 15px 0;
-        }
-
-        nav ul li a {
-            color: #555;
-            font-size: 18px;
+        
+        .room-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            text-decoration: none;
-        }
-
-        nav ul li a:hover,
-        nav ul li a.active {
-            background-color: #f0f0f5;
-            border-radius: 10px;
-        }
-
-        nav ul li a .nav-item {
-            margin-left: 15px;
-        }
-
-        /* Log Out Button */
-        .logout-btn {
-            background-color: #FF3300;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 16px;
-            margin-top: 20px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .logout-btn i {
-            margin-right: 10px;
-        }
-
-        .logout-btn:hover {
-            background-color: #1F1F1F;
-        }
-
-        /* Main Section */
-        .main {
-            flex: 1;
-            margin-left: 250px;
-            padding: 40px;
-        }
-
-        .main-top h1 {
-            font-size: 30px;
-            color: #333;
-            text-align: center;
-        }
-
-        .main-skills .room-item {
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 10px;
             margin-bottom: 15px;
         }
-
-        .room-item h3 {
-            margin-top: 0;
-            font-size: 18px;
-            color: #FF3300;
-        }
-
-        .room-item p {
-            margin: 5px 0;
-        }
-
-        .room-item p strong {
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
             font-weight: bold;
         }
-
-        /* Button Group */
-        .button-group {
-            text-align: center;
-            margin-top: 20px;
+        
+        .status-active {
+            background-color: #4CAF50;
+            color: white;
         }
-
-        .button-group .card-btn {
-            padding: 10px 20px;
+        
+        .status-expired {
             background-color: #FF3300;
             color: white;
+        }
+        
+        .room-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .detail-item {
+            padding: 8px;
+            background: #f8f8f8;
+            border-radius: 4px;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #555;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        
+        .detail-value {
+            color: #333;
+        }
+        
+        .rules-section {
+            margin: 15px 0;
+            padding: 12px;
+            background: #f0f0f5;
+            border-radius: 4px;
+            border-left: 3px solid #FF3300;
+        }
+        
+        .rules-section h4 {
+            margin-top: 0;
+            color: #FF3300;
+        }
+        
+        .rules-content {
+            white-space: pre-wrap;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
         }
-
-        .button-group .card-btn:hover {
-            background-color: #1F1F1F;
-        }
-
-        /* Media Queries for responsiveness */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-
-            nav {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-
-            .main {
-                margin-left: 0;
-                padding: 20px;
-            }
-        }
-
-        /*footer*/
-        .content {
-            flex: 1;
-        }
-
-        .footer {
-            background-color: #1F1F1F;
+        
+        .btn-approve {
+            background-color: #4CAF50;
             color: white;
+        }
+        
+        .btn-approve:hover {
+            background-color: #45a049;
+        }
+        
+        .btn-reject {
+            background-color: #FF3300;
+            color: white;
+        }
+        
+        .btn-reject:hover {
+            background-color: #cc2900;
+        }
+        
+        .no-rooms {
             text-align: center;
-            padding: 20px;
+            padding: 40px;
+            color: #999;
+            font-size: 18px;
+        }
+        
+        .carousel {
             width: 100%;
+            max-height: 250px;
+            overflow: hidden;
             position: relative;
-            /* Change from fixed to relative */
+            border-radius: 8px;
+            margin-bottom: 15px;
         }
-
-        .social-icons {
-            margin: 20px 0;
+        
+        .carousel-images {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
         }
-
-        .social-icons a {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            margin: 5px;
-            background-color: transparent;
+        
+        .carousel-img {
+            flex: 0 0 100%;
+            object-fit: cover;
+            width: 100%;
+            height: 250px;
+        }
+        
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 10px;
+        }
+        
+        .nav-button {
+            background-color: rgba(0, 0, 0, 0.5);
             color: white;
-            border: 1px solid white;
-            border-radius: 50%;
-            text-align: center;
-            text-decoration: none;
-            font-size: 20px;
+            border: none;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 4px;
         }
-
-        .social-icons a:hover {
-            background-color: white;
-            color: #FF3300;
-        }
-
-        .copyright {
-            background-color: rgba(0, 0, 0, 0.2);
-            padding: 10px;
-            margin-top: 10px;
-        }
-
-        .copyright a {
-            color: white;
-            text-decoration: none;
+        
+        .nav-button:hover {
+            background-color: rgba(0, 0, 0, 0.7);
         }
     </style>
 </head>
@@ -266,7 +198,7 @@ if (!isset($_SESSION['user_id'])) {
                     </a></li>
                 <li><a href="SellAndExchange.php">
                         <i class="fas fa-exchange-alt"></i>
-                        <span class="nav-item">Sell or Exchange</span>
+                        <span class="nav-item">Sell</span>
                     </a></li>
                 <li><a href="availablerooms.php">
                         <i class="fas fa-building"></i>
@@ -288,10 +220,6 @@ if (!isset($_SESSION['user_id'])) {
                         <i class="fas fa-bus"></i>
                         <span class="nav-item">Shuttle Services</span>
                     </a></li>
-                <li><a href="#">
-                        <i class="fas fa-ad"></i>
-                        <span class="nav-item">Promotions</span>
-                    </a></li>
             </ul>
 
             <a href="uiusupplementlogin.html" class="logout-btn">
@@ -302,51 +230,206 @@ if (!isset($_SESSION['user_id'])) {
 
         <section class="main">
             <div class="main-top">
-                <h1>Rented Rooms</h1>
+                <h1>Rented Rooms<?php echo $isAdmin ? ' - Admin Panel' : ''; ?></h1>
+                <?php if ($isAdmin): ?>
+                <p style="text-align:center; color:#666;">Manage rented rooms and handle relisting requests</p>
+                <?php endif; ?>
             </div>
-            <div id="appointed-room-list" class="main-skills">
-                <!-- Appointed room details will be dynamically inserted here -->
+            <div id="appointed-room-list">
+                <!-- Room cards will be dynamically inserted here -->
             </div>
-            <div class="button-group">
-                <button onclick="location.href='availablerooms.php'" class="card-btn">Available Rooms</button>
+            <div class="button-group" style="text-align: center; margin-top: 30px;">
+                <button onclick="location.href='availablerooms.php'" class="btn btn-approve">Available Rooms</button>
             </div>
         </section>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const isAdmin = <?php echo $isAdmin ? 'true' : 'false'; ?>;
+            let carouselIndexes = {};
+
             fetch('api/appointedrooms.php')
                 .then(response => response.json())
-                .then(appointedRooms => {
-                    const appointedRoomListContainer = document.getElementById('appointed-room-list');
+                .then(rooms => {
+                    const container = document.getElementById('appointed-room-list');
+                    
+                    if (rooms.length === 0) {
+                        container.innerHTML = '<div class="no-rooms"><i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 15px; opacity: 0.3;"></i><br>No rented rooms found</div>';
+                        return;
+                    }
 
-                    if (appointedRooms.length > 0) {
-                        appointedRooms.forEach(room => {
-                            const roomDiv = document.createElement('div');
-                            roomDiv.classList.add('room-item');
+                    rooms.forEach((room, index) => {
+                        const roomCard = createRoomCard(room, index);
+                        container.appendChild(roomCard);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching rented rooms:', error);
+                    document.getElementById('appointed-room-list').innerHTML = 
+                        '<div class="no-rooms" style="color: #FF3300;">Error loading rooms. Please try again.</div>';
+                });
 
-                            roomDiv.innerHTML = `
-                                <h3>Room ID: ${room.room_id}</h3>
-                                <p><strong>Location:</strong> ${room.room_location}</p>
-                                <p><strong>Rent:</strong> ${room.room_rent}TK</p>
-                                <p><strong>Status:</strong> ${room.status}</p>
-                                <p><strong>User ID:</strong> ${room.appointed_user_id}</p>
-                                <p><strong>User Name:</strong> ${room.appointed_user_name}</p>
-                                <p><strong>User Email:</strong> ${room.appointed_user_email}</p>
-                            `;
+            function createRoomCard(room, index) {
+                const card = document.createElement('div');
+                const isExpired = room.rental_status === 'expired';
+                card.className = `room-card ${isExpired ? 'expired' : 'active'}`;
 
-                            appointedRoomListContainer.appendChild(roomDiv);
-                        });
+                // Create photo carousel
+                let carouselHTML = '';
+                if (room.room_photos && room.room_photos.length > 0) {
+                    carouselHTML = `
+                        <div class="carousel" id="carousel-${index}">
+                            <div class="carousel-images">
+                                ${room.room_photos.map(photo => `
+                                    <img src="${photo.trim()}" alt="Room ${room.room_id}" class="carousel-img" />
+                                `).join('')}
+                            </div>
+                            ${room.room_photos.length > 1 ? `
+                                <div class="carousel-nav">
+                                    <button class="nav-button" onclick="prevSlide(${index})">&#10094;</button>
+                                    <button class="nav-button" onclick="nextSlide(${index})">&#10095;</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                    carouselIndexes[index] = 0;
+                }
+
+                card.innerHTML = `
+                    ${carouselHTML}
+                    <div class="room-header">
+                        <h3 style="margin:0; color:#FF3300;">Room ID: ${room.room_id}</h3>
+                        <span class="status-badge status-${isExpired ? 'expired' : 'active'}">
+                            ${isExpired ? '⚠️ Rental Expired' : '✓ Active Rental'}
+                        </span>
+                    </div>
+                    
+                    <div class="room-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Location</div>
+                            <div class="detail-value">${room.room_location || 'N/A'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Rent</div>
+                            <div class="detail-value">৳${room.room_rent || 'N/A'}/month</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Tenant</div>
+                            <div class="detail-value">${room.tenant_name || room.appointed_user_name || 'N/A'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Contact</div>
+                            <div class="detail-value">${room.tenant_email || room.appointed_user_email || 'N/A'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Rented From</div>
+                            <div class="detail-value">${room.rented_from_date || room.available_from || 'N/A'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Rented Until</div>
+                            <div class="detail-value">${room.rented_until_date || room.available_to || 'N/A'}</div>
+                        </div>
+                    </div>
+                    
+                    ${room.rental_rules ? `
+                        <div class="rules-section">
+                            <h4><i class="fas fa-file-contract"></i> Rental Terms & Conditions</h4>
+                            <div class="rules-content">${room.rental_rules}</div>
+                        </div>
+                    ` : ''}
+                    
+                    ${isAdmin && isExpired && room.is_relisting_pending ? `
+                        <div class="action-buttons">
+                            <button class="btn btn-approve" onclick="approveRelisting('${room.room_id}')">
+                                <i class="fas fa-check-circle"></i> Approve & Relist
+                            </button>
+                            <button class="btn btn-reject" onclick="rejectRelisting('${room.room_id}')">
+                                <i class="fas fa-times-circle"></i> Reject & Delete
+                            </button>
+                        </div>
+                    ` : ''}
+                `;
+
+                return card;
+            }
+
+            // Carousel functions
+            window.nextSlide = function(index) {
+                const carousel = document.querySelectorAll('.carousel-images')[index];
+                if (!carousel) return;
+                
+                const totalImages = carousel.children.length;
+                carouselIndexes[index] = (carouselIndexes[index] + 1) % totalImages;
+                carousel.style.transform = `translateX(-${carouselIndexes[index] * 100}%)`;
+            };
+
+            window.prevSlide = function(index) {
+                const carousel = document.querySelectorAll('.carousel-images')[index];
+                if (!carousel) return;
+                
+                const totalImages = carousel.children.length;
+                carouselIndexes[index] = (carouselIndexes[index] - 1 + totalImages) % totalImages;
+                carousel.style.transform = `translateX(-${carouselIndexes[index] * 100}%)`;
+            };
+
+            // Admin action functions
+            window.approveRelisting = function(roomId) {
+                if (!confirm(`Are you sure you want to relist room ${roomId}? This will make it available to students again.`)) {
+                    return;
+                }
+
+                fetch('api/admin_rooms.php', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'approve_relisting',
+                        room_id: roomId
+                    })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        alert('Room relisted successfully!');
+                        location.reload();
                     } else {
-                        appointedRoomListContainer.innerHTML = "<p>No appointed rooms found.</p>";
+                        alert('Error: ' + (result.error || 'Failed to relist room'));
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching appointed room data:', error);
+                    console.error('Error:', error);
+                    alert('An error occurred while relisting the room');
                 });
+            };
+
+            window.rejectRelisting = function(roomId) {
+                if (!confirm(`Are you sure you want to PERMANENTLY DELETE room ${roomId}? This action cannot be undone.`)) {
+                    return;
+                }
+
+                fetch(`api/admin_rooms.php?room_id=${roomId}&reject_relisting=true`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        alert('Room deleted successfully');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + (result.error || 'Failed to delete room'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the room');
+                });
+            };
         });
     </script>
 </body>
+
 <footer class="footer">
     <div class="social-icons">
         <a href="https://www.facebook.com/sharif.me2018"><i class="fab fa-facebook-f"></i></a>
@@ -360,21 +443,5 @@ if (!isset($_SESSION['user_id'])) {
         &copy; 2020 Copyright: <a href="https://www.youtube.com/@SHARIFsCODECORNER">Sharif Code Corner</a>
     </div>
 </footer>
-<!--footer script-->
-<script>
-    window.addEventListener("scroll", function () {
-        let nav = document.querySelector("nav");
-        let footer = document.querySelector(".footer");
-        let footerRect = footer.getBoundingClientRect();
-
-        if (footerRect.top <= window.innerHeight) {
-            nav.style.position = "absolute";
-            nav.style.top = (window.scrollY + footerRect.top - nav.offsetHeight) + "px";
-        } else {
-            nav.style.position = "fixed";
-            nav.style.top = "0";
-        }
-    });
-</script>
 
 </html>

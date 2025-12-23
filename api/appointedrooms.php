@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 // Database connection
 $servername = "localhost";
 $username = "root";
@@ -13,23 +15,36 @@ if ($conn->connect_error) {
     exit();
 }
 
-// Fetch rented/appointed rooms from database with user details
-$sql = "SELECT * FROM appointedrooms ORDER BY appointed_room_id DESC";
+// Fetch rented rooms with full details from availablerooms table
+$sql = "SELECT ar.*, 
+               apr.appointed_user_id, 
+               apr.appointed_user_name, 
+               apr.appointed_user_email,
+               u.username as tenant_name,
+               u.email as tenant_email,
+               CASE 
+                   WHEN ar.rented_until_date < CURDATE() THEN 'expired'
+                   WHEN ar.status = 'not-available' THEN 'active'
+                   ELSE 'available'
+               END as rental_status
+        FROM availablerooms ar
+        LEFT JOIN appointedrooms apr ON ar.room_id = apr.appointed_room_id
+        LEFT JOIN users u ON ar.rented_to_user_id = u.id
+        WHERE ar.status = 'not-available' OR ar.is_relisting_pending = 1
+        ORDER BY ar.serial DESC";
+
 $result = $conn->query($sql);
 
 $rooms = [];
 if ($result) {
     while ($row = $result->fetch_assoc()) {
-        // Map appointed room fields to expected JavaScript field names
-        $rooms[] = [
-            'room_id' => $row['appointed_room_id'],
-            'room_location' => isset($row['room_location']) ? $row['room_location'] : 'N/A',
-            'room_rent' => isset($row['room_rent']) ? $row['room_rent'] : 'N/A',
-            'status' => 'rented',
-            'appointed_user_id' => $row['appointed_user_id'],
-            'appointed_user_name' => $row['appointed_user_name'],
-            'appointed_user_email' => $row['appointed_user_email']
-        ];
+        // Split room_photos into an array if it's a comma-separated string
+        if (isset($row['room_photos']) && $row['room_photos']) {
+            $row['room_photos'] = explode(',', $row['room_photos']);
+        } else {
+            $row['room_photos'] = [];
+        }
+        $rooms[] = $row;
     }
 }
 

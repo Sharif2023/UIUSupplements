@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 23, 2025 at 08:13 PM
+-- Generation Time: Dec 23, 2025 at 08:37 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -102,23 +102,32 @@ CREATE TABLE `availablerooms` (
   `available_from` date NOT NULL,
   `available_to` date DEFAULT NULL,
   `status` enum('available','not-available') NOT NULL,
-  `room_rent` int(11) NOT NULL
+  `room_rent` int(11) NOT NULL,
+  `added_by_admin_id` int(11) DEFAULT NULL COMMENT 'Admin who added this room',
+  `rental_rules` text DEFAULT NULL COMMENT 'Rules, regulations, payment procedures from house owner',
+  `rented_to_user_id` int(11) DEFAULT NULL COMMENT 'Current tenant user ID',
+  `rented_from_date` date DEFAULT NULL COMMENT 'Rental start date',
+  `rented_until_date` date DEFAULT NULL COMMENT 'Rental expiry date',
+  `is_relisting_pending` tinyint(1) DEFAULT 0 COMMENT 'Flag for expired rentals awaiting admin decision',
+  `is_visible_to_students` tinyint(1) DEFAULT 1 COMMENT 'Visibility control for students',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Room creation timestamp',
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Last update timestamp'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `availablerooms`
 --
 
-INSERT INTO `availablerooms` (`serial`, `room_id`, `room_location`, `room_details`, `room_photos`, `available_from`, `available_to`, `status`, `room_rent`) VALUES
-(1, 'uiu111', '55/3,syednagar,dhaka-1500', '', 'uploads/room.jpg,uploads/room1.jpg', '2024-07-15', '2024-07-20', 'not-available', 6000),
-(2, 'uiu114', '55/4,Family Bazar,dhaka-1501', '', 'uploads/room3.jpg,uploads/room2.jpg,uploads/room4.jpg', '2024-07-17', '2024-08-01', 'available', 6000),
-(3, 'uiu115', '55/3,syednagar,dhaka-1500', '', 'uploads/room5.jpg,uploads/room4.jpg', '2024-07-01', '2024-07-31', 'available', 5500),
-(4, 'uiu112', '55/2,syednagar,dhaka-1500', '', 'uploads/room4.jpg,uploads/room.jpg', '2024-07-16', '2024-07-27', 'not-available', 5000),
-(8, 'uiu113', '12/18,syednagar,dhaka-1100', '', 'uploads/room3.jpg,uploads/room4.jpg', '2024-08-10', '2024-08-31', 'not-available', 5500),
-(9, 'uiu116', '54/23, Family Bazar, Dhaka-1300', '', 'uploads/room3.jpg,uploads/room4.jpg', '2024-08-29', '2024-09-30', 'not-available', 7000),
-(10, 'uiu117', '12/12, Family Bazar, Dhaka-1220', '', 'uploads/room1.jpg,uploads/room2.jpg', '2024-09-01', '2024-09-30', 'not-available', 4500),
-(11, 'uiu118', '10/15,mirpur,dhaka-1200', 'single,attach bathroom, attach kitchen', 'uploads/room2.jpg,uploads/room1.jpg', '2024-08-15', '2024-08-31', 'not-available', 6000),
-(13, 'uiu-119', '1/1, uttar badda, dhaka-1320', 'single room with attached bathroom,kitchen and bar', 'uploads/Screenshot (95).png,uploads/Screenshot (96).png,uploads/Screenshot (97).png', '2024-09-01', '2024-09-28', 'available', 6000);
+INSERT INTO `availablerooms` (`serial`, `room_id`, `room_location`, `room_details`, `room_photos`, `available_from`, `available_to`, `status`, `room_rent`, `added_by_admin_id`, `rental_rules`, `rented_to_user_id`, `rented_from_date`, `rented_until_date`, `is_relisting_pending`, `is_visible_to_students`, `created_at`, `updated_at`) VALUES
+(1, 'uiu111', '55/3,syednagar,dhaka-1500', '', 'uploads/room.jpg,uploads/room1.jpg', '2024-07-15', '2024-07-20', 'not-available', 6000, NULL, NULL, 11221090, '2024-07-15', '2024-07-20', 0, 0, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
+(2, 'uiu114', '55/4,Family Bazar,dhaka-1501', '', 'uploads/room3.jpg,uploads/room2.jpg,uploads/room4.jpg', '2024-07-17', '2024-08-01', 'available', 6000, NULL, NULL, NULL, NULL, NULL, 0, 1, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
+(3, 'uiu115', '55/3,syednagar,dhaka-1500', '', 'uploads/room5.jpg,uploads/room4.jpg', '2024-07-01', '2024-07-31', 'available', 5500, NULL, NULL, NULL, NULL, NULL, 0, 1, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
+(4, 'uiu112', '55/2,syednagar,dhaka-1500', '', 'uploads/room4.jpg,uploads/room.jpg', '2024-07-16', '2024-07-27', 'not-available', 5000, NULL, NULL, NULL, NULL, NULL, 0, 0, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
+(8, 'uiu113', '12/18,syednagar,dhaka-1100', '', 'uploads/room3.jpg,uploads/room4.jpg', '2024-08-10', '2024-08-31', 'not-available', 5500, NULL, NULL, NULL, NULL, NULL, 0, 0, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
+(9, 'uiu116', '54/23, Family Bazar, Dhaka-1300', '', 'uploads/room3.jpg,uploads/room4.jpg', '2024-08-29', '2024-09-30', 'not-available', 7000, NULL, NULL, NULL, NULL, NULL, 0, 0, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
+(10, 'uiu117', '12/12, Family Bazar, Dhaka-1220', '', 'uploads/room1.jpg,uploads/room2.jpg', '2024-09-01', '2024-09-30', 'not-available', 4500, NULL, NULL, 11221369, '2024-09-01', '2024-09-30', 0, 0, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
+(11, 'uiu118', '10/15,mirpur,dhaka-1200', 'single,attach bathroom, attach kitchen', 'uploads/room2.jpg,uploads/room1.jpg', '2024-08-15', '2024-08-31', 'not-available', 6000, NULL, NULL, NULL, NULL, NULL, 0, 0, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
+(13, 'uiu-119', '1/1, uttar badda, dhaka-1320', 'single room with attached bathroom,kitchen and bar', 'uploads/Screenshot (95).png,uploads/Screenshot (96).png,uploads/Screenshot (97).png', '2024-09-01', '2024-09-28', 'available', 6000, NULL, NULL, NULL, NULL, NULL, 0, 1, '2025-12-23 19:34:32', '2025-12-23 19:34:32');
 
 -- --------------------------------------------------------
 
@@ -228,7 +237,9 @@ CREATE TABLE `chat_messages` (
 INSERT INTO `chat_messages` (`id`, `chat_id`, `sender_id`, `receiver_id`, `message`, `message_type`, `is_read`, `created_at`) VALUES
 (1, 1, 11221079, 11221080, 'Chat started! Discuss pickup/delivery, payment method (Cash, bKash, Nagad), and meeting details.', 'system', 1, '2025-12-23 19:12:58'),
 (2, 1, 11221080, 11221079, 'Where should we meet?', 'text', 0, '2025-12-23 19:13:00'),
-(3, 1, 11221080, 11221079, 'hii', 'text', 0, '2025-12-23 19:13:09');
+(3, 1, 11221080, 11221079, 'hii', 'text', 0, '2025-12-23 19:13:09'),
+(4, 1, 11221080, 11221079, 'dfsd', 'text', 0, '2025-12-23 19:15:28'),
+(5, 1, 11221080, 11221079, 'dfsdfa', 'text', 0, '2025-12-23 19:15:33');
 
 --
 -- Triggers `chat_messages`
@@ -359,7 +370,7 @@ CREATE TABLE `deal_chats` (
 --
 
 INSERT INTO `deal_chats` (`id`, `deal_id`, `bargain_id`, `buyer_id`, `seller_id`, `product_id`, `last_message_at`, `buyer_unread_count`, `seller_unread_count`, `created_at`) VALUES
-(1, NULL, 1, 11221079, 11221080, 3, '2025-12-23 19:13:09', 2, 0, '2025-12-23 19:12:58');
+(1, NULL, 1, 11221079, 11221080, 3, '2025-12-23 19:15:33', 4, 0, '2025-12-23 19:12:58');
 
 -- --------------------------------------------------------
 
@@ -463,7 +474,9 @@ INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`
 (11, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:04:32'),
 (12, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:11:00'),
 (13, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:13:00'),
-(14, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:13:09');
+(14, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:13:09'),
+(15, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:15:28'),
+(16, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:15:33');
 
 -- --------------------------------------------------------
 
@@ -756,7 +769,12 @@ ALTER TABLE `appointedrooms`
 --
 ALTER TABLE `availablerooms`
   ADD PRIMARY KEY (`serial`),
-  ADD UNIQUE KEY `room_id` (`room_id`);
+  ADD UNIQUE KEY `room_id` (`room_id`),
+  ADD KEY `idx_admin_id` (`added_by_admin_id`),
+  ADD KEY `idx_rented_user` (`rented_to_user_id`),
+  ADD KEY `idx_visibility` (`is_visible_to_students`),
+  ADD KEY `idx_relisting` (`is_relisting_pending`),
+  ADD KEY `idx_rental_expiry` (`rented_until_date`);
 
 --
 -- Indexes for table `bargains`
@@ -939,7 +957,7 @@ ALTER TABLE `bargains`
 -- AUTO_INCREMENT for table `chat_messages`
 --
 ALTER TABLE `chat_messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `claims`
@@ -981,7 +999,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `offers`
@@ -1042,6 +1060,13 @@ ALTER TABLE `appointedrooms`
   ADD CONSTRAINT `fk_appoint_user` FOREIGN KEY (`appointed_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_appoint_users` FOREIGN KEY (`appointed_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_room_id` FOREIGN KEY (`appointed_room_id`) REFERENCES `availablerooms` (`room_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `availablerooms`
+--
+ALTER TABLE `availablerooms`
+  ADD CONSTRAINT `fk_room_admin` FOREIGN KEY (`added_by_admin_id`) REFERENCES `admins` (`admin_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_room_tenant` FOREIGN KEY (`rented_to_user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `bargains`

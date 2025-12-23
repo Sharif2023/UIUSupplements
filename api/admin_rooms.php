@@ -109,11 +109,52 @@ if ($method === 'GET') {
 elseif ($method === 'PUT') {
     $data = json_decode(file_get_contents('php://input'), true);
     
-    if (isset($data['action']) && $data['action'] === 'update_status') {
+    // Handle relisting approval
+    if (isset($data['action']) && $data['action'] === 'approve_relisting') {
+        $sql = "UPDATE availablerooms 
+                SET status = 'available', 
+                    is_visible_to_students = 1,
+                    is_relisting_pending = 0,
+                    rented_to_user_id = NULL,
+                    rented_from_date = NULL,
+                    rented_until_date = NULL
+                WHERE room_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $data['room_id']);
+        
+        if ($stmt->execute()) {
+            // Remove from appointedrooms
+            $del_sql = "DELETE FROM appointedrooms WHERE appointed_room_id = ?";
+            $del_stmt = $conn->prepare($del_sql);
+            $del_stmt->bind_param('s', $data['room_id']);
+            $del_stmt->execute();
+            $del_stmt->close();
+            
+            logActivity($conn, $_SESSION['admin_id'], 'APPROVE_RELIST', 'ROOM', $data['room_id'], "Approved relisting for room: " . $data['room_id']);
+            echo json_encode(['success' => true, 'message' => 'Room relisted successfully']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Failed to approve relisting']);
+        }
+        $stmt->close();
+    }
+    // Handle status update
+    elseif (isset($data['action']) && $data['action'] === 'update_status') {
         $sql = "UPDATE availablerooms SET status = ? WHERE room_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('ss', $data['status'], $data['room_id']);
-    } else {
+        
+        if ($stmt->execute()) {
+            logActivity($conn, $_SESSION['admin_id'], 'UPDATE', 'ROOM', $data['room_id'], "Updated room status: " . $data['room_id']);
+            echo json_encode(['success' => true, 'message' => 'Room updated successfully']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Failed to update room']);
+        }
+        $stmt->close();
+    }
+    // Handle general room update
+    else {
         $sql = "UPDATE availablerooms SET room_location = ?, room_details = ?, 
                 available_from = ?, available_to = ?, status = ?, room_rent = ? 
                 WHERE room_id = ?";
@@ -122,29 +163,38 @@ elseif ($method === 'PUT') {
             $data['room_location'], $data['room_details'], $data['available_from'],
             $data['available_to'], $data['status'], $data['room_rent'], $data['room_id']
         );
+        
+        if ($stmt->execute()) {
+            logActivity($conn, $_SESSION['admin_id'], 'UPDATE', 'ROOM', $data['room_id'], "Updated room: " . $data['room_id']);
+            echo json_encode(['success' => true, 'message' => 'Room updated successfully']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Failed to update room']);
+        }
+        $stmt->close();
     }
-    
-    if ($stmt->execute()) {
-        logActivity($conn, $_SESSION['admin_id'], 'UPDATE', 'ROOM', $data['room_id'], "Updated room: " . $data['room_id']);
-        echo json_encode(['success' => true, 'message' => 'Room updated successfully']);
-    } else {
-        http_response_code(500);
-        echo json_encode(['success' => false, 'error' => 'Failed to update room']);
-    }
-    
-    $stmt->close();
 }
 
-// DELETE - Delete room
+// DELETE - Delete room (including rejection of relisting)
 elseif ($method === 'DELETE') {
     $room_id = $_GET['room_id'];
+    $is_rejection = isset($_GET['reject_relisting']) && $_GET['reject_relisting'] === 'true';
     
+    // First, delete from appointedrooms if exists
+    $del_appointed_sql = "DELETE FROM appointedrooms WHERE appointed_room_id = ?";
+    $del_appointed_stmt = $conn->prepare($del_appointed_sql);
+    $del_appointed_stmt->bind_param('s', $room_id);
+    $del_appointed_stmt->execute();
+    $del_appointed_stmt->close();
+    
+    // Then delete from availablerooms
     $sql = "DELETE FROM availablerooms WHERE room_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('s', $room_id);
     
     if ($stmt->execute()) {
-        logActivity($conn, $_SESSION['admin_id'], 'DELETE', 'ROOM', $room_id, "Deleted room: $room_id");
+        $action_desc = $is_rejection ? "Rejected relisting and deleted room: $room_id" : "Deleted room: $room_id";
+        logActivity($conn, $_SESSION['admin_id'], 'DELETE', 'ROOM', $room_id, $action_desc);
         echo json_encode(['success' => true, 'message' => 'Room deleted successfully']);
     } else {
         http_response_code(500);

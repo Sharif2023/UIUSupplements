@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 // Database connection
 $servername = "localhost";
 $username = "root";
@@ -13,8 +15,21 @@ if ($conn->connect_error) {
     exit();
 }
 
-// Fetch available rooms from database
-$sql = "SELECT * FROM availablerooms ORDER BY room_id DESC";
+// Check if user is admin
+$isAdmin = isset($_SESSION['admin_id']);
+
+// Build query based on user type
+if ($isAdmin) {
+    // Admins see all rooms
+    $sql = "SELECT * FROM availablerooms ORDER BY room_id DESC";
+} else {
+    // Students only see visible available rooms
+    $sql = "SELECT * FROM availablerooms 
+            WHERE is_visible_to_students = 1 
+            AND status = 'available' 
+            ORDER BY room_id DESC";
+}
+
 $result = $conn->query($sql);
 
 $rooms = [];

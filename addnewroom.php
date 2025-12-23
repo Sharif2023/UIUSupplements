@@ -1,68 +1,15 @@
 <?php
 session_start();
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "uiusupplements";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check authentication for POST requests
-    if (!isset($_SESSION['user_id'])) {
-        echo "Error: Not authenticated";
-        exit();
-    }
-    
-    $roomId = $_POST['room-id'];
-    $location = $_POST['room-location'];
-    $details = $_POST['room-details'];
-    $availableFrom = $_POST['available-from'];
-    $availableTo = isset($_POST['available-to']) ? $_POST['available-to'] : null;
-    $status = $_POST['available-status'];
-    $rent = $_POST['room-rent'];
-    $userId = $_SESSION['user_id'];
-    
-    // Handle file uploads
-    $photoPaths = [];
-    if (isset($_FILES['room-photos']) && $_FILES['room-photos']['error'][0] !== UPLOAD_ERR_NO_FILE) {
-        $uploadDir = 'uploads/rooms/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-        
-        foreach ($_FILES['room-photos']['tmp_name'] as $key => $tmpName) {
-            if ($_FILES['room-photos']['error'][$key] === UPLOAD_ERR_OK) {
-                $fileName = uniqid() . '_' . $_FILES['room-photos']['name'][$key];
-                $targetPath = $uploadDir . $fileName;
-                if (move_uploaded_file($tmpName, $targetPath)) {
-                    $photoPaths[] = $targetPath;
-                }
-            }
-        }
-    }
-    
-    $photoPathsStr = implode(',', $photoPaths);
-    
-    $stmt = $conn->prepare("INSERT INTO rooms (room_id, room_location, room_details, room_photos, available_from, available_to, status, room_rent, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssssdi", $roomId, $location, $details, $photoPathsStr, $availableFrom, $availableTo, $status, $rent, $userId);
-    
-    if ($stmt->execute()) {
-        echo "Room added successfully";
-    } else {
-        echo "Error: " . $stmt->error;
-    }
+// Admin authentication check - only admins can add rooms
+if (!isset($_SESSION['admin_id'])) {
+    // Not an admin, redirect to homepage
+    header("Location: uiusupplementhomepage.php");
     exit();
 }
 
-// Authentication check - redirect to login if not logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: uiusupplementlogin.html");
-    exit();
-}
+// Get admin details for display
+$adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -368,6 +315,14 @@ if (!isset($_SESSION['user_id'])) {
                         placeholder="Enter Room Details (e.g., single, double)" required>
                 </div>
                 <div class="form-group">
+                    <label for="rental-rules">Rules, Regulations & Payment Procedures</label>
+                    <textarea id="rental-rules" name="rental-rules" rows="5" 
+                        style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"
+                        placeholder="Enter rental terms, house rules, payment procedures, and any special conditions from the house owner..."
+                        required></textarea>
+                    <small style="color: #666;">Include details about: deposit requirements, payment schedule, utility bills, house rules, maintenance policies, etc.</small>
+                </div>
+                <div class="form-group">
                     <label for="room-photos">Upload Room Photos</label>
                     <input type="file" id="room-photos" name="room-photos[]" multiple>
                 </div>
@@ -421,19 +376,34 @@ if (!isset($_SESSION['user_id'])) {
             event.preventDefault();
 
             const formData = new FormData(this);
+            // Rename form fields to match API expectations
+            formData.set('room_id', formData.get('room-id'));
+            formData.set('room_location', formData.get('room-location'));
+            formData.set('room_details', formData.get('room-details'));
+            formData.set('rental_rules', formData.get('rental-rules'));
+            formData.set('available_from', formData.get('available-from'));
+            formData.set('available_to', formData.get('available-to'));
+            formData.set('status', formData.get('available-status'));
+            formData.set('room_rent', formData.get('room-rent'));
+            formData.set('room_photos', formData.getAll('room-photos[]'));
 
-            fetch('addnewroom.php', {
+            fetch('api/admin_add_room.php', {
                 method: 'POST',
                 body: formData
             })
-                .then(response => response.text())
+                .then(response => response.json())
                 .then(result => {
-                    alert('New room added successfully!');
-                    document.getElementById('add-room-form').reset();
+                    if (result.success) {
+                        alert('Room added successfully!');
+                        document.getElementById('add-room-form').reset();
+                        window.location.href = 'availablerooms.php';
+                    } else {
+                        alert('Error: ' + result.error);
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('There was a problem adding the new room.');
+                    alert('There was a problem adding the room.');
                 });
         });
     </script>

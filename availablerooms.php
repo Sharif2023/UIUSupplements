@@ -6,6 +6,9 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: uiusupplementlogin.html");
     exit();
 }
+
+// Check if user is admin
+$isAdmin = isset($_SESSION['admin_id']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -263,10 +266,10 @@ if (!isset($_SESSION['user_id'])) {
                 <!-- Room details will be dynamically inserted here -->
             </div>
             <div class="button-group">
-                <button id="add-new-room" onclick="location.href='addnewroom.php'" class="card-btn">Add New
-                    Room</button>
-                <button id="view-rooms" onclick="location.href='appointedrooms.php'" class="card-btn">Rented
-                    Rooms</button>
+                <?php if ($isAdmin): ?>
+                <button id="add-new-room" onclick="location.href='addnewroom.php'" class="card-btn">Add New Room</button>
+                <?php endif; ?>
+                <button id="view-rooms" onclick="location.href='appointedrooms.php'" class="card-btn">Rented Rooms</button>
             </div>
         </section>
     </div>
