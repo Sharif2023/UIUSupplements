@@ -15,41 +15,13 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch total number of users
-$sql_users = "SELECT COUNT(*) as total_users FROM users";
-$result_users = $conn->query($sql_users);
-$total_users = $result_users->fetch_assoc()['total_users'];
-
-// Fetch total number of admins
-$sql_admins = "SELECT COUNT(*) as total_admins FROM admins";
-$result_admins = $conn->query($sql_admins);
-$total_admins = $result_admins->fetch_assoc()['total_admins'];
-
-// Fetch total number of rooms
-$sql_rooms = "SELECT COUNT(*) as total_rooms FROM availablerooms";
-$result_rooms = $conn->query($sql_rooms);
-$total_rooms = $result_rooms->fetch_assoc()['total_rooms'];
-
-// Fetch total number of mentors
-$sql_mentors = "SELECT COUNT(*) as total_mentors FROM uiumentorlist";
-$result_mentors = $conn->query($sql_mentors);
-$total_mentors = $result_mentors->fetch_assoc()['total_mentors'];
-
-// Fetch new users (descending order by registration date, assuming you have a `created_at` column)
-$sql_new_users = "SELECT id, username, email, mobilenumber FROM users ORDER BY id DESC LIMIT 10"; // Modify limit as per requirement
-$new_users_result = $conn->query($sql_new_users);
-
-// Fetch new mentors in descending order
-$new_mentors_query = "SELECT * FROM uiumentorlist ORDER BY id DESC LIMIT 6"; // Assuming 'id' increments with each new mentor
-$new_mentors_result = mysqli_query($conn, $new_mentors_query);
-
-// Fetch available rooms in descending order
-$sql_available_rooms = "SELECT room_id, room_location, room_rent FROM availablerooms ORDER BY room_id DESC";
-$result_available_rooms = $conn->query($sql_available_rooms);
-
-// Fetch appointed rooms in descending order
-$sql_appointed_rooms = "SELECT appointed_room_id, appointed_user_id FROM appointedrooms ORDER BY appointed_room_id DESC";
-$result_appointed_rooms = $conn->query($sql_appointed_rooms);
+// Fetch admin info
+$admin_sql = "SELECT * FROM admins WHERE admin_id = ?";
+$admin_stmt = $conn->prepare($admin_sql);
+$admin_stmt->bind_param('i', $_SESSION['admin_id']);
+$admin_stmt->execute();
+$admin = $admin_stmt->get_result()->fetch_assoc();
+$admin_stmt->close();
 
 $conn->close();
 ?>
@@ -61,42 +33,87 @@ $conn->close();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <title>Admin Panel - UIU Supplements</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary-color: #ec4899;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-bg: #0f172a;
+            --dark-secondary: #1e293b;
+            --dark-tertiary: #334155;
+            --light-bg: #f8fafc;
+            --light-secondary: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-light: #94a3b8;
+            --border-color: #e2e8f0;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .admin-panel-title {
-            flex: 1;
-            text-align: center;
-            font-size: 30px;
-            color: #333;
-            padding-top: 10px;
         }
 
         body {
-            min-height: 100vh;
-            color: #555;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            font-family: 'Inter', sans-serif;
+            background: var(--light-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
         }
 
-        a {
-            text-decoration: none;
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-secondary) 100%);
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            overflow-y: auto;
         }
 
-        li {
-            list-style: none;
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
         }
 
-        h1 {
-            padding-top: 20px;
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--dark-tertiary);
+            border-radius: 3px;
+        }
+
+        .sidebar-brand {
+            padding: 0 30px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .sidebar-brand h1 {
             font-family: "Montserrat", sans-serif;
             font-weight: 800;
-            font-size: 1.5vw;
+            font-size: 1.8rem;
             text-transform: uppercase;
         }
 
@@ -129,437 +146,518 @@ $conn->close();
         }
 
         @keyframes color-animation {
-            0% {
-                color: var(--color-1)
-            }
-
-            32% {
-                color: var(--color-1)
-            }
-
-            33% {
-                color: var(--color-2)
-            }
-
-            65% {
-                color: var(--color-2)
-            }
-
-            66% {
-                color: var(--color-3)
-            }
-
-            99% {
-                color: var(--color-3)
-            }
-
-            100% {
-                color: var(--color-1)
-            }
+            0% { color: var(--color-1) }
+            32% { color: var(--color-1) }
+            33% { color: var(--color-2) }
+            65% { color: var(--color-2) }
+            66% { color: var(--color-3) }
+            99% { color: var(--color-3) }
+            100% { color: var(--color-1) }
         }
 
-        h2 {
-            color: #555;
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
         }
 
-        h3 {
-            color: #555;
+        .menu-section {
+            margin-bottom: 30px;
         }
 
-        .btn {
-            background: #ff3300;
-            color: white;
-            padding: 5px 10px;
-            text-align: center;
-            border-radius: 10px;
+        .menu-section-title {
+            color: var(--text-light);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 30px 10px;
         }
 
-        .btn:hover {
-            color: #ff3300;
-            background: white;
-            padding: 3px 8px;
-            border: 2px solid #ff3300;
-        }
-
-        .title {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px 10px;
-            border-bottom: 2px solid #999;
-        }
-
-        table {
-            padding: 10px;
-            width: 100%;
-        }
-
-        th,
-        td {
-            text-align: left;
-            padding: 8px;
-        }
-
-        .side-menu {
-            position: fixed;
-            background: #1F1F1F;
-            width: 20vw;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 20px 0px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
-
-        .side-menu .title-name {
-            height: 10vh;
-            display: flex;
-            align-items: left;
-            justify-content: center;
-        }
-
-        .side-menu ul {
-            padding: 0;
-            /* Reset padding */
-            margin: 0;
-            /* Reset margin */
-            flex-grow: 1;
-            /* Allow the list to grow and take available space */
-        }
-
-        .side-menu li {
-            font-size: 18px;
-            padding: 15px 20px;
-            color: #f1f1f1;
+        .menu-item {
+            padding: 14px 30px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 15px;
-            transition: background 0.3s;
+            font-weight: 500;
+            font-size: 15px;
+            position: relative;
         }
 
-        .side-menu li:hover {
-            background: rgba(255, 255, 255, 0.2);
-            color: #FF3300;
-            cursor: pointer;
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary-color));
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .menu-item.active::before {
+            transform: scaleY(1);
+        }
+
+        .menu-item i {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
         }
 
         .logout-btn {
-            background-color: #ff3300;
+            background: linear-gradient(135deg, var(--danger-color), #dc2626);
             color: white;
-            padding: 10px 30px;
+            padding: 14px 30px;
+            margin: 20px 30px 0;
+            border-radius: 12px;
             text-align: center;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 16px;
-            margin: 20px 10px;
             cursor: pointer;
-            text-decoration: none;
-            margin-right: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
         .logout-btn:hover {
-            background-color: rgb(196, 39, 0);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
         }
 
-        .container {
-            position: absolute;
-            right: 0;
-            width: 80vw;
-            height: 100vh;
-            background: #f1f1f1;
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
         }
 
-        .container .header {
-            position: relative;
-            top: 0;
-            right: 0;
-            width: 80vw;
-            height: 10vh;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            z-index: 1;
-        }
-
-        .container .header .nav {
-            width: 90%;
-            display: flex;
-            align-items: center;
-        }
-
-        .container .header .nav .search {
-            flex: 3;
-            display: flex;
-            justify-content: center;
-            border-radius: 10px;
-        }
-
-        .container .header .nav .search input[type=text] {
-            border: none;
-            background: #f1f1f1;
-            padding: 5px;
-            width: 50%;
-            border-radius: 10px;
-        }
-
-        .container .header .nav .search button {
-            width: 40px;
-            height: 40px;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-        }
-
-        .container .header .nav .search button img {
-            width: 30px;
-            height: 30px;
-        }
-
-        .container .header .nav .user {
-            flex: 1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .container .header .nav .user img {
-            width: 40px;
-            height: 40px;
-        }
-
-        .container .header .nav .user .img-case {
-            position: relative;
-            width: 50px;
-            height: 50px;
-        }
-
-        .container .header .nav .user .img-case img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
+        /* Header */
         .header {
-            margin: 10px 20px;
+            background: white;
+            height: var(--header-height);
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .container .content {
+        .header-left h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .search-box {
             position: relative;
-            margin-top: 10vh;
-            min-height: 90vh;
-            background: #f1f1f1;
         }
 
-        .container .content .cards {
-            padding: 0 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        .container .content .cards .card {
-            width: 250px;
-            height: 150px;
-            background: white;
-            margin: 20px 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
-
-        .container .content .content-2 {
-            min-height: 60vh;
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-start;
-            flex-wrap: wrap;
-        }
-
-        .container .content .content-2 .new-users,
-        .container .content .content-2 .new-mentors {
-            background: white;
-            min-height: 50vh;
-            margin: 20px 40px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-            display: flex;
-            flex-direction: column;
+        .search-box input {
+            padding: 10px 40px 10px 16px;
+            border: 2px solid var(--border-color);
             border-radius: 10px;
-            flex: 2;
+            width: 300px;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
 
-        .container .content .content-2 .new-mentors table {
-            width: 100%;
-            /* Ensure table uses the full width */
-            table-layout: fixed;
-            /* Set table layout to fixed */
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
-        .container .content .content-2 .new-mentors table td {
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .notification-icon {
+            position: relative;
+            font-size: 22px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .notification-icon:hover {
+            color: var(--primary-color);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger-color);
+            color: white;
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Notification Dropdown */
+        .notification-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 80px;
+            width: 360px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            display: none;
+            z-index: 1000;
             overflow: hidden;
-            /* Prevent overflow */
-            text-overflow: ellipsis;
-            /* Add ellipsis for overflow text */
-            white-space: nowrap;
-            /* Prevent text wrapping */
         }
 
-        .container .content .content-2 .new-mentors table td:nth-child(1) img {
-            height: 50px;
-            /* Reduced height */
-            width: 50px;
-            /* Reduced width */
-            object-fit: cover;
-            /* Ensures images are resized correctly */
-            border-radius: 50%;
-            /* Optional: Makes the images circular */
-            max-width: 100%;
-            /* Ensure images do not exceed container */
+        .notification-dropdown.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
         }
 
-        .cards {
+        .notification-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .card {
-            width: 22%;
-            background-color: #f1f1f1;
-            padding: 20px;
-            border-radius: 10px;
+        .notification-header h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .mark-all-read {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .mark-all-read:hover {
+            text-decoration: underline;
+        }
+
+        .notification-list {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .notification-item:hover {
+            background: var(--light-bg);
+        }
+
+        .notification-item.unread {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .notification-icon-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            transition: background-color 0.3s ease-in-out;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
         }
 
-        .card:hover {
-            background-color: #e2e2e2;
+        .notification-icon-small.user {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
         }
 
-        .card .box {
+        .notification-icon-small.session {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .notification-icon-small.claim {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-content p {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .notification-content span {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .notification-empty {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .notification-empty i {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .admin-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .admin-info {
             text-align: left;
         }
 
-        .card .box h1 {
-            font-size: 36px;
-            margin: 0;
-            color: #333;
+        .admin-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
         }
 
-        .card .box h3 {
-            margin: 10px 0 0;
-            font-size: 18px;
-            color: #777;
+        .admin-role {
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
-        .card .icon-case {
+        /* Content Area */
+        .content {
+            padding: 40px;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
             justify-content: center;
+            font-size: 28px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .stat-card:nth-child(1) .stat-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .stat-card:nth-child(4) .stat-icon {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Data Table */
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
-        .card .icon-case img {
-            width: 50px;
-            height: 50px;
+        .table-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
         }
 
-        /* Specific colors for each card */
-        .card.users {
-            background-color: #ff6666;
-            /* Red */
+        .table-actions {
+            display: flex;
+            gap: 12px;
         }
 
-        .card.admins {
-            background-color: #66b3ff;
-            /* Blue */
-        }
-
-        .card.rooms {
-            background-color: #66ff66;
-            /* Green */
-        }
-
-        .card.mentors {
-            background-color: #ffcc66;
-            /* Yellow */
-        }
-
-        .mentor-profile {
-            height: 50px;
-            /* Height for the mentor photo */
-            width: 50px;
-            /* Width for the mentor photo */
-            object-fit: cover;
-            /* Ensures images are resized correctly */
-            border-radius: 50%;
-            /* Circular profile image */
-        }
-
-        /* New Mentor Container */
-        .container-mentors {
-            background-color: white;
-            /* White background */
-            padding: 20px;
-            /* Padding inside the container */
-            margin: 20px 40px;
-            /* Add margin at the top for spacing */
+        .btn {
+            padding: 10px 20px;
             border-radius: 10px;
-            /* Rounded corners for the container */
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
-            /* Light shadow for a subtle 3D effect */
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Table inside Mentor Container */
-        .container-mentors table {
-            width: 100%;
-            /* Make table fill the width of the container */
-            table-layout: fixed;
-            /* Ensure table columns have fixed width */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
-        .container-mentors table td {
-            overflow: hidden;
-            /* Prevent content from overflowing */
-            text-overflow: ellipsis;
-            /* Add ellipsis for overflow text */
-            white-space: nowrap;
-            /* Prevent text wrapping */
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
         }
 
-        .container-mentors table td:nth-child(1) img {
-            height: 50px;
-            /* Image size */
-            width: 50px;
-            object-fit: cover;
-            border-radius: 50%;
-            /* Circular image */
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color), #dc2626);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
-        /* Container for room data */
-        .container-rooms {
-            background-color: white;
-            /* White background */
-            padding: 20px;
-            margin: 20px 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
         }
 
-        .container-rooms h2 {
-            margin-bottom: 10px;
-            color: #444;
+        .btn-secondary {
+            background: var(--light-secondary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        /* Remove underlines from all buttons and links inside tables */
+        .btn, .btn:hover, .btn:focus, .btn:active,
+        a.btn, a.btn:hover, a.btn:focus, a.btn:active {
+            text-decoration: none !important;
+        }
+
+        /* Make icons inside buttons not intercept clicks */
+        .btn i, button i {
+            pointer-events: none;
         }
 
         table {
@@ -567,347 +665,764 @@ $conn->close();
             border-collapse: collapse;
         }
 
-        th,
-        td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
+        thead {
+            background: var(--light-bg);
         }
 
         th {
-            background-color: #f2f2f2;
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* Add styles for the pop-up form and admin panel */
-        .popup,
-        .message-popup {
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: var(--light-bg);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .mentor-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-available {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-not-available {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-approved {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* Modal */
+        .modal {
             display: none;
             position: fixed;
+            top: 0;
             left: 0;
             right: 0;
-            top: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
             justify-content: center;
             align-items: center;
+            animation: fadeIn 0.3s ease;
         }
 
-        .popup-content,
-        .message-content {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
+        .modal.active {
+            display: flex;
         }
 
-        .popup input {
-            width: 80%;
-            padding: 10px;
-            margin: 10px 0;
-        }
-
-        .popup .btn,
-        .message-popup .btn {
-            padding: 10px 20px;
-            background-color: #ff0000;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-
-        button {
-            background: #ff3300;
-            color: white;
-            padding: 6px 10px;
-            text-align: center;
-            border-radius: 10px;
-            border: none;
-        }
-
-        button:hover {
-            color: #ff3300;
+        .modal-content {
             background: white;
-            padding: 3px 8px;
-            border: 2px solid #ff3300;
+            border-radius: 20px;
+            padding: 35px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            margin-bottom: 25px;
+        }
+
+        .modal-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 18px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+            min-width: 300px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .toast-error {
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .toast-icon {
+            font-size: 20px;
+        }
+
+        .toast-success .toast-icon {
+            color: var(--success-color);
+        }
+
+        .toast-error .toast-icon {
+            color: var(--danger-color);
+        }
+
+        .toast-message {
+            flex: 1;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 14px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination button.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-container h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h4 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+
+        .loading i {
+            font-size: 32px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .search-box input {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0 20px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .header-left h2 {
+                font-size: 20px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
-    <title>Admin Panel</title>
 </head>
 
 <body>
-    <div class="side-menu">
-        <div class="title-name">
-            <h1 class="title"><span class="title-word title-word-1">U</span>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h1>
+                <span class="title-word title-word-1">U</span>
                 <span class="title-word title-word-2">I</span>
                 <span class="title-word title-word-3">U</span>
                 <span class="title-word title-word-4">Supplement</span>
             </h1>
         </div>
-        <ul>
-            <li><i class="fas fa-tachometer-alt"></i> <span>Home</span></li>
-            <li><i class="fas fa-coins"></i> <span>Sell Request</span></li>
-            <li><i class="fas fa-building"></i> <span>Room Request</span></li>
-            <li><i class="fas fa-camera-retro"></i> <span>Lost and Found Request</span></li>
-        </ul>
+
+        <div class="sidebar-menu">
+            <div class="menu-section">
+                <div class="menu-section-title">Main</div>
+                <div class="menu-item active" data-page="dashboard">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="menu-item" data-page="analytics">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">Management</div>
+                <div class="menu-item" data-page="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </div>
+                <div class="menu-item" data-page="mentors">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Mentors</span>
+                </div>
+                <div class="menu-item" data-page="rooms">
+                    <i class="fas fa-building"></i>
+                    <span>Rooms</span>
+                </div>
+                <div class="menu-item" data-page="products">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>Sell & Exchange</span>
+                </div>
+                <div class="menu-item" data-page="lostandfound">
+                    <i class="fas fa-search"></i>
+                    <span>Lost & Found</span>
+                </div>
+                <div class="menu-item" data-page="shuttle">
+                    <i class="fas fa-bus"></i>
+                    <span>Shuttle Service</span>
+                </div>
+                <div class="menu-item" data-page="sessions">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Mentorship Sessions</span>
+                </div>
+            </div>
+        </div>
+
         <a href="uiusupplementlogin.html" class="logout-btn">
-            <i class="fas fa-sign-out-alt"></i> Log Out
+            <i class="fas fa-sign-out-alt"></i> Logout
         </a>
     </div>
-    <div class="container">
-        <div>
-            <h2 class="admin-panel-title">Admin Panel</h2>
-        </div>
-        <div class="header">
-            <div class="nav">
-                <div class="search">
-                    <input type="text" placeholder="Search..">
-                    <button type="submit"><i class="fas fa-search"></i></button>
-                </div>
-                <div class="add-driver-button">
-                    <a href="#" class="btn">Add Driver</a>
-                </div>
-                <div class="user">
-                    <a href="addnewmentor.php" class="btn">Add New Mentor</a>
-                    <i class="fas fa-bell"></i>
-                    <div class="img-case">
-                        <img src="adminpanel/user.png" alt="">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="content">
-            <div class="cards">
-                <div class="card">
-                    <div class="box">
-                        <h1><?php echo $total_users; ?></h1>
-                        <h3>Users</h3>
-                    </div>
-                    <div class="icon-case">
-                        <img src="adminpanel/students.png" alt="">
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="box">
-                        <h1><?php echo $total_admins; ?></h1>
-                        <h3>Admins</h3>
-                    </div>
-                    <div class="icon-case">
-                        <img src="adminpanel/teachers.png" alt="">
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="box">
-                        <h1><?php echo $total_rooms; ?></h1>
-                        <h3>Rooms</h3>
-                    </div>
-                    <div class="icon-case">
-                        <img src="adminpanel/schools.png" alt="">
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="box">
-                        <h1><?php echo $total_mentors; ?></h1>
-                        <h3>Mentors</h3>
-                    </div>
-                    <div class="icon-case">
-                        <img src="adminpanel/income.png" alt="">
-                    </div>
-                </div>
-            </div>
 
-            <div class="content-2">
-                <div class="new-users">
-                    <div class="title">
-                        <h2>New Users</h2>
-                        <button onclick="openPopup('deleteUserPopup')">Delete User Account</button>
-                    </div>
-                    <table>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Mobile Number</th>
-                        </tr>
-                        <?php while ($row = $new_users_result->fetch_assoc()): ?>
-                            <tr>
-                                <td><?php echo $row['id']; ?></td>
-                                <td><?php echo $row['username']; ?></td>
-                                <td><?php echo $row['email']; ?></td>
-                                <td><?php echo $row['mobilenumber']; ?></td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </table>
-                </div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h2 id="pageTitle">Dashboard</h2>
             </div>
-            <div class="container-mentors">
-                <div class="new-mentors">
-                    <div class="title">
-                        <h2>New Mentors</h2>
-                        <div>
-                            <a href="browsementors.php" class="btn">View All</a>
-                            <button onclick="openPopup('deleteMentorPopup')">Delete Mentors</button>
+            <div class="header-right">
+                <div class="notification-icon" id="notificationIcon" onclick="toggleNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">0</span>
+                </div>
+                <!-- Notification Dropdown -->
+                <div class="notification-dropdown" id="notificationDropdown">
+                    <div class="notification-header">
+                        <h4>Notifications</h4>
+                        <button class="mark-all-read" onclick="markAllAsRead()">Mark all as read</button>
+                    </div>
+                    <div class="notification-list" id="notificationList">
+                        <div class="notification-empty">
+                            <i class="fas fa-bell-slash"></i>
+                            <p>No notifications</p>
                         </div>
                     </div>
-                    <table>
-                        <tr>
-                            <th>Profile</th>
-                            <th>Name</th>
-                            <th>Option</th>
-                        </tr>
-                        <?php while ($mentor = mysqli_fetch_assoc($new_mentors_result)) { ?>
-                            <tr>
-                                <td><img src="<?php echo $mentor['photo']; ?>" alt="mentor profile" class="mentor-profile"></td>
-                                <td><?php echo $mentor['name']; ?></td>
-                                <td><a href="#" class="btn">View</a></td>
-                            </tr>
-                        <?php } ?>
-                    </table>
                 </div>
-            </div>
-            <!-- Available Rooms Container -->
-            <div class="container-rooms">
-                <div class="title">
-                    <h2>Available Rooms</h2>
-                    <div>
-                        <a href="availablerooms.php" class="btn">View All</a>
-                        <button onclick="openPopup('deleteRoomPopup')">Delete Rooms</button>
+                <div class="admin-profile">
+                    <div class="admin-avatar"><?php echo strtoupper(substr($admin['admin_name'], 0, 1)); ?></div>
+                    <div class="admin-info">
+                        <div class="admin-name"><?php echo htmlspecialchars($admin['admin_name']); ?></div>
+                        <div class="admin-role">Administrator</div>
                     </div>
                 </div>
-                <table>
-                    <tr>
-                        <th>Room ID</th>
-                        <th>Location</th>
-                        <th>Rent</th>
-                    </tr>
-                    <?php while ($row = $result_available_rooms->fetch_assoc()) { ?>
-                        <tr>
-                            <td><?php echo $row['room_id']; ?></td>
-                            <td><?php echo $row['room_location']; ?></td>
-                            <td><?php echo $row['room_rent']; ?></td>
-                        </tr>
-                    <?php } ?>
-                </table>
             </div>
+        </div>
 
-            <!-- Appointed Rooms Container -->
-            <div class="container-rooms">
-                <div class="title">
-                    <h2>Rented Rooms</h2>
-                    <div>
-                        <a href="appointedrooms.php" class="btn">View All</a>
-                        <button onclick="openPopup('deleteRentalPopup')">Remove Rental Status</button>
+        <!-- Content -->
+        <div class="content">
+            <!-- Dashboard Page -->
+            <div class="page-section active" id="dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalUsers">0</div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalMentors">0</div>
+                            <div class="stat-label">Total Mentors</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalRooms">0</div>
+                            <div class="stat-label">Total Rooms</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="pendingSessions">0</div>
+                            <div class="stat-label">Pending Sessions</div>
+                        </div>
                     </div>
                 </div>
-                <table>
-                    <tr>
-                        <th>Room ID</th>
-                        <th>User ID</th>
-                    </tr>
-                    <?php while ($row = $result_appointed_rooms->fetch_assoc()) { ?>
-                        <tr>
-                            <td><?php echo $row['appointed_room_id']; ?></td>
-                            <td><?php echo $row['appointed_user_id']; ?></td>
-                        </tr>
-                    <?php } ?>
-                </table>
-            </div><br><br>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h4>User Growth (Last 30 Days)</h4>
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4>Feature Usage</h4>
+                        <canvas id="usageChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Page -->
+            <div class="page-section" id="users">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>All Users</h3>
+                        <div class="table-actions">
+                            <input type="text" placeholder="Search users..." id="userSearch" style="padding: 10px; border-radius: 8px; border: 2px solid var(--border-color);">
+                        </div>
+                    </div>
+                    <div id="usersTableContainer">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            <p>Loading users...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mentors Page -->
+            <div class="page-section" id="mentors">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>All Mentors</h3>
+                        <div class="table-actions">
+                            <input type="text" placeholder="Search mentors..." id="mentorSearch" style="padding: 10px; border-radius: 8px; border: 2px solid var(--border-color);">
+                            <a href="addnewmentor.php" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Add Mentor
+                            </a>
+                        </div>
+                    </div>
+                    <div id="mentorsTableContainer">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            <p>Loading mentors...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rooms Page -->
+            <div class="page-section" id="rooms">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>All Rooms</h3>
+                        <div class="table-actions">
+                            <input type="text" placeholder="Search rooms..." id="roomSearch" style="padding: 10px; border-radius: 8px; border: 2px solid var(--border-color);">
+                            <select id="roomStatusFilter" style="padding: 10px; border-radius: 8px; border: 2px solid var(--border-color);">
+                                <option value="">All Status</option>
+                                <option value="available">Available</option>
+                                <option value="not-available">Not Available</option>
+                            </select>
+                            <a href="addnewroom.php" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Add Room
+                            </a>
+                        </div>
+                    </div>
+                    <div id="roomsTableContainer">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            <p>Loading rooms...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Page -->
+            <div class="page-section" id="products">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Sell & Exchange Products</h3>
+                        <div class="table-actions">
+                            <a href="add-product.php" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Add Product
+                            </a>
+                        </div>
+                    </div>
+                    <div id="productsTableContainer">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            <p>Loading products...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lost & Found Page -->
+            <div class="page-section" id="lostandfound">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Lost & Found Items</h3>
+                    </div>
+                    <div id="lostFoundTableContainer">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            <p>Loading items...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shuttle Service Page -->
+            <div class="page-section" id="shuttle">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Shuttle Drivers</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-primary" onclick="openAddDriverModal()">
+                                <i class="fas fa-plus"></i> Add Driver
+                            </button>
+                        </div>
+                    </div>
+                    <div id="driversTableContainer">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            <p>Loading drivers...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sessions Page -->
+            <div class="page-section" id="sessions">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Mentorship Session Requests</h3>
+                    </div>
+                    <div id="sessionsTableContainer">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            <p>Loading session requests...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Page -->
+            <div class="page-section" id="analytics">
+                <h3 style="margin-bottom: 25px;">Platform Analytics</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalProducts">0</div>
+                            <div class="stat-label">Total Products</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-search-location"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalLostItems">0</div>
+                            <div class="stat-label">Lost Items</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-bus-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalDrivers">0</div>
+                            <div class="stat-label">Shuttle Drivers</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="rentedRooms">0</div>
+                            <div class="stat-label">Rented Rooms</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- Pop-up for deleting user -->
-    <div id="deleteUserPopup" class="popup">
-        <div class="popup-content">
-            <h3>Delete User Account</h3>
-            <form id="deleteUserForm" method="POST">
-                <input type="hidden" name="action" value="delete_user">
-                <input type="text" name="user_id" placeholder="Enter User ID" required>
-                <button type="submit" class="btn">Delete</button>
-                <button type="button" class="btn" onclick="closePopup('deleteUserPopup')">Cancel</button>
+
+    <!-- Edit User Modal -->
+    <div class="modal" id="editUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit User</h3>
+            </div>
+            <form id="editUserForm">
+                <input type="hidden" id="editUserId">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="editUserName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="editUserEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number</label>
+                    <input type="text" id="editUserMobile" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editUserModal')">Cancel</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- Pop-up for deleting room -->
-    <div id="deleteRoomPopup" class="popup">
-        <div class="popup-content">
-            <h3>Delete Room</h3>
-            <form id="deleteRoomForm" method="POST">
-                <input type="hidden" name="action" value="delete_room">
-                <input type="text" name="room_id" placeholder="Enter Room ID" required>
-                <button type="submit" class="btn">Delete</button>
-                <button type="button" class="btn" onclick="closePopup('deleteRoomPopup')">Cancel</button>
+    <!-- Add Driver Modal -->
+    <div class="modal" id="addDriverModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Driver</h3>
+            </div>
+            <form id="addDriverForm">
+                <div class="form-group">
+                    <label>Driver ID</label>
+                    <input type="text" id="newDriverId" required>
+                </div>
+                <div class="form-group">
+                    <label>Driver Name</label>
+                    <input type="text" id="newDriverName" required>
+                </div>
+                <div class="form-group">
+                    <label>Contact Number</label>
+                    <input type="text" id="newDriverContact" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="newDriverPassword" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Add Driver</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addDriverModal')">Cancel</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- Pop-up for deleting mentor -->
-    <div id="deleteMentorPopup" class="popup">
-        <div class="popup-content">
-            <h3>Delete Mentor</h3>
-            <form id="deleteMentorForm" method="POST">
-                <input type="hidden" name="action" value="delete_mentor">
-                <input type="email" name="mentor_email" placeholder="Enter Mentor Email" required>
-                <button type="submit" class="btn">Delete</button>
-                <button type="button" class="btn" onclick="closePopup('deleteMentorPopup')">Cancel</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Success/Error Message Popup -->
-    <div id="messagePopup" class="message-popup">
-        <div class="message-content">
-            <h3 id="messageText"></h3>
-            <button type="button" class="btn" onclick="closePopup('messagePopup')">Close</button>
-        </div>
-    </div>
-
-    <script>
-        // JavaScript to open and close popups
-        function openPopup(popupId) {
-            document.getElementById(popupId).style.display = 'flex';
-        }
-
-        function closePopup(popupId) {
-            document.getElementById(popupId).style.display = 'none';
-        }
-
-        function showMessagePopup(message) {
-            document.getElementById('messageText').innerText = message;
-            openPopup('messagePopup');
-            setTimeout(function() {
-                closePopup('messagePopup');
-            }, 3000); // Close after 3 seconds
-        }
-
-        // Function to handle form submission via AJAX
-        function handleFormSubmission(formId, popupId) {
-            var form = document.getElementById(formId);
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                var formData = new FormData(form);
-
-                fetch('delete.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.text())
-                    .then(data => {
-                        closePopup(popupId); // Close the specific popup
-                        showMessagePopup(data); // Show success or error message in popup
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showMessagePopup('An error occurred. Please try again.');
-                    });
-            });
-        }
-
-        // Attach form submissions with AJAX for each form
-        handleFormSubmission('deleteUserForm', 'deleteUserPopup');
-        handleFormSubmission('deleteRoomForm', 'deleteRoomPopup');
-        handleFormSubmission('deleteMentorForm', 'deleteMentorPopup');
-    </script>
+    <script src="adminpanel/admin-scripts.js"></script>
 </body>
-
 </html>

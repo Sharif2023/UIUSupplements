@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 20, 2025 at 01:37 PM
+-- Generation Time: Dec 22, 2025 at 06:20 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -39,6 +39,32 @@ CREATE TABLE `admins` (
 
 INSERT INTO `admins` (`admin_id`, `admin_name`, `admin_email`) VALUES
 (11221078, 'Shariful Islam', 'sharifislam0505@gmail.com');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_activity_logs`
+--
+
+CREATE TABLE `admin_activity_logs` (
+  `log_id` int(11) NOT NULL,
+  `admin_id` int(11) NOT NULL,
+  `action_type` varchar(50) DEFAULT NULL,
+  `target_type` varchar(50) DEFAULT NULL,
+  `target_id` varchar(100) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin_activity_logs`
+--
+
+INSERT INTO `admin_activity_logs` (`log_id`, `admin_id`, `action_type`, `target_type`, `target_id`, `description`, `created_at`) VALUES
+(1, 11221078, 'UPDATE', 'SESSION', '1', 'Updated session status to: Rejected', '2025-12-22 13:18:44'),
+(2, 11221078, 'UPDATE', 'ROOM', 'uiu111', 'Updated room: uiu111', '2025-12-22 14:33:11'),
+(3, 11221078, 'UPDATE', 'ROOM', 'uiu111', 'Updated room: uiu111', '2025-12-22 14:33:17'),
+(4, 11221078, 'UPDATE', 'USER', '11111111', 'Updated user: shariful Islam', '2025-12-22 14:33:45');
 
 -- --------------------------------------------------------
 
@@ -200,7 +226,8 @@ CREATE TABLE `messages` (
 
 INSERT INTO `messages` (`id`, `sender_id`, `receiver_id`, `message`, `is_read`, `created_at`) VALUES
 (1, 11221122, 11221369, 'hii', 1, '2025-12-20 11:45:02'),
-(2, 11221369, 11221122, 'hello', 1, '2025-12-20 11:46:00');
+(2, 11221369, 11221122, 'hello', 1, '2025-12-20 11:46:00'),
+(3, 11221122, 11221078, 'hii', 0, '2025-12-21 19:26:59');
 
 -- --------------------------------------------------------
 
@@ -277,7 +304,7 @@ CREATE TABLE `request_mentorship_session` (
 --
 
 INSERT INTO `request_mentorship_session` (`session_id`, `user_id`, `mentor_id`, `session_time`, `session_price`, `communication_method`, `session_date`, `problem_description`, `status`, `created_at`) VALUES
-(1, 11111111, 6, '11:01', '0 tk for 10 minutes', 'Meet', '2024-10-01', 'adfads', 'Pending', '2024-10-03 13:05:47'),
+(1, 11111111, 6, '11:01', '0 tk for 10 minutes', 'Meet', '2024-10-01', 'adfads', 'Rejected', '2024-10-03 13:05:47'),
 (2, 11111111, 11, '01:01', '0 tk for 10 minutes', 'Meet', '2024-10-06', 'kf ', 'Pending', '2024-10-05 03:45:09');
 
 -- --------------------------------------------------------
@@ -390,7 +417,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `Gender`, `password_hash`, `mobilenumber`, `created_at`) VALUES
-(11111111, 'shariful Islam', 'shariful@gmail.com', 'm', '$2y$10$/0HGxXjA1zKducurZerMyuBGsvQzx3ZC2MB6EEcYK.uSf6QPuHOWa', '12341234123', '2024-09-29 16:56:24'),
+(11111111, 'shariful Islam', 'shariful@gmail.com', 'm', '$2y$10$/0HGxXjA1zKducurZerMyuBGsvQzx3ZC2MB6EEcYK.uSf6QPuHOWa', '12341234124', '2024-09-29 16:56:24'),
 (11221011, 'Ashik Khan', 'khan@gmail.com', 'm', '$2y$10$iyE88IOrdMg8PLxh4Jy2VuLs4Hp.nRtd.vWavjKmw0C0B6HoE91SS', '1631223995', '2024-10-06 12:18:02'),
 (11221076, 'Jiku Ahmed', 'jiku@gmail.com', 'm', '$2y$10$tm4wZI/G5pPA6C9dghf/Uequ6Ftr5c7m4QfC8xgWQceTAAEcOXcum', '01122334456', '2024-09-29 16:56:24'),
 (11221078, 'Shariful Islam', '011221078', 'm', '$2y$10$zAuEsUA/9M0LKmWbBRHL5Oz7n6hFc7uEIoNQtrxaxnXg5F0wKeZvW', '1700871179', '2024-10-03 18:41:30'),
@@ -398,7 +425,9 @@ INSERT INTO `users` (`id`, `username`, `email`, `Gender`, `password_hash`, `mobi
 (11221090, 'Abul Kalam', 'abulkalam@gmail.com', 'm', '$2y$10$W.zxwFk7YRDynnVpPHjfm.CyBxMwuVPlyOOBl1MIuuijlilSrse/W', '01232356898', '2024-09-29 16:56:24'),
 (11221122, 'Test', 'test@gmail.com', 'm', '$2y$10$qhcf.xJGsps4lRvlFKNjjOhh8aZ7j6Sm3WbEgVoICtMPFEB4WDoI.', '01700000000', '2025-12-20 09:47:06'),
 (11221369, 'Md Shakib', 'shakib@gmail.com', 'm', '$2y$10$SidrsHBPPrhRi6JZRPzsDuqhCMzl3.yA1uevDZqZOrwo1AIDdtiN6', '01112233445', '2024-09-29 16:56:24'),
-(11223344, 'anjuma tasnim', 'anjuma@gmail.com', 'f', '$2y$10$gd9oGsM6/3liBWe8ok4/TOhwodu0OOCeQSC9zJjXhgXUN5Zn3g6.6', '01122334444', '2024-09-29 16:56:24');
+(11223344, 'anjuma tasnim', 'anjuma@gmail.com', 'f', '$2y$10$gd9oGsM6/3liBWe8ok4/TOhwodu0OOCeQSC9zJjXhgXUN5Zn3g6.6', '01122334444', '2024-09-29 16:56:24'),
+(11231001, 'Test User', 'tuser231001@bscse.uiu.ac.bd', 'm', '$2y$10$kAwKSEstCGAri5sYC3Pfb.rBdeHfQk8udrXKtNEj1oM/cQjsxagRm', '1712345678', '2025-12-21 11:41:47'),
+(111222333, 'Test User', 'tu111222@bscse.uiu.ac.bd', 'm', '$2y$10$Tpd3LuikQfZVaUJp9j3eUOZy7/Ff2y16V63I.qp3Iwj4o0dEkSnW6', '1711111111', '2025-12-21 18:47:40');
 
 -- --------------------------------------------------------
 
@@ -456,6 +485,14 @@ ALTER TABLE `admins`
   ADD PRIMARY KEY (`admin_id`);
 
 --
+-- Indexes for table `admin_activity_logs`
+--
+ALTER TABLE `admin_activity_logs`
+  ADD PRIMARY KEY (`log_id`),
+  ADD KEY `idx_admin_logs_admin` (`admin_id`),
+  ADD KEY `idx_admin_logs_date` (`created_at`);
+
+--
 -- Indexes for table `appointedrooms`
 --
 ALTER TABLE `appointedrooms`
@@ -494,7 +531,8 @@ ALTER TABLE `events`
 -- Indexes for table `lost_and_found`
 --
 ALTER TABLE `lost_and_found`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_lost_found_claim` (`claim_status`);
 
 --
 -- Indexes for table `messages`
@@ -516,7 +554,8 @@ ALTER TABLE `notifications`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_product_user_id` (`user_id`);
+  ADD KEY `fk_product_user_id` (`user_id`),
+  ADD KEY `idx_products_status` (`status`);
 
 --
 -- Indexes for table `request_mentorship_session`
@@ -574,6 +613,12 @@ ALTER TABLE `user_settings`
 --
 
 --
+-- AUTO_INCREMENT for table `admin_activity_logs`
+--
+ALTER TABLE `admin_activity_logs`
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `availablerooms`
 --
 ALTER TABLE `availablerooms`
@@ -607,7 +652,7 @@ ALTER TABLE `lost_and_found`
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -650,6 +695,12 @@ ALTER TABLE `admins`
   ADD CONSTRAINT `admin_user` FOREIGN KEY (`admin_id`) REFERENCES `users` (`id`);
 
 --
+-- Constraints for table `admin_activity_logs`
+--
+ALTER TABLE `admin_activity_logs`
+  ADD CONSTRAINT `admin_activity_logs_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `admins` (`admin_id`);
+
+--
 -- Constraints for table `appointedrooms`
 --
 ALTER TABLE `appointedrooms`
@@ -661,13 +712,13 @@ ALTER TABLE `appointedrooms`
 -- Constraints for table `bargains`
 --
 ALTER TABLE `bargains`
-  ADD CONSTRAINT `bargains_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
+  ADD CONSTRAINT `bargains_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `claims`
 --
 ALTER TABLE `claims`
-  ADD CONSTRAINT `claims_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `lost_and_found` (`id`);
+  ADD CONSTRAINT `claims_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `lost_and_found` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `events`
@@ -698,8 +749,8 @@ ALTER TABLE `products`
 -- Constraints for table `request_mentorship_session`
 --
 ALTER TABLE `request_mentorship_session`
-  ADD CONSTRAINT `request_mentorship_session_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `request_mentorship_session_ibfk_2` FOREIGN KEY (`mentor_id`) REFERENCES `uiumentorlist` (`id`);
+  ADD CONSTRAINT `request_mentorship_session_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `request_mentorship_session_ibfk_2` FOREIGN KEY (`mentor_id`) REFERENCES `uiumentorlist` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sell_exchange_list`
@@ -711,7 +762,7 @@ ALTER TABLE `sell_exchange_list`
 -- Constraints for table `total_trip`
 --
 ALTER TABLE `total_trip`
-  ADD CONSTRAINT `fk_driver` FOREIGN KEY (`driver_id`) REFERENCES `shuttle_driver` (`d_id`);
+  ADD CONSTRAINT `fk_driver` FOREIGN KEY (`driver_id`) REFERENCES `shuttle_driver` (`d_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `user_profiles`
