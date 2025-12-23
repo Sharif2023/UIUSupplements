@@ -67,26 +67,34 @@ $unreadBargainNotifs = $notifData['count'];
         /* Cards Section */
         .product-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
         }
 
         .product-cards .card {
             border: none;
-            border-radius: 16px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
             position: relative;
         }
 
         .product-cards .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
         }
 
         .card-img-top {
-            height: 180px;
+            height: 120px;
+            width: 100%;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
@@ -95,32 +103,55 @@ $unreadBargainNotifs = $notifData['count'];
             transform: scale(1.05);
         }
 
+        .image-zoom-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .card-img-wrapper:hover .image-zoom-icon {
+            opacity: 1;
+        }
+
         .card-body {
-            padding: 20px;
+            padding: 12px;
         }
 
         .card-title {
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 600;
             color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
 
         .card-text {
             color: #666;
-            font-size: 14px;
+            font-size: 12px;
+            margin-bottom: 4px;
         }
 
         /* Price Badge */
         .price-badge {
             background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 6px 12px;
+            border-radius: 15px;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 14px;
             display: inline-block;
-            margin-top: 10px;
+            margin-top: 6px;
         }
 
         /* Category Tag */
@@ -138,17 +169,18 @@ $unreadBargainNotifs = $notifData['count'];
         /* Button group in cards */
         .card-buttons {
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 8px;
+            margin-top: 10px;
         }
 
         .btn-bargain {
             background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
             color: white;
-            padding: 10px 18px;
+            padding: 8px 14px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: 500;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.3s ease;
             flex: 1;
@@ -228,6 +260,57 @@ $unreadBargainNotifs = $notifData['count'];
         .modal-body {
             padding: 25px;
         }
+
+        /* Fullscreen Image Modal */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .image-modal-content {
+            position: relative;
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: zoomIn 0.3s ease;
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 10001;
+        }
+
+        .image-modal-close:hover,
+        .image-modal-close:focus {
+            color: #ff3300;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { transform: translateY(-50%) scale(0.8); }
+            to { transform: translateY(-50%) scale(1); }
+        }
     </style>
 </head>
 
@@ -273,9 +356,6 @@ $unreadBargainNotifs = $notifData['count'];
         </nav>
         <section class="main">
             <div class="main-top">
-                <button id="back" onclick="location.href='uiusupplementhomepage.php'" class="back-btn">
-                    <i class="fas fa-arrow-left"></i> Home
-                </button>
                 <h1 class="center-title">Sell and Exchange</h1>
             </div>
             <div style="display: flex; gap: 15px; align-items: center;">
@@ -301,13 +381,18 @@ $unreadBargainNotifs = $notifData['count'];
                         $hasBargained = ($row['user_bargain_count'] > 0);
                         
                         echo '<div class="card">
-                                    <img class="card-img-top" src="' . htmlspecialchars($row['image_path']) . '" alt="Product Image">
+                                    <div class="card-img-wrapper" onclick="openImageModal(\'' . htmlspecialchars($row['image_path']) . '\')">
+                                        <img class="card-img-top" src="' . htmlspecialchars($row['image_path']) . '" alt="Product Image">
+                                        <div class="image-zoom-icon">
+                                            <i class="fas fa-search-plus"></i>
+                                        </div>
+                                    </div>
                                     <div class="card-body">
                                         <h5 class="card-title">' . htmlspecialchars($row['product_name']) . '</h5>
-                                        <p class="card-text"><i class="fas fa-tag"></i> Category: ' . htmlspecialchars($row['category']) . '</p>
-                                        <p class="card-text"><strong style="font-size: 18px; color: #FF3300;">৳' . number_format($row['price']) . '</strong></p>
-                                        <p class="card-text" style="font-size: 13px; color: #666;">' . htmlspecialchars(substr($row['description'], 0, 80)) . '...</p>
-                                        <p class="card-text" style="font-size: 13px; color: #999;"><i class="fas fa-user"></i> Seller: ' . htmlspecialchars($row['seller_name']) . '</p>';
+                                        <p class="card-text"><i class="fas fa-tag"></i> ' . htmlspecialchars($row['category']) . '</p>
+                                        <p class="card-text"><strong style="font-size: 15px; color: #FF3300;">৳' . number_format($row['price']) . '</strong></p>
+                                        <p class="card-text" style="font-size: 11px; color: #666;">' . htmlspecialchars(substr($row['description'], 0, 60)) . '...</p>
+                                        <p class="card-text" style="font-size: 11px; color: #999;"><i class="fas fa-user"></i> ' . htmlspecialchars($row['seller_name']) . '</p>';
                         
                         if ($hasBargained) {
                             echo '              <div style="background: #d1ecf1; padding: 8px 12px; border-radius: 6px; margin-bottom: 10px;">
@@ -410,6 +495,34 @@ $unreadBargainNotifs = $notifData['count'];
             </div>
         </section>
     </div>
+
+    <!-- Fullscreen Image Modal -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close" onclick="closeImageModal()">&times;</span>
+        <img class="image-modal-content" id="modalImage">
+    </div>
+
+    <script>
+        // Fullscreen image modal functions
+        function openImageModal(imageSrc) {
+            document.getElementById('imageModal').style.display = 'block';
+            document.getElementById('modalImage').src = imageSrc;
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+        }
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+    </script>
+
     <script>
         var bargainModal = document.getElementById('bargainModal');
         bargainModal.addEventListener('show.bs.modal', function(event) {
