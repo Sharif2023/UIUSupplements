@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 23, 2025 at 04:24 PM
+-- Generation Time: Dec 23, 2025 at 08:13 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -139,6 +139,13 @@ CREATE TABLE `bargains` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data for table `bargains`
+--
+
+INSERT INTO `bargains` (`id`, `product_id`, `buyer_id`, `seller_id`, `bargain_price`, `status`, `buyer_message`, `created_at`, `updated_at`) VALUES
+(1, 3, 11221079, 11221080, 260.00, 'accepted', 'If possible then inbox.', '2025-12-23 17:06:54', '2025-12-23 17:20:44');
+
+--
 -- Triggers `bargains`
 --
 DELIMITER $$
@@ -192,6 +199,69 @@ CREATE TRIGGER `after_bargain_update_notification` AFTER UPDATE ON `bargains` FO
         CONCAT('mybargains.php?bargain_id=', NEW.id)
       );
     END IF;
+  END IF;
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `chat_messages`
+--
+
+CREATE TABLE `chat_messages` (
+  `id` int(11) NOT NULL,
+  `chat_id` int(11) NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `message` text NOT NULL,
+  `message_type` enum('text','system','payment_info','meeting_info') DEFAULT 'text',
+  `is_read` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `chat_messages`
+--
+
+INSERT INTO `chat_messages` (`id`, `chat_id`, `sender_id`, `receiver_id`, `message`, `message_type`, `is_read`, `created_at`) VALUES
+(1, 1, 11221079, 11221080, 'Chat started! Discuss pickup/delivery, payment method (Cash, bKash, Nagad), and meeting details.', 'system', 1, '2025-12-23 19:12:58'),
+(2, 1, 11221080, 11221079, 'Where should we meet?', 'text', 0, '2025-12-23 19:13:00'),
+(3, 1, 11221080, 11221079, 'hii', 'text', 0, '2025-12-23 19:13:09');
+
+--
+-- Triggers `chat_messages`
+--
+DELIMITER $$
+CREATE TRIGGER `after_message_insert` AFTER INSERT ON `chat_messages` FOR EACH ROW BEGIN
+  -- Update last message timestamp
+  UPDATE deal_chats 
+  SET last_message_at = NEW.created_at 
+  WHERE id = NEW.chat_id;
+  
+  -- Increment unread count for receiver
+  UPDATE deal_chats 
+  SET buyer_unread_count = buyer_unread_count + 1 
+  WHERE id = NEW.chat_id AND buyer_id = NEW.receiver_id;
+  
+  UPDATE deal_chats 
+  SET seller_unread_count = seller_unread_count + 1 
+  WHERE id = NEW.chat_id AND seller_id = NEW.receiver_id;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `after_message_notification` AFTER INSERT ON `chat_messages` FOR EACH ROW BEGIN
+  IF NEW.message_type = 'text' THEN
+    INSERT INTO notifications (user_id, type, title, message, link)
+    SELECT 
+      NEW.receiver_id,
+      'deal_chat_message',
+      'New Deal Message',
+      CONCAT('You have a new message about a deal'),
+      CONCAT('mydeals.php?chat_id=', NEW.chat_id)
+    FROM dual;
   END IF;
 END
 $$
@@ -264,6 +334,32 @@ CREATE TRIGGER `after_deal_complete` AFTER UPDATE ON `deals` FOR EACH ROW BEGIN
 END
 $$
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `deal_chats`
+--
+
+CREATE TABLE `deal_chats` (
+  `id` int(11) NOT NULL,
+  `deal_id` int(11) DEFAULT NULL,
+  `bargain_id` int(11) NOT NULL,
+  `buyer_id` int(11) NOT NULL,
+  `seller_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `last_message_at` timestamp NULL DEFAULT NULL,
+  `buyer_unread_count` int(11) DEFAULT 0,
+  `seller_unread_count` int(11) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `deal_chats`
+--
+
+INSERT INTO `deal_chats` (`id`, `deal_id`, `bargain_id`, `buyer_id`, `seller_id`, `product_id`, `last_message_at`, `buyer_unread_count`, `seller_unread_count`, `created_at`) VALUES
+(1, NULL, 1, 11221079, 11221080, 3, '2025-12-23 19:13:09', 2, 0, '2025-12-23 19:12:58');
 
 -- --------------------------------------------------------
 
@@ -355,7 +451,19 @@ CREATE TABLE `notifications` (
 
 INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`, `is_read`, `created_at`) VALUES
 (1, 11221369, 'message', 'New message from Test', 'hii', 'chat.php?user=11221122', 1, '2025-12-20 11:45:02'),
-(2, 11221122, 'message', 'New message from Md Shakib', 'hello', 'chat.php?user=11221369', 1, '2025-12-20 11:46:00');
+(2, 11221122, 'message', 'New message from Md Shakib', 'hello', 'chat.php?user=11221369', 1, '2025-12-20 11:46:00'),
+(3, 11221080, 'bargain', 'New Bargain Offer', 'You received a bargain offer of ৳250.00 on your product', 'myselllist.php?product_id=3', 1, '2025-12-23 17:06:54'),
+(4, 11221079, 'bargain_countered', 'Counter Offer Received', 'The seller has made a counter offer on your bargain', 'mybargains.php?bargain_id=1', 0, '2025-12-23 17:15:46'),
+(5, 11221079, 'counter_offer', 'Counter Offer Received', 'Seller offered ৳280.00 as counter offer', 'mybargains.php?bargain_id=1', 0, '2025-12-23 17:15:46'),
+(6, 11221079, 'counter_offer', 'Counter Offer Received', 'Seller offered ৳260.00 as counter offer', 'mybargains.php?bargain_id=1', 0, '2025-12-23 17:20:18'),
+(7, 11221079, 'bargain_accepted', 'Bargain Accepted!', 'Your bargain offer of ৳260.00 has been accepted', 'mybargains.php?bargain_id=1', 0, '2025-12-23 17:20:44'),
+(8, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 18:57:54'),
+(9, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 18:58:40'),
+(10, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:04:25'),
+(11, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:04:32'),
+(12, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:11:00'),
+(13, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:13:00'),
+(14, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:13:09');
 
 -- --------------------------------------------------------
 
@@ -371,6 +479,14 @@ CREATE TABLE `offers` (
   `status` enum('pending','accepted','rejected') DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `offers`
+--
+
+INSERT INTO `offers` (`id`, `bargain_id`, `offered_price`, `seller_message`, `status`, `created_at`) VALUES
+(1, 1, 280.00, '', 'pending', '2025-12-23 17:15:46'),
+(2, 1, 260.00, '', 'pending', '2025-12-23 17:20:18');
 
 --
 -- Triggers `offers`
@@ -417,7 +533,8 @@ CREATE TABLE `products` (
 
 INSERT INTO `products` (`id`, `product_name`, `category`, `price`, `description`, `image_path`, `bargain_price`, `user_id`, `status`, `created_at`, `updated_at`, `view_count`, `bargain_count`) VALUES
 (1, 'jbl', 'gadget', 5000.00, 'no Scratch ', 'imgOfSell/gadgets2.jpeg', NULL, NULL, 'available', '2025-12-23 15:22:16', '2025-12-23 15:22:16', 0, 0),
-(2, 'Intensive English', 'book', 300.00, 'Full Fresh Condition', 'imgOfSell/book1.jpeg', NULL, NULL, 'available', '2025-12-23 15:22:16', '2025-12-23 15:22:16', 0, 0);
+(2, 'Intensive English', 'book', 300.00, 'Full Fresh Condition', 'imgOfSell/book1.jpeg', NULL, NULL, 'available', '2025-12-23 15:22:16', '2025-12-23 15:22:16', 0, 0),
+(3, 'host', 'other', 300.00, 'per month 300 TK', 'imgOfSell/byte backend.png', NULL, 11221080, 'available', '2025-12-23 17:06:02', '2025-12-23 17:06:54', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -450,14 +567,6 @@ CREATE TABLE `request_mentorship_session` (
   `status` varchar(50) DEFAULT 'Pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `request_mentorship_session`
---
-
-INSERT INTO `request_mentorship_session` (`session_id`, `user_id`, `mentor_id`, `session_time`, `session_price`, `communication_method`, `session_date`, `problem_description`, `status`, `created_at`) VALUES
-(1, 11111111, 6, '11:01', '0 tk for 10 minutes', 'Meet', '2024-10-01', 'adfads', 'Rejected', '2024-10-03 13:05:47'),
-(2, 11111111, 11, '01:01', '0 tk for 10 minutes', 'Meet', '2024-10-06', 'kf ', 'Pending', '2024-10-05 03:45:09');
 
 -- --------------------------------------------------------
 
@@ -569,17 +678,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `Gender`, `password_hash`, `mobilenumber`, `created_at`) VALUES
-(11111111, 'shariful Islam', 'shariful@gmail.com', 'm', '$2y$10$/0HGxXjA1zKducurZerMyuBGsvQzx3ZC2MB6EEcYK.uSf6QPuHOWa', '12341234124', '2024-09-29 16:56:24'),
-(11221011, 'Ashik Khan', 'khan@gmail.com', 'm', '$2y$10$iyE88IOrdMg8PLxh4Jy2VuLs4Hp.nRtd.vWavjKmw0C0B6HoE91SS', '1631223995', '2024-10-06 12:18:02'),
-(11221076, 'Jiku Ahmed', 'jiku@gmail.com', 'm', '$2y$10$tm4wZI/G5pPA6C9dghf/Uequ6Ftr5c7m4QfC8xgWQceTAAEcOXcum', '01122334456', '2024-09-29 16:56:24'),
 (11221078, 'Shariful Islam', '011221078', 'm', '$2y$10$zAuEsUA/9M0LKmWbBRHL5Oz7n6hFc7uEIoNQtrxaxnXg5F0wKeZvW', '1700871179', '2024-10-03 18:41:30'),
-(11221080, 'Ashiquzzaman Khan', 'akhan@gmail.com', 'm', '$2y$10$hCxASzzhgf.8RAvORxPHtuCYYPPCppfv6DPuurHwB/XKwJyD4YDBy', '01712345562', '2024-09-29 16:56:24'),
-(11221090, 'Abul Kalam', 'abulkalam@gmail.com', 'm', '$2y$10$W.zxwFk7YRDynnVpPHjfm.CyBxMwuVPlyOOBl1MIuuijlilSrse/W', '01232356898', '2024-09-29 16:56:24'),
-(11221122, 'Test', 'test@gmail.com', 'm', '$2y$10$qhcf.xJGsps4lRvlFKNjjOhh8aZ7j6Sm3WbEgVoICtMPFEB4WDoI.', '01700000000', '2025-12-20 09:47:06'),
-(11221369, 'Md Shakib', 'shakib@gmail.com', 'm', '$2y$10$SidrsHBPPrhRi6JZRPzsDuqhCMzl3.yA1uevDZqZOrwo1AIDdtiN6', '01112233445', '2024-09-29 16:56:24'),
-(11223344, 'anjuma tasnim', 'anjuma@gmail.com', 'f', '$2y$10$gd9oGsM6/3liBWe8ok4/TOhwodu0OOCeQSC9zJjXhgXUN5Zn3g6.6', '01122334444', '2024-09-29 16:56:24'),
-(11231001, 'Test User', 'tuser231001@bscse.uiu.ac.bd', 'm', '$2y$10$kAwKSEstCGAri5sYC3Pfb.rBdeHfQk8udrXKtNEj1oM/cQjsxagRm', '1712345678', '2025-12-21 11:41:47'),
-(111222333, 'Test User', 'tu111222@bscse.uiu.ac.bd', 'm', '$2y$10$Tpd3LuikQfZVaUJp9j3eUOZy7/Ff2y16V63I.qp3Iwj4o0dEkSnW6', '1711111111', '2025-12-21 18:47:40');
+(11221079, 'Mahmudul Hasan', 'mhasan221079@bscse.uiu.ac.bd', 'm', '$2y$10$brpUDs5I6/MM2bFc0ErhCOHuITpTSdY/0gYa2xKbHCEiTWoZDuSRi', '1700221079', '2025-12-23 16:55:43'),
+(11221080, 'Ashik Khan', 'akhan221080@bscse.uiu.ac.bd', 'm', '$2y$10$rKJy5xOgZ7f0sV0JOa0bCu9m00XopD.XF5Ex2vUnPGrYKnF6Dhg52', '1700221080', '2025-12-23 17:03:04');
 
 -- --------------------------------------------------------
 
@@ -598,8 +699,6 @@ CREATE TABLE `user_profiles` (
 --
 
 INSERT INTO `user_profiles` (`user_id`, `user_photo`, `user_bio`) VALUES
-(11111111, '', 'Hello This is me 1'),
-(11221011, 'uploads/2.jpg', 'Hello I\'m Ashik Khan.'),
 (11221122, 'uploads/1766232983_IMG_99950 (1).jpg', 'I\'m Shakib'),
 (11221369, 'uploads/1766233021_IMG_99950 (1).jpg', 'Hello I\'m Shakib');
 
@@ -624,6 +723,7 @@ CREATE TABLE `user_settings` (
 --
 
 INSERT INTO `user_settings` (`user_id`, `email_notifications`, `push_notifications`, `profile_visibility`, `two_factor_auth`, `marketing_emails`, `show_online_status`) VALUES
+(11221079, 1, 1, 'public', 0, 0, 1),
 (11221122, 1, 1, 'public', 0, 0, 1);
 
 --
@@ -669,6 +769,17 @@ ALTER TABLE `bargains`
   ADD KEY `idx_bargain_status` (`status`);
 
 --
+-- Indexes for table `chat_messages`
+--
+ALTER TABLE `chat_messages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_message_chat` (`chat_id`),
+  ADD KEY `idx_message_sender` (`sender_id`),
+  ADD KEY `idx_message_receiver` (`receiver_id`),
+  ADD KEY `idx_message_read` (`is_read`),
+  ADD KEY `idx_message_created` (`created_at`);
+
+--
 -- Indexes for table `claims`
 --
 ALTER TABLE `claims`
@@ -685,6 +796,18 @@ ALTER TABLE `deals`
   ADD KEY `buyer_id` (`buyer_id`),
   ADD KEY `bargain_id` (`bargain_id`),
   ADD KEY `idx_deal_status` (`status`);
+
+--
+-- Indexes for table `deal_chats`
+--
+ALTER TABLE `deal_chats`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_bargain_chat` (`bargain_id`),
+  ADD KEY `idx_chat_deal` (`deal_id`),
+  ADD KEY `idx_chat_buyer` (`buyer_id`),
+  ADD KEY `idx_chat_seller` (`seller_id`),
+  ADD KEY `idx_chat_product` (`product_id`),
+  ADD KEY `idx_last_message` (`last_message_at`);
 
 --
 -- Indexes for table `events`
@@ -810,7 +933,13 @@ ALTER TABLE `availablerooms`
 -- AUTO_INCREMENT for table `bargains`
 --
 ALTER TABLE `bargains`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `chat_messages`
+--
+ALTER TABLE `chat_messages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `claims`
@@ -822,7 +951,13 @@ ALTER TABLE `claims`
 -- AUTO_INCREMENT for table `deals`
 --
 ALTER TABLE `deals`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `deal_chats`
+--
+ALTER TABLE `deal_chats`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `events`
@@ -846,19 +981,19 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `offers`
 --
 ALTER TABLE `offers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `product_views`
@@ -917,6 +1052,14 @@ ALTER TABLE `bargains`
   ADD CONSTRAINT `bargains_ibfk_3` FOREIGN KEY (`seller_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `chat_messages`
+--
+ALTER TABLE `chat_messages`
+  ADD CONSTRAINT `fk_message_chat` FOREIGN KEY (`chat_id`) REFERENCES `deal_chats` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_message_receiver` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_message_sender` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `claims`
 --
 ALTER TABLE `claims`
@@ -930,6 +1073,15 @@ ALTER TABLE `deals`
   ADD CONSTRAINT `deals_ibfk_2` FOREIGN KEY (`seller_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `deals_ibfk_3` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `deals_ibfk_4` FOREIGN KEY (`bargain_id`) REFERENCES `bargains` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `deal_chats`
+--
+ALTER TABLE `deal_chats`
+  ADD CONSTRAINT `fk_chat_bargain` FOREIGN KEY (`bargain_id`) REFERENCES `bargains` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_chat_buyer` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_chat_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_chat_seller` FOREIGN KEY (`seller_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `events`

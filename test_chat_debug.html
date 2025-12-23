@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chat Debug Test</title>
+</head>
+
+<body>
+    <h1>Chat API Debug Test</h1>
+    <div id="output"></div>
+
+    <script>
+        async function testChatAPI() {
+            const output = document.getElementById('output');
+
+            // Test: Get chat session
+            output.innerHTML += '<h2>Testing API...</h2>';
+
+            try {
+                // Replace with actual bargain ID
+                const bargainId = 1; // CHANGE THIS
+
+                const response = await fetch(`api/deal_chat.php?action=get_or_create&bargain_id=${bargainId}`);
+                const data = await response.json();
+
+                output.innerHTML += '<h3>Get/Create Chat Response:</h3>';
+                output.innerHTML += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+
+                if (data.success && data.chat) {
+                    // Test: Get messages
+                    const chatId = data.chat.id;
+                    const msgResponse = await fetch(`api/deal_chat.php?action=messages&chat_id=${chatId}`);
+                    const msgData = await msgResponse.json();
+
+                    output.innerHTML += '<h3>Messages Response:</h3>';
+                    output.innerHTML += '<pre>' + JSON.stringify(msgData, null, 2) + '</pre>';
+
+                    // Check is_mine values
+                    if (msgData.success && msgData.messages) {
+                        output.innerHTML += '<h3>is_mine Analysis:</h3>';
+                        msgData.messages.forEach((msg, idx) => {
+                            output.innerHTML += `<p>Message ${idx + 1}: is_mine = ${msg.is_mine} (type: ${typeof msg.is_mine})</p>`;
+                        });
+                    }
+                }
+            } catch (error) {
+                output.innerHTML += '<p style="color:red;">Error: ' + error.message + '</p>';
+            }
+        }
+
+        // Run test on page load
+        testChatAPI();
+    </script>
+</body>
+
+</html>

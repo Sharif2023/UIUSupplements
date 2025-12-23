@@ -449,8 +449,8 @@ $bargains = $bargainsStmt->get_result();
                                 echo '      <i class="fas fa-times"></i> Reject';
                                 echo '    </button>';
                             } elseif ($bargain['status'] == 'accepted') {
-                                echo '    <button class="btn btn-primary btn-sm create-deal-btn" data-bargain-id="' . $bargain['id'] . '">';
-                                echo '      <i class="fas fa-handshake"></i> Proceed to Deal';
+                                echo '    <button class="btn btn-success btn-sm" onclick="dealChat.openChat(' . $bargain['id'] . ')">';
+                                echo '      <i class="fas fa-comments"></i> Open Chat';
                                 echo '    </button>';
                             } elseif ($bargain['status'] == 'pending') {
                                 echo '    <button class="btn btn-secondary btn-sm" disabled>';
@@ -474,8 +474,8 @@ $bargains = $bargainsStmt->get_result();
                                 echo '      <i class="fas fa-hourglass-half"></i> Waiting for Buyer';
                                 echo '    </button>';
                             } elseif ($bargain['status'] == 'accepted') {
-                                echo '    <button class="btn btn-primary btn-sm create-deal-btn" data-bargain-id="' . $bargain['id'] . '">';
-                                echo '      <i class="fas fa-handshake"></i> Proceed to Deal';
+                                echo '    <button class="btn btn-success btn-sm" onclick="dealChat.openChat(' . $bargain['id'] . ')">';
+                                echo '      <i class="fas fa-comments"></i> Open Chat';
                                 echo '    </button>';
                             }
                         }
@@ -519,6 +519,7 @@ $bargains = $bargainsStmt->get_result();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/index.js"></script>
     <script src="assets/js/bargain-manager.js?v=2.0"></script>
+    <script src="assets/js/deal-chat.js"></script>
     <script src="assets/js/notification-handler.js"></script>
     
     <script>

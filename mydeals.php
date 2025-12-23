@@ -42,11 +42,13 @@ if ($viewType === 'buyer') {
             p.image_path,
             p.category,
             p.description,
+            b.id as bargain_id,
             u.username as seller_name,
             u.email as seller_email,
             u.mobilenumber as seller_phone
         FROM deals d
         JOIN products p ON d.product_id = p.id
+        JOIN bargains b ON d.bargain_id = b.id
         JOIN users u ON d.seller_id = u.id
         WHERE d.buyer_id = ?
         ORDER BY d.created_at DESC
@@ -60,11 +62,13 @@ if ($viewType === 'buyer') {
             p.image_path,
             p.category,
             p.description,
+            b.id as bargain_id,
             u.username as buyer_name,
             u.email as buyer_email,
             u.mobilenumber as buyer_phone
         FROM deals d
         JOIN products p ON d.product_id = p.id
+        JOIN bargains b ON d.bargain_id = b.id
         JOIN users u ON d.buyer_id = u.id
         WHERE d.seller_id = ?
         ORDER BY d.created_at DESC
@@ -482,6 +486,13 @@ $stats = ($viewType === 'seller') ? $sellerStats : $buyerStats;
                             echo '    </button>';
                         }
                         
+                        // Chat button (available for all deals)
+                        if (isset($deal['bargain_id']) && $deal['bargain_id']) {
+                            echo '    <button class="btn btn-info btn-sm" onclick="dealChat.openChat(' . $deal['bargain_id'] . ')">';
+                            echo '      <i class="fas fa-comments"></i> Chat';
+                            echo '    </button>';
+                        }
+                        
                         echo '  </div>';
                         echo '</div>';
                     }
@@ -547,6 +558,7 @@ $stats = ($viewType === 'seller') ? $sellerStats : $buyerStats;
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/index.js"></script>
     <script src="assets/js/bargain-manager.js"></script>
+    <script src="assets/js/deal-chat.js"></script>
     
     <script>
         // Confirm Deal
