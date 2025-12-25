@@ -44,14 +44,33 @@ if ($user) {
             $stmt = $conn->prepare($query);
             $stmt->bind_param("siss", $room_id, $user['id'], $user['username'], $user['email']);
             if ($stmt->execute()) {
-                // Update room status
-                $updateRoomQuery = "UPDATE availablerooms SET status = 'not-available' WHERE room_id = ?";
+                // Calculate rental dates
+                $rented_from_date = date('Y-m-d'); // Current date
+                $rented_until_date = date('Y-m-d', strtotime('+1 month')); // Default 1 month rental
+                
+                // Update room status and rental information
+                // Set is_visible_to_students = 0 to hide from students
+                $updateRoomQuery = "UPDATE availablerooms 
+                                   SET status = 'not-available', 
+                                       rented_to_user_id = ?, 
+                                       rented_from_date = ?, 
+                                       rented_until_date = ?,
+                                       is_visible_to_students = 0,
+                                       is_relisting_pending = 0
+                                   WHERE room_id = ?";
                 $stmt = $conn->prepare($updateRoomQuery);
-                $stmt->bind_param("s", $room_id);
+                $stmt->bind_param("isss", $user['id'], $rented_from_date, $rented_until_date, $room_id);
                 $stmt->execute();
 
                 // Respond with success
-                echo json_encode(['status' => 'success', 'message' => 'Room rented successfully']);
+                echo json_encode([
+                    'status' => 'success', 
+                    'message' => 'Room rented successfully',
+                    'rental_period' => [
+                        'from' => $rented_from_date,
+                        'until' => $rented_until_date
+                    ]
+                ]);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Failed to appoint room']);
             }

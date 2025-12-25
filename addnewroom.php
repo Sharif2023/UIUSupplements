@@ -18,9 +18,27 @@ $adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Room | UIU Supplement</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
+
+        :root {
+            --sidebar-width: 280px;
+            --primary-color: #6366f1;
+            --primary-light: #818cf8;
+            --secondary-color: #ec4899;
+            --danger-color: #ef4444;
+            --dark-bg: #0f172a;
+            --dark-secondary: #1e293b;
+            --dark-tertiary: #334155;
+            --text-light: #94a3b8;
+        }
 
         * {
             margin: 0;
@@ -49,85 +67,157 @@ $adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
         }
 
         /* Sidebar Navigation */
-        nav {
-            width: 100%;
-            max-width: 250px;
-            background-color: #fff;
-            padding: 20px;
-            height: 100vh;
-            /* Keep it full height */
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        .sidebar {
             position: fixed;
-            /* Fixed initially */
-            top: 0;
             left: 0;
-            transition: top 0.3s ease-in-out;
-            /* Smooth transition */
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-secondary) 100%);
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            overflow-y: auto;
         }
 
-        .styled-title {
-            font-size: 1.4rem;
-            color: #1F1F1F;
-            text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
-            animation: glow 1.5s infinite alternate;
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
         }
 
-        .styled-title:hover {
-            transform: translateY(-5px);
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--dark-tertiary);
+            border-radius: 3px;
         }
 
-        @keyframes glow {
-            0% {
-                text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
-            }
-
-            100% {
-                text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff, 0 0 160px #00d4ff;
-            }
+        .sidebar-brand {
+            padding: 0 30px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
         }
 
-        nav ul {
-            list-style-type: none;
-            padding-top: 20px;
+        .sidebar-brand h1 {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            text-transform: uppercase;
         }
 
-        nav ul li {
-            margin: 15px 0;
+        .title-word {
+            animation: color-animation 4s linear infinite;
         }
 
-        nav ul li a {
-            color: #555;
-            font-size: 18px;
+        .title-word-1 {
+            --color-1: #DF8453;
+            --color-2: #3D8DAE;
+            --color-3: #E4A9A8;
+        }
+
+        .title-word-2 {
+            --color-1: #DBAD4A;
+            --color-2: #ACCFCB;
+            --color-3: #17494D;
+        }
+
+        .title-word-3 {
+            --color-1: #ACCFCB;
+            --color-2: #E4A9A8;
+            --color-3: #ACCFCB;
+        }
+
+        .title-word-4 {
+            --color-1: #3D8DAE;
+            --color-2: #DF8453;
+            --color-3: #E4A9A8;
+        }
+
+        @keyframes color-animation {
+            0% { color: var(--color-1) }
+            32% { color: var(--color-1) }
+            33% { color: var(--color-2) }
+            65% { color: var(--color-2) }
+            66% { color: var(--color-3) }
+            99% { color: var(--color-3) }
+            100% { color: var(--color-1) }
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .menu-section {
+            margin-bottom: 30px;
+        }
+
+        .menu-section-title {
+            color: var(--text-light);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 30px 10px;
+        }
+
+        .menu-item {
+            padding: 14px 30px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            padding: 10px;
+            gap: 15px;
+            font-weight: 500;
+            font-size: 15px;
+            position: relative;
             text-decoration: none;
         }
 
-        nav ul li a:hover,
-        nav ul li a.active {
-            background-color: #f0f0f5;
-            border-radius: 10px;
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary-color));
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
         }
 
-        nav ul li a .nav-item {
-            margin-left: 15px;
+        .menu-item:hover,
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .menu-item.active::before {
+            transform: scaleY(1);
+        }
+
+        .menu-item i {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
         }
 
         /* Log Out Button */
         .logout-btn {
-            background-color: #FF3300;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
-            padding: 10px 20px;
+            padding: 14px 30px;
+            margin: 20px 30px 0;
+            border-radius: 12px;
             text-align: center;
-            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 16px;
-            margin-top: 20px;
-            cursor: pointer;
             text-decoration: none;
         }
 
@@ -136,13 +226,15 @@ $adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
         }
 
         .logout-btn:hover {
-            background-color: #1F1F1F;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
         }
+
 
         /* Main Section */
         .main {
             flex: 1;
-            margin-left: 250px;
+            margin-left: var(--sidebar-width);
             padding: 40px;
         }
 
@@ -255,46 +347,66 @@ $adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
 <body>
     <div class="container">
         <!-- Sidebar Navigation -->
-        <nav>
-            <ul>
-                <li><a href="uiusupplementhomepage.php" class="logo">
-                        <h1 class="styled-title">UIU Supplement</h1>
-                    </a></li>
-                <li><a href="uiusupplementhomepage.php">
-                        <i class="fas fa-home"></i>
-                        <span class="nav-item">Home</span>
-                    </a></li>
-                <li><a href="SellAndExchange.php">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span class="nav-item">Sell</span>
-                    </a></li>
-                <li><a href="availablerooms.php">
+        <div class="sidebar">
+            <div class="sidebar-brand">
+                <h1>
+                    <span class="title-word title-word-1">U</span>
+                    <span class="title-word title-word-2">I</span>
+                    <span class="title-word title-word-3">U</span>
+                    <span class="title-word title-word-4">Supplement</span>
+                </h1>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <div class="menu-section-title">Main</div>
+                    <a href="adminpanel.php" class="menu-item">
+                        <i class="fas fa-th-large"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="adminpanel.php" class="menu-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-section-title">Management</div>
+                    <a href="adminpanel.php" class="menu-item">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span>
+                    </a>
+                    <a href="adminpanel.php" class="menu-item">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>Mentors</span>
+                    </a>
+                    <a href="adminpanel.php" class="menu-item active">
                         <i class="fas fa-building"></i>
-                        <span class="nav-item">Room Rent</span>
-                    </a></li>
-                <li><a href="browsementors.php">
-                        <i class="fas fa-user"></i>
-                        <span class="nav-item">Mentorship</span>
-                    </a></li>
-                <li><a href="parttimejob.php">
-                        <i class="fas fa-briefcase"></i>
-                        <span class="nav-item">Jobs</span>
-                    </a></li>
-                <li><a href="lostandfound.php">
-                        <i class="fas fa-dumpster"></i>
-                        <span class="nav-item">Lost and Found</span>
-                    </a></li>
-                <li><a href="shuttle_tracking_system.php">
+                        <span>Rooms</span>
+                    </a>
+                    <a href="adminpanel.php" class="menu-item">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Sell & Exchange</span>
+                    </a>
+                    <a href="adminpanel.php" class="menu-item">
+                        <i class="fas fa-search"></i>
+                        <span>Lost & Found</span>
+                    </a>
+                    <a href="adminpanel.php" class="menu-item">
                         <i class="fas fa-bus"></i>
-                        <span class="nav-item">Shuttle Services</span>
-                    </a></li>
-            </ul>
+                        <span>Shuttle Service</span>
+                    </a>
+                    <a href="adminpanel.php" class="menu-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Mentorship Sessions</span>
+                    </a>
+                </div>
+            </div>
 
             <a href="uiusupplementlogin.html" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i>
-                Log Out
+                <i class="fas fa-sign-out-alt"></i> Logout
             </a>
-        </nav>
+        </div>
 
         <!-- Main Content Section -->
         <section class="main">
@@ -405,22 +517,6 @@ $adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
                     console.error('Error:', error);
                     alert('There was a problem adding the room.');
                 });
-        });
-    </script>
-    <!--footer script-->
-    <script>
-        window.addEventListener("scroll", function () {
-            let nav = document.querySelector("nav");
-            let footer = document.querySelector(".footer");
-            let footerRect = footer.getBoundingClientRect();
-
-            if (footerRect.top <= window.innerHeight) {
-                nav.style.position = "absolute";
-                nav.style.top = (window.scrollY + footerRect.top - nav.offsetHeight) + "px";
-            } else {
-                nav.style.position = "fixed";
-                nav.style.top = "0";
-            }
         });
     </script>
 </body>

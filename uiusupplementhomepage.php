@@ -1,7 +1,14 @@
 <?php
 session_start();
 
-// Authentication check - redirect to login if not logged in
+// Redirect based on user type
+// Admins go to admin panel, students stay on homepage
+if (isset($_SESSION['admin_id'])) {
+    header("Location: adminpanel.php");
+    exit();
+}
+
+// Redirect non-logged-in users to login
 if (!isset($_SESSION['user_id'])) {
     header("Location: uiusupplementlogin.html");
     exit();

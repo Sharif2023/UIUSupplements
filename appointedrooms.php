@@ -1,8 +1,13 @@
 <?php
 session_start();
 
-// Check if user is admin (optional - can show to all but only admins can take action)
-$isAdmin = isset($_SESSION['admin_id']);
+// Admin authentication required - redirect non-admins to homepage
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: uiusupplementhomepage.php");
+    exit();
+}
+
+$isAdmin = true; // Always true since we checked above
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +15,7 @@ $isAdmin = isset($_SESSION['admin_id']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rented Rooms<?php echo $isAdmin ? ' - Admin Panel' : ''; ?> | UIU Supplement</title>
+    <title>Rented Rooms - Admin Panel | UIU Supplement</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="assets/css/index.css" />
     <style>
@@ -230,10 +235,13 @@ $isAdmin = isset($_SESSION['admin_id']);
 
         <section class="main">
             <div class="main-top">
-                <h1>Rented Rooms<?php echo $isAdmin ? ' - Admin Panel' : ''; ?></h1>
-                <?php if ($isAdmin): ?>
+                <h1>Rented Rooms - Admin Panel</h1>
                 <p style="text-align:center; color:#666;">Manage rented rooms and handle relisting requests</p>
-                <?php endif; ?>
+                <div style="text-align: center; margin: 20px 0;">
+                    <button onclick="checkExpiredRentals()" class="btn btn-approve" style="background:#007bff;">
+                        <i class="fas fa-sync-alt"></i> Check for Expired Rentals
+                    </button>
+                </div>
             </div>
             <div id="appointed-room-list">
                 <!-- Room cards will be dynamically inserted here -->
@@ -246,7 +254,7 @@ $isAdmin = isset($_SESSION['admin_id']);
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const isAdmin = <?php echo $isAdmin ? 'true' : 'false'; ?>;
+            const isAdmin = true; // Always true - page is admin-only
             let carouselIndexes = {};
 
             fetch('api/appointedrooms.php')
@@ -379,13 +387,13 @@ $isAdmin = isset($_SESSION['admin_id']);
                     return;
                 }
 
-                fetch('api/admin_rooms.php', {
-                    method: 'PUT',
+                fetch('api/handle_relisting.php', {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        action: 'approve_relisting',
+                        action: 'approve',
                         room_id: roomId
                     })
                 })
@@ -409,8 +417,15 @@ $isAdmin = isset($_SESSION['admin_id']);
                     return;
                 }
 
-                fetch(`api/admin_rooms.php?room_id=${roomId}&reject_relisting=true`, {
-                    method: 'DELETE'
+                fetch('api/handle_relisting.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'reject',
+                        room_id: roomId
+                    })
                 })
                 .then(response => response.json())
                 .then(result => {
@@ -424,6 +439,30 @@ $isAdmin = isset($_SESSION['admin_id']);
                 .catch(error => {
                     console.error('Error:', error);
                     alert('An error occurred while deleting the room');
+                });
+            };
+            
+            // Check expired rentals function
+            window.checkExpiredRentals = function() {
+                fetch('api/check_rental_expiration.php', {
+                    method: 'GET'
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        if (result.expired_rentals_found > 0) {
+                            alert(`Found ${result.expired_rentals_found} expired rental(s). The page will refresh to show them.`);
+                            location.reload();
+                        } else {
+                            alert('No expired rentals found. All rentals are up to date!');
+                        }
+                    } else {
+                        alert('Error: ' + (result.error || 'Failed to check expirations'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while checking expirations');
                 });
             };
         });

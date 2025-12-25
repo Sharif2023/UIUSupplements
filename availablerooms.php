@@ -1,14 +1,21 @@
 <?php
 session_start();
 
-// Authentication check - redirect to login if not logged in
+// STUDENT-ONLY PAGE
+// Redirect admins to admin panel
+if (isset($_SESSION['admin_id'])) {
+    header("Location: adminpanel.php");
+    exit();
+}
+
+// Redirect non-logged-in users to login
 if (!isset($_SESSION['user_id'])) {
     header("Location: uiusupplementlogin.html");
     exit();
 }
 
-// Check if user is admin
-$isAdmin = isset($_SESSION['admin_id']);
+// This page is for students only
+$isAdmin = false;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -265,12 +272,7 @@ $isAdmin = isset($_SESSION['admin_id']);
             <div id="room-list" class="main-skills">
                 <!-- Room details will be dynamically inserted here -->
             </div>
-            <div class="button-group">
-                <?php if ($isAdmin): ?>
-                <button id="add-new-room" onclick="location.href='addnewroom.php'" class="card-btn">Add New Room</button>
-                <?php endif; ?>
-                <button id="view-rooms" onclick="location.href='appointedrooms.php'" class="card-btn">Rented Rooms</button>
-            </div>
+            <!-- Admin functions (Add Room, View Rented) are accessible only via Admin Panel -->
         </section>
     </div>
 
