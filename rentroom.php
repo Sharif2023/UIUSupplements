@@ -1,22 +1,41 @@
 <?php
+session_start();
+header('Content-Type: application/json');
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(['status' => 'error', 'message' => 'Not logged in']);
+    exit();
+}
+
 // Database connection
-$host = 'localhost'; // Change as per your database host
-$dbname = 'uiusupplements'; // Change to your database name
-$user = 'root'; // Change as per your database username
-$pass = ''; // Change to your database password
+$host = 'localhost';
+$dbname = 'uiusupplements';
+$user = 'root';
+$pass = '';
 
 // Create connection
 $conn = new mysqli($host, $user, $pass, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
+    exit();
 }
+
 // Fetch posted data
 $data = json_decode(file_get_contents("php://input"), true);
-$user_id = $data['user_id'];
-$password = $data['password'];
-$room_id = $data['room_id'];
+$password = $data['password'] ?? '';
+$room_id = $data['room_id'] ?? '';
+
+// Get user_id from session instead of request
+$user_id = $_SESSION['user_id'];
+
+// Validate input
+if (empty($password) || empty($room_id)) {
+    echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
+    exit();
+}
 
 // Validate user credentials
 $query = "SELECT * FROM users WHERE id = ? LIMIT 1";
