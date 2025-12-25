@@ -37,7 +37,7 @@ if ($method === 'GET') {
             'total_lost_items' => "SELECT COUNT(*) as count FROM lost_and_found",
             'total_drivers' => "SELECT COUNT(*) as count FROM shuttle_driver",
             'pending_claims' => "SELECT COUNT(*) as count FROM lost_and_found WHERE claim_status = 0",
-            'rented_rooms' => "SELECT COUNT(*) as count FROM appointedrooms",
+            'rented_rooms' => "SELECT COUNT(*) as count FROM rentedrooms",
             'pending_sessions' => "SELECT COUNT(*) as count FROM request_mentorship_session WHERE status = 'Pending'"
         ];
         

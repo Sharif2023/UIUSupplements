@@ -115,13 +115,13 @@ if ($result->num_rows > 0) {
 }
 
 // Fetch appointed rooms
-$stmt = $conn->prepare("SELECT appointed_room_id FROM appointedrooms WHERE appointed_user_id = ?");
+$stmt = $conn->prepare("SELECT rented_room_id FROM rentedrooms WHERE rented_user_id = ?");
 $stmt->bind_param("i", $userId);
 $stmt->execute();
-$appointedRoomsResult = $stmt->get_result();
-$appointedRooms = [];
-while ($row = $appointedRoomsResult->fetch_assoc()) {
-    $appointedRooms[] = $row;
+$rentedRoomsResult = $stmt->get_result();
+$rentedRooms = [];
+while ($row = $rentedRoomsResult->fetch_assoc()) {
+    $rentedRooms[] = $row;
 }
 
 // Fetch mentorship sessions
@@ -607,7 +607,7 @@ $lostItems = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-home"></i></div>
-                        <div class="stat-value"><?php echo count($appointedRooms); ?></div>
+                        <div class="stat-value"><?php echo count($rentedRooms); ?></div>
                         <div class="stat-label">Rooms Rented</div>
                     </div>
                     <div class="stat-card">

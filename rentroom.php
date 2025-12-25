@@ -38,8 +38,8 @@ if ($user) {
         $room = $roomResult->fetch_assoc();
 
         if ($room) {
-            // Insert into appointedrooms
-            $query = "INSERT INTO appointedrooms (appointed_room_id, appointed_user_id, appointed_user_name, appointed_user_email) 
+            // Insert into rentedrooms
+            $query = "INSERT INTO rentedrooms (rented_room_id, rented_user_id, rented_user_name, rented_user_email) 
                       VALUES (?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
             $stmt->bind_param("siss", $room_id, $user['id'], $user['username'], $user['email']);

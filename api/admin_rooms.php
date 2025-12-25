@@ -123,8 +123,8 @@ elseif ($method === 'PUT') {
         $stmt->bind_param('s', $data['room_id']);
         
         if ($stmt->execute()) {
-            // Remove from appointedrooms
-            $del_sql = "DELETE FROM appointedrooms WHERE appointed_room_id = ?";
+            // Remove from rentedrooms
+            $del_sql = "DELETE FROM rentedrooms WHERE rented_room_id = ?";
             $del_stmt = $conn->prepare($del_sql);
             $del_stmt->bind_param('s', $data['room_id']);
             $del_stmt->execute();
@@ -180,12 +180,12 @@ elseif ($method === 'DELETE') {
     $room_id = $_GET['room_id'];
     $is_rejection = isset($_GET['reject_relisting']) && $_GET['reject_relisting'] === 'true';
     
-    // First, delete from appointedrooms if exists
-    $del_appointed_sql = "DELETE FROM appointedrooms WHERE appointed_room_id = ?";
-    $del_appointed_stmt = $conn->prepare($del_appointed_sql);
-    $del_appointed_stmt->bind_param('s', $room_id);
-    $del_appointed_stmt->execute();
-    $del_appointed_stmt->close();
+    // First, delete from rentedrooms if exists
+    $del_rented_sql = "DELETE FROM rentedrooms WHERE rented_room_id = ?";
+    $del_rented_stmt = $conn->prepare($del_rented_sql);
+    $del_rented_stmt->bind_param('s', $room_id);
+    $del_rented_stmt->execute();
+    $del_rented_stmt->close();
     
     // Then delete from availablerooms
     $sql = "DELETE FROM availablerooms WHERE room_id = ?";

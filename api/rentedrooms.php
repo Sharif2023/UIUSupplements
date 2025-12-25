@@ -17,9 +17,9 @@ if ($conn->connect_error) {
 
 // Fetch rented rooms with full details from availablerooms table
 $sql = "SELECT ar.*, 
-               apr.appointed_user_id, 
-               apr.appointed_user_name, 
-               apr.appointed_user_email,
+               rtr.rented_user_id, 
+               rtr.rented_user_name, 
+               rtr.rented_user_email,
                u.username as tenant_name,
                u.email as tenant_email,
                CASE 
@@ -28,7 +28,7 @@ $sql = "SELECT ar.*,
                    ELSE 'available'
                END as rental_status
         FROM availablerooms ar
-        LEFT JOIN appointedrooms apr ON ar.room_id = apr.appointed_room_id
+        LEFT JOIN rentedrooms rtr ON ar.room_id = rtr.rented_room_id
         LEFT JOIN users u ON ar.rented_to_user_id = u.id
         WHERE ar.status = 'not-available' OR ar.is_relisting_pending = 1
         ORDER BY ar.serial DESC";

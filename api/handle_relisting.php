@@ -67,9 +67,9 @@ if ($action === 'approve') {
     $stmt->bind_param('s', $room_id);
     
     if ($stmt->execute()) {
-        // Also clear from appointedrooms table
-        $clear_appointed = "DELETE FROM appointedrooms WHERE appointed_room_id = ?";
-        $clear_stmt = $conn->prepare($clear_appointed);
+        // Also clear from rentedrooms table
+        $clear_rented = "DELETE FROM rentedrooms WHERE rented_room_id = ?";
+        $clear_stmt = $conn->prepare($clear_rented);
         $clear_stmt->bind_param('s', $room_id);
         $clear_stmt->execute();
         $clear_stmt->close();
@@ -96,12 +96,12 @@ if ($action === 'approve') {
 } elseif ($action === 'reject') {
     // Reject relisting - delete the room entirely
     
-    // First, delete from appointedrooms
-    $delete_appointed = "DELETE FROM appointedrooms WHERE appointed_room_id = ?";
-    $stmt_appointed = $conn->prepare($delete_appointed);
-    $stmt_appointed->bind_param('s', $room_id);
-    $stmt_appointed->execute();
-    $stmt_appointed->close();
+    // First, delete from rentedrooms
+    $delete_rented = "DELETE FROM rentedrooms WHERE rented_room_id = ?";
+    $stmt_rented = $conn->prepare($delete_rented);
+    $stmt_rented->bind_param('s', $room_id);
+    $stmt_rented->execute();
+    $stmt_rented->close();
     
     // Then delete the room from availablerooms
     $delete_sql = "DELETE FROM availablerooms WHERE room_id = ?";

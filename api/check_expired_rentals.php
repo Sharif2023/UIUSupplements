@@ -40,7 +40,7 @@ if ($stmt->execute()) {
         
         if ($admin_result) {
             $notification_sql = "INSERT INTO notifications (user_id, type, title, message, link) 
-                               VALUES (?, 'rental_expired', 'Expired Rentals', ?, 'appointedrooms.php')";
+                               VALUES (?, 'rental_expired', 'Expired Rentals', ?, 'rentedrooms.php')";
             $notif_stmt = $conn->prepare($notification_sql);
             
             while ($admin = $admin_result->fetch_assoc()) {

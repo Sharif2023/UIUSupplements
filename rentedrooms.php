@@ -243,7 +243,7 @@ $isAdmin = true; // Always true since we checked above
                     </button>
                 </div>
             </div>
-            <div id="appointed-room-list">
+            <div id="rented-room-list">
                 <!-- Room cards will be dynamically inserted here -->
             </div>
             <div class="button-group" style="text-align: center; margin-top: 30px;">
@@ -257,10 +257,10 @@ $isAdmin = true; // Always true since we checked above
             const isAdmin = true; // Always true - page is admin-only
             let carouselIndexes = {};
 
-            fetch('api/appointedrooms.php')
+            fetch('api/rentedrooms.php')
                 .then(response => response.json())
                 .then(rooms => {
-                    const container = document.getElementById('appointed-room-list');
+                    const container = document.getElementById('rented-room-list');
                     
                     if (rooms.length === 0) {
                         container.innerHTML = '<div class="no-rooms"><i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 15px; opacity: 0.3;"></i><br>No rented rooms found</div>';
@@ -274,7 +274,7 @@ $isAdmin = true; // Always true since we checked above
                 })
                 .catch(error => {
                     console.error('Error fetching rented rooms:', error);
-                    document.getElementById('appointed-room-list').innerHTML = 
+                    document.getElementById('rented-room-list').innerHTML = 
                         '<div class="no-rooms" style="color: #FF3300;">Error loading rooms. Please try again.</div>';
                 });
 
@@ -324,11 +324,11 @@ $isAdmin = true; // Always true since we checked above
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">Tenant</div>
-                            <div class="detail-value">${room.tenant_name || room.appointed_user_name || 'N/A'}</div>
+                            <div class="detail-value">${room.tenant_name || room.rented_user_name || 'N/A'}</div>
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">Contact</div>
-                            <div class="detail-value">${room.tenant_email || room.appointed_user_email || 'N/A'}</div>
+                            <div class="detail-value">${room.tenant_email || room.rented_user_email || 'N/A'}</div>
                         </div>
                         <div class="detail-item">
                             <div class="detail-label">Rented From</div>
