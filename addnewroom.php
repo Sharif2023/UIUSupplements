@@ -488,16 +488,35 @@ $adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
             event.preventDefault();
 
             const formData = new FormData(this);
-            // Rename form fields to match API expectations
-            formData.set('room_id', formData.get('room-id'));
-            formData.set('room_location', formData.get('room-location'));
-            formData.set('room_details', formData.get('room-details'));
-            formData.set('rental_rules', formData.get('rental-rules'));
-            formData.set('available_from', formData.get('available-from'));
-            formData.set('available_to', formData.get('available-to'));
-            formData.set('status', formData.get('available-status'));
-            formData.set('room_rent', formData.get('room-rent'));
-            formData.set('room_photos', formData.getAll('room-photos[]'));
+            
+            // Get file input
+            const photoFiles = document.getElementById('room-photos').files;
+            
+            // Remove old field names with dashes
+            formData.delete('room-id');
+            formData.delete('room-location');
+            formData.delete('room-details');
+            formData.delete('rental-rules');
+            formData.delete('available-from');
+            formData.delete('available-to');
+            formData.delete('available-status');
+            formData.delete('room-rent');
+            formData.delete('room-photos[]');
+            
+            // Add fields with underscores (API format)
+            formData.append('room_id', document.getElementById('room-id').value);
+            formData.append('room_location', document.getElementById('room-location').value);
+            formData.append('room_details', document.getElementById('room-details').value);
+            formData.append('rental_rules', document.getElementById('rental-rules').value);
+            formData.append('available_from', document.getElementById('available-from').value);
+            formData.append('available_to', document.getElementById('available-to').value);
+            formData.append('status', document.querySelector('input[name="available-status"]:checked').value);
+            formData.append('room_rent', document.getElementById('room-rent').value);
+            
+            // Append each photo file individually
+            for (let i = 0; i < photoFiles.length; i++) {
+                formData.append('room_photos[]', photoFiles[i]);
+            }
 
             fetch('api/admin_add_room.php', {
                 method: 'POST',

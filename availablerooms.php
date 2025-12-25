@@ -53,6 +53,102 @@ $isAdmin = false;
             height: 200px;
             overflow: hidden;
             position: relative;
+            cursor: pointer;
+        }
+
+        /* Fullscreen icon overlay */
+        .fullscreen-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 18px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .carousel:hover .fullscreen-icon {
+            opacity: 1;
+        }
+
+        .fullscreen-icon:hover {
+            background: rgba(255, 51, 0, 0.9);
+        }
+
+        /* Lightbox Modal */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10000;
+        }
+
+        .lightbox-close:hover {
+            color: #FF3300;
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 20px;
+            font-size: 30px;
+            z-index: 10000;
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(255, 51, 0, 0.9);
+        }
+
+        .lightbox-prev {
+            left: 20px;
+        }
+
+        .lightbox-next {
+            right: 20px;
         }
 
         .carousel-images {
@@ -276,6 +372,16 @@ $isAdmin = false;
         </section>
     </div>
 
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <div class="lightbox-content">
+            <button class="lightbox-nav lightbox-prev" onclick="lightboxPrev()">&#10094;</button>
+            <img id="lightbox-img" class="lightbox-img" src="" alt="Fullscreen view">
+            <button class="lightbox-nav lightbox-next" onclick="lightboxNext()">&#10095;</button>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             let roomsData = [];
@@ -313,6 +419,16 @@ $isAdmin = false;
                     });
 
                     carousel.appendChild(carouselImages);
+                    
+                    // Add fullscreen icon
+                    const fullscreenIcon = document.createElement('div');
+                    fullscreenIcon.classList.add('fullscreen-icon');
+                    fullscreenIcon.innerHTML = '<i class="fas fa-expand"></i>';
+                    fullscreenIcon.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        openLightbox(room.room_photos, currentIndexes[index] || 0);
+                    });
+                    carousel.appendChild(fullscreenIcon);
 
                     // Add navigation buttons for carousel
                     const navButtons = document.createElement('div');
@@ -473,6 +589,45 @@ $isAdmin = false;
                     alert("User ID and Password are required.");
                 }
             }
+
+            // Lightbox functionality
+            let lightboxPhotos = [];
+            let lightboxCurrentIndex = 0;
+
+            window.openLightbox = function(photos, startIndex = 0) {
+                lightboxPhotos = photos;
+                lightboxCurrentIndex = startIndex;
+                document.getElementById('lightbox').classList.add('active');
+                document.getElementById('lightbox-img').src = photos[startIndex].trim();
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            };
+
+            window.closeLightbox = function() {
+                document.getElementById('lightbox').classList.remove('active');
+                document.body.style.overflow = ''; // Restore scrolling
+            };
+
+            window.lightboxNext = function() {
+                lightboxCurrentIndex = (lightboxCurrentIndex + 1) % lightboxPhotos.length;
+                document.getElementById('lightbox-img').src = lightboxPhotos[lightboxCurrentIndex].trim();
+            };
+
+            window.lightboxPrev = function() {
+                lightboxCurrentIndex = (lightboxCurrentIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
+                document.getElementById('lightbox-img').src = lightboxPhotos[lightboxCurrentIndex].trim();
+            };
+
+            // Close lightbox on ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowRight') lightboxNext();
+                if (e.key === 'ArrowLeft') lightboxPrev();
+            });
+
+            // Close lightbox when clicking outside the image
+            document.getElementById('lightbox').addEventListener('click', function(e) {
+                if (e.target === this) closeLightbox();
+            });
         });
     </script>
 </body>
