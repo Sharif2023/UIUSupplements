@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 23, 2025 at 08:37 PM
+-- Generation Time: Dec 25, 2025 at 07:35 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -64,28 +64,9 @@ INSERT INTO `admin_activity_logs` (`log_id`, `admin_id`, `action_type`, `target_
 (1, 11221078, 'UPDATE', 'SESSION', '1', 'Updated session status to: Rejected', '2025-12-22 13:18:44'),
 (2, 11221078, 'UPDATE', 'ROOM', 'uiu111', 'Updated room: uiu111', '2025-12-22 14:33:11'),
 (3, 11221078, 'UPDATE', 'ROOM', 'uiu111', 'Updated room: uiu111', '2025-12-22 14:33:17'),
-(4, 11221078, 'UPDATE', 'USER', '11111111', 'Updated user: shariful Islam', '2025-12-22 14:33:45');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `appointedrooms`
---
-
-CREATE TABLE `appointedrooms` (
-  `appointed_room_id` varchar(255) NOT NULL DEFAULT 'NOT NULL',
-  `appointed_user_id` int(11) DEFAULT NULL,
-  `appointed_user_name` varchar(50) DEFAULT NULL,
-  `appointed_user_email` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `appointedrooms`
---
-
-INSERT INTO `appointedrooms` (`appointed_room_id`, `appointed_user_id`, `appointed_user_name`, `appointed_user_email`) VALUES
-('uiu111', 11221090, 'Abul Kalam', 'abulkalam@gmail.com'),
-('uiu117', 11221369, 'Md Shakib', 'shakib@gmail.com');
+(4, 11221078, 'UPDATE', 'USER', '11111111', 'Updated user: shariful Islam', '2025-12-22 14:33:45'),
+(5, 11221078, 'DELETE', 'ROOM', 'uiu111', 'Deleted room: uiu111', '2025-12-24 13:03:47'),
+(6, 11221078, 'CHECK_EXPIRATION', 'ROOM', 'SYSTEM', 'Checked rental expirations: 1 rooms flagged for relisting', '2025-12-24 13:04:13');
 
 -- --------------------------------------------------------
 
@@ -113,21 +94,6 @@ CREATE TABLE `availablerooms` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Room creation timestamp',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Last update timestamp'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `availablerooms`
---
-
-INSERT INTO `availablerooms` (`serial`, `room_id`, `room_location`, `room_details`, `room_photos`, `available_from`, `available_to`, `status`, `room_rent`, `added_by_admin_id`, `rental_rules`, `rented_to_user_id`, `rented_from_date`, `rented_until_date`, `is_relisting_pending`, `is_visible_to_students`, `created_at`, `updated_at`) VALUES
-(1, 'uiu111', '55/3,syednagar,dhaka-1500', '', 'uploads/room.jpg,uploads/room1.jpg', '2024-07-15', '2024-07-20', 'not-available', 6000, NULL, NULL, 11221090, '2024-07-15', '2024-07-20', 0, 0, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
-(2, 'uiu114', '55/4,Family Bazar,dhaka-1501', '', 'uploads/room3.jpg,uploads/room2.jpg,uploads/room4.jpg', '2024-07-17', '2024-08-01', 'available', 6000, NULL, NULL, NULL, NULL, NULL, 0, 1, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
-(3, 'uiu115', '55/3,syednagar,dhaka-1500', '', 'uploads/room5.jpg,uploads/room4.jpg', '2024-07-01', '2024-07-31', 'available', 5500, NULL, NULL, NULL, NULL, NULL, 0, 1, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
-(4, 'uiu112', '55/2,syednagar,dhaka-1500', '', 'uploads/room4.jpg,uploads/room.jpg', '2024-07-16', '2024-07-27', 'not-available', 5000, NULL, NULL, NULL, NULL, NULL, 0, 0, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
-(8, 'uiu113', '12/18,syednagar,dhaka-1100', '', 'uploads/room3.jpg,uploads/room4.jpg', '2024-08-10', '2024-08-31', 'not-available', 5500, NULL, NULL, NULL, NULL, NULL, 0, 0, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
-(9, 'uiu116', '54/23, Family Bazar, Dhaka-1300', '', 'uploads/room3.jpg,uploads/room4.jpg', '2024-08-29', '2024-09-30', 'not-available', 7000, NULL, NULL, NULL, NULL, NULL, 0, 0, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
-(10, 'uiu117', '12/12, Family Bazar, Dhaka-1220', '', 'uploads/room1.jpg,uploads/room2.jpg', '2024-09-01', '2024-09-30', 'not-available', 4500, NULL, NULL, 11221369, '2024-09-01', '2024-09-30', 0, 0, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
-(11, 'uiu118', '10/15,mirpur,dhaka-1200', 'single,attach bathroom, attach kitchen', 'uploads/room2.jpg,uploads/room1.jpg', '2024-08-15', '2024-08-31', 'not-available', 6000, NULL, NULL, NULL, NULL, NULL, 0, 0, '2025-12-23 19:34:32', '2025-12-23 19:34:32'),
-(13, 'uiu-119', '1/1, uttar badda, dhaka-1320', 'single room with attached bathroom,kitchen and bar', 'uploads/Screenshot (95).png,uploads/Screenshot (96).png,uploads/Screenshot (97).png', '2024-09-01', '2024-09-28', 'available', 6000, NULL, NULL, NULL, NULL, NULL, 0, 1, '2025-12-23 19:34:32', '2025-12-23 19:34:32');
 
 -- --------------------------------------------------------
 
@@ -464,19 +430,19 @@ INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`
 (1, 11221369, 'message', 'New message from Test', 'hii', 'chat.php?user=11221122', 1, '2025-12-20 11:45:02'),
 (2, 11221122, 'message', 'New message from Md Shakib', 'hello', 'chat.php?user=11221369', 1, '2025-12-20 11:46:00'),
 (3, 11221080, 'bargain', 'New Bargain Offer', 'You received a bargain offer of ৳250.00 on your product', 'myselllist.php?product_id=3', 1, '2025-12-23 17:06:54'),
-(4, 11221079, 'bargain_countered', 'Counter Offer Received', 'The seller has made a counter offer on your bargain', 'mybargains.php?bargain_id=1', 0, '2025-12-23 17:15:46'),
-(5, 11221079, 'counter_offer', 'Counter Offer Received', 'Seller offered ৳280.00 as counter offer', 'mybargains.php?bargain_id=1', 0, '2025-12-23 17:15:46'),
-(6, 11221079, 'counter_offer', 'Counter Offer Received', 'Seller offered ৳260.00 as counter offer', 'mybargains.php?bargain_id=1', 0, '2025-12-23 17:20:18'),
-(7, 11221079, 'bargain_accepted', 'Bargain Accepted!', 'Your bargain offer of ৳260.00 has been accepted', 'mybargains.php?bargain_id=1', 0, '2025-12-23 17:20:44'),
-(8, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 18:57:54'),
-(9, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 18:58:40'),
-(10, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:04:25'),
-(11, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:04:32'),
-(12, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:11:00'),
-(13, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:13:00'),
-(14, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:13:09'),
-(15, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:15:28'),
-(16, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 0, '2025-12-23 19:15:33');
+(4, 11221079, 'bargain_countered', 'Counter Offer Received', 'The seller has made a counter offer on your bargain', 'mybargains.php?bargain_id=1', 1, '2025-12-23 17:15:46'),
+(5, 11221079, 'counter_offer', 'Counter Offer Received', 'Seller offered ৳280.00 as counter offer', 'mybargains.php?bargain_id=1', 1, '2025-12-23 17:15:46'),
+(6, 11221079, 'counter_offer', 'Counter Offer Received', 'Seller offered ৳260.00 as counter offer', 'mybargains.php?bargain_id=1', 1, '2025-12-23 17:20:18'),
+(7, 11221079, 'bargain_accepted', 'Bargain Accepted!', 'Your bargain offer of ৳260.00 has been accepted', 'mybargains.php?bargain_id=1', 1, '2025-12-23 17:20:44'),
+(8, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 18:57:54'),
+(9, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 18:58:40'),
+(10, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:04:25'),
+(11, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:04:32'),
+(12, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:11:00'),
+(13, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:13:00'),
+(14, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:13:09'),
+(15, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:15:28'),
+(16, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:15:33');
 
 -- --------------------------------------------------------
 
@@ -560,6 +526,19 @@ CREATE TABLE `product_views` (
   `product_id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
   `viewed_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rentedrooms`
+--
+
+CREATE TABLE `rentedrooms` (
+  `rented_room_id` varchar(255) NOT NULL DEFAULT 'NOT NULL',
+  `rented_user_id` int(11) DEFAULT NULL,
+  `rented_user_name` varchar(50) DEFAULT NULL,
+  `rented_user_email` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -758,13 +737,6 @@ ALTER TABLE `admin_activity_logs`
   ADD KEY `idx_admin_logs_date` (`created_at`);
 
 --
--- Indexes for table `appointedrooms`
---
-ALTER TABLE `appointedrooms`
-  ADD PRIMARY KEY (`appointed_room_id`),
-  ADD KEY `fk_appoint_users` (`appointed_user_id`);
-
---
 -- Indexes for table `availablerooms`
 --
 ALTER TABLE `availablerooms`
@@ -881,6 +853,13 @@ ALTER TABLE `product_views`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `rentedrooms`
+--
+ALTER TABLE `rentedrooms`
+  ADD PRIMARY KEY (`rented_room_id`),
+  ADD KEY `fk_appoint_users` (`rented_user_id`);
+
+--
 -- Indexes for table `request_mentorship_session`
 --
 ALTER TABLE `request_mentorship_session`
@@ -939,13 +918,13 @@ ALTER TABLE `user_settings`
 -- AUTO_INCREMENT for table `admin_activity_logs`
 --
 ALTER TABLE `admin_activity_logs`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `availablerooms`
 --
 ALTER TABLE `availablerooms`
-  MODIFY `serial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `serial` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `bargains`
@@ -1054,14 +1033,6 @@ ALTER TABLE `admin_activity_logs`
   ADD CONSTRAINT `admin_activity_logs_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `admins` (`admin_id`);
 
 --
--- Constraints for table `appointedrooms`
---
-ALTER TABLE `appointedrooms`
-  ADD CONSTRAINT `fk_appoint_user` FOREIGN KEY (`appointed_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_appoint_users` FOREIGN KEY (`appointed_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_room_id` FOREIGN KEY (`appointed_room_id`) REFERENCES `availablerooms` (`room_id`) ON DELETE CASCADE;
-
---
 -- Constraints for table `availablerooms`
 --
 ALTER TABLE `availablerooms`
@@ -1145,6 +1116,14 @@ ALTER TABLE `products`
 ALTER TABLE `product_views`
   ADD CONSTRAINT `product_views_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `product_views_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `rentedrooms`
+--
+ALTER TABLE `rentedrooms`
+  ADD CONSTRAINT `fk_appoint_user` FOREIGN KEY (`rented_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_rented_users` FOREIGN KEY (`rented_user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_room_id` FOREIGN KEY (`rented_room_id`) REFERENCES `availablerooms` (`room_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `request_mentorship_session`
