@@ -62,6 +62,7 @@ $stats['total_lost_items'] = $lost_result ? $lost_result->fetch_assoc()['total']
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home Page | UIU Supplement</title>
+  <link rel="icon" type="image/x-icon" href="logo/title.ico">
   <!-- Font Awesome CDN Link -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <!-- Centralized CSS -->
