@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 26, 2025 at 02:18 PM
+-- Generation Time: Dec 26, 2025 at 03:43 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -280,7 +280,8 @@ CREATE TABLE `claims` (
 --
 
 INSERT INTO `claims` (`id`, `item_id`, `user_id`, `email`, `identification_info`) VALUES
-(4, NULL, '011111111', 'dsa@gmail.com', 'contact: 01855255815');
+(4, NULL, '011111111', 'dsa@gmail.com', 'contact: 01855255815'),
+(8, 2, '11221081', 'sharifislam0505@gmail.com', 'test');
 
 -- --------------------------------------------------------
 
@@ -374,6 +375,68 @@ CREATE TABLE `events` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `jobs`
+--
+
+CREATE TABLE `jobs` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `company` varchar(255) DEFAULT NULL,
+  `location` varchar(255) NOT NULL,
+  `job_type` enum('part-time','full-time','contract','internship') DEFAULT 'part-time',
+  `category` varchar(100) NOT NULL,
+  `salary` varchar(100) DEFAULT NULL,
+  `days_per_week` int(11) DEFAULT NULL,
+  `requirements` text DEFAULT NULL,
+  `contact_email` varchar(255) DEFAULT NULL,
+  `contact_phone` varchar(50) DEFAULT NULL,
+  `posted_by_user_id` int(11) DEFAULT NULL,
+  `posted_by_admin_id` int(11) DEFAULT NULL,
+  `status` enum('active','closed','expired') DEFAULT 'active',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `expires_at` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `jobs`
+--
+
+INSERT INTO `jobs` (`id`, `title`, `description`, `company`, `location`, `job_type`, `category`, `salary`, `days_per_week`, `requirements`, `contact_email`, `contact_phone`, `posted_by_user_id`, `posted_by_admin_id`, `status`, `created_at`, `expires_at`) VALUES
+(1, 'Teaching Assistant - CSE', 'Assist professors with lab sessions and grading assignments for CSE courses.', 'UIU', 'UIU Campus', 'part-time', 'Teaching', '8000-10000 BDT/month', 3, 'CGPA above 3.5, completed CSE 1111', 'cse@uiu.ac.bd', NULL, NULL, 11221078, 'active', '2025-12-26 13:49:02', NULL),
+(2, 'Research Assistant', 'Help with ongoing research projects in machine learning and data science.', 'UIU Research Lab', 'UIU Campus', 'part-time', 'Research', '12000 BDT/month', 4, 'Knowledge of Python, ML basics', 'research@uiu.ac.bd', NULL, NULL, 11221078, 'active', '2025-12-26 13:49:02', NULL),
+(3, 'Campus Ambassador', 'Represent the company on campus and organize events.', 'Tech Startup BD', 'Remote/Campus', 'part-time', 'Marketing', '5000 BDT/month + Commission', 2, 'Good communication skills', 'hr@techstartup.com', NULL, NULL, 11221078, 'active', '2025-12-26 13:49:02', NULL),
+(4, 'TA - CSE', 'test', 'UIU', 'UIU campus', 'part-time', 'Teaching', '8000', 3, 'cgpa: 3.7', 'job@gmail.com', '01000000000', NULL, 11221078, 'active', '2025-12-26 14:18:48', '2025-12-27'),
+(5, 'test', 'test', 'test', 'test', 'part-time', 'Teaching', '5000', NULL, 'test', 'test@gmail.com', '01000000000', NULL, 11221078, 'active', '2025-12-26 14:26:03', '2025-12-27');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `job_applications`
+--
+
+CREATE TABLE `job_applications` (
+  `id` int(11) NOT NULL,
+  `job_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `cover_letter` text DEFAULT NULL,
+  `cv_path` varchar(500) DEFAULT NULL,
+  `status` enum('pending','reviewed','accepted','rejected') DEFAULT 'pending',
+  `applied_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `reviewed_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `job_applications`
+--
+
+INSERT INTO `job_applications` (`id`, `job_id`, `user_id`, `cover_letter`, `cv_path`, `status`, `applied_at`, `reviewed_at`) VALUES
+(1, 4, 11221081, 'test', NULL, 'pending', '2025-12-26 14:19:59', NULL),
+(2, 5, 11221081, 'test', 'uploads/cv/cv_11221081_5_1766760078.pdf', 'pending', '2025-12-26 14:41:18', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `lost_and_found`
 --
 
@@ -459,7 +522,8 @@ INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`
 (13, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:13:00'),
 (14, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:13:09'),
 (15, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:15:28'),
-(16, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:15:33');
+(16, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:15:33'),
+(17, 11221079, 'session_accepted', 'Session Accepted!', 'Your mentorship session with Ashiq Khan has been accepted! Check the meeting link.', 'mymentors.php', 0, '2025-12-26 13:34:27');
 
 -- --------------------------------------------------------
 
@@ -587,6 +651,14 @@ CREATE TABLE `request_mentorship_session` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `request_mentorship_session`
+--
+
+INSERT INTO `request_mentorship_session` (`session_id`, `user_id`, `mentor_id`, `session_time`, `session_price`, `communication_method`, `session_date`, `problem_description`, `status`, `mentor_message`, `meeting_link`, `responded_at`, `created_at`) VALUES
+(3, 11221081, 39, '19:30', '45 min - 500 tk', 'Meet', '2025-12-27', 'CI/CD issue', 'Cancelled', NULL, NULL, NULL, '2025-12-26 08:31:07'),
+(4, 11221079, 39, '19:30', '45 min - 500 tk', 'Meet', '2025-12-27', 'CI/CD', 'completed', 'accepted', 'https://meet.google.com/123-123-1234', '2025-12-26 13:34:27', '2025-12-26 08:32:35');
+
 -- --------------------------------------------------------
 
 --
@@ -675,7 +747,8 @@ INSERT INTO `uiumentorlist` (`id`, `photo`, `name`, `bio`, `language`, `response
 (14, 'uploads/mentor5.jpg', 'AK Rayhan', 'I am a professional Business Man. I want fun.', 'English', '48 hours', 'Tech', '100 tk for 30 minutes', 'Brac', 'Bangladesh', 'c++,gpu,office', 'si@gmail.com', '01632223995', 'https://www.linkedin.com/sharifsi', 'https://www.facebook.com/sharifsi', NULL),
 (15, 'uploads/mentor6.jpg', 'Shakib Khan', 'I am a professional Engineer. I want fun.', 'English', '48 hours', 'Tech', '100 tk for 30 minutes', 'United Group', 'Bangladesh', 'c++,gpu,office', 'si@gmail.com', '01632223995', 'https://www.linkedin.com/sharifsi', 'https://www.facebook.com/sharifsi', NULL),
 (37, 'uploads/mentor7.jpg', 'AB Mahmud', 'Learn code from me', 'English', '', 'Finance', '', 'uiu', 'Bangladesh', 'marketing, promoting, branding', 'ab@gmail.com', '01800871179', 'https://www.linkedin.com/a', 'https://www.facebook.com/a', NULL),
-(38, 'uploads/mentor8.jpg', 'Rana Raiyan', 'Learn Marketing Ideas from me', 'Bangla', '48 hours', 'Tech', '1 hour - 500 tk,2 hours - 1000 tk', 'Nagad', 'Bangladesh', 'networking, Promoting', 'ab@gmail.com', '01800871179', 'https://www.linkedin.com/a', 'https://www.facebook.com/a', NULL);
+(38, 'uploads/mentor8.jpg', 'Rana Raiyan', 'Learn Marketing Ideas from me', 'Bangla', '48 hours', 'Tech', '1 hour - 500 tk,2 hours - 1000 tk', 'Nagad', 'Bangladesh', 'networking, Promoting', 'ab@gmail.com', '01800871179', 'https://www.linkedin.com/a', 'https://www.facebook.com/a', NULL),
+(39, 'uploads/mentor1766755802_me no bg.png', 'Ashiq Khan', 'I\'m a web developer.', 'Bangla', '12 hours', 'Tech', '45 min - 500 tk', 'techland', 'Bangladesh', 'React,Angular,Laravel,Mysql', 'akhan221081@bscse.uiu.ac.bd', '01700221081', 'https://www.linkedin.com/akhan', 'https://www.facebook.com/akhan', 11221081);
 
 -- --------------------------------------------------------
 
@@ -701,7 +774,8 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `username`, `email`, `Gender`, `password_hash`, `mobilenumber`, `created_at`, `is_mentor`) VALUES
 (11221078, 'Shariful Islam', '011221078', 'm', '$2y$10$zAuEsUA/9M0LKmWbBRHL5Oz7n6hFc7uEIoNQtrxaxnXg5F0wKeZvW', '1700871179', '2024-10-03 18:41:30', 0),
 (11221079, 'Mahmudul Hasan', 'mhasan221079@bscse.uiu.ac.bd', 'm', '$2y$10$brpUDs5I6/MM2bFc0ErhCOHuITpTSdY/0gYa2xKbHCEiTWoZDuSRi', '1700221079', '2025-12-23 16:55:43', 0),
-(11221080, 'Ashik Khan', 'akhan221080@bscse.uiu.ac.bd', 'm', '$2y$10$rKJy5xOgZ7f0sV0JOa0bCu9m00XopD.XF5Ex2vUnPGrYKnF6Dhg52', '1700221080', '2025-12-23 17:03:04', 0);
+(11221080, 'Ashik Khan', 'akhan221080@bscse.uiu.ac.bd', 'm', '$2y$10$rKJy5xOgZ7f0sV0JOa0bCu9m00XopD.XF5Ex2vUnPGrYKnF6Dhg52', '1700221080', '2025-12-23 17:03:04', 0),
+(11221081, 'Ashik Khan', 'akhan221081@bscse.uiu.ac.bd', 'm', '$2y$10$8/.pYeGHCtDR/WcAbVk/Fe19Uiaez0qjoR/vVf.ZTsMUjB0O.ztCG', '1700221080', '2025-12-26 13:23:00', 1);
 
 -- --------------------------------------------------------
 
@@ -834,6 +908,24 @@ ALTER TABLE `deal_chats`
 ALTER TABLE `events`
   ADD PRIMARY KEY (`event_id`),
   ADD KEY `organizer_id` (`organizer_id`);
+
+--
+-- Indexes for table `jobs`
+--
+ALTER TABLE `jobs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_posted_by_user` (`posted_by_user_id`),
+  ADD KEY `idx_posted_by_admin` (`posted_by_admin_id`),
+  ADD KEY `idx_status` (`status`);
+
+--
+-- Indexes for table `job_applications`
+--
+ALTER TABLE `job_applications`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_application` (`job_id`,`user_id`),
+  ADD KEY `idx_job_id` (`job_id`),
+  ADD KEY `idx_user_id` (`user_id`);
 
 --
 -- Indexes for table `lost_and_found`
@@ -972,7 +1064,7 @@ ALTER TABLE `chat_messages`
 -- AUTO_INCREMENT for table `claims`
 --
 ALTER TABLE `claims`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `deals`
@@ -993,6 +1085,18 @@ ALTER TABLE `events`
   MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `jobs`
+--
+ALTER TABLE `jobs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `job_applications`
+--
+ALTER TABLE `job_applications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `lost_and_found`
 --
 ALTER TABLE `lost_and_found`
@@ -1008,7 +1112,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `offers`
@@ -1032,7 +1136,7 @@ ALTER TABLE `product_views`
 -- AUTO_INCREMENT for table `request_mentorship_session`
 --
 ALTER TABLE `request_mentorship_session`
-  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `sell_exchange_list`
@@ -1044,7 +1148,7 @@ ALTER TABLE `sell_exchange_list`
 -- AUTO_INCREMENT for table `uiumentorlist`
 --
 ALTER TABLE `uiumentorlist`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- Constraints for dumped tables
@@ -1114,6 +1218,13 @@ ALTER TABLE `deal_chats`
 --
 ALTER TABLE `events`
   ADD CONSTRAINT `events_ibfk_1` FOREIGN KEY (`organizer_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `job_applications`
+--
+ALTER TABLE `job_applications`
+  ADD CONSTRAINT `fk_application_job` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_application_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `messages`

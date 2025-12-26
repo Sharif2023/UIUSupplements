@@ -74,6 +74,9 @@ function loadPageData(page) {
         case 'sessions':
             loadSessions();
             break;
+        case 'jobs':
+            loadJobs();
+            break;
         case 'analytics':
             loadAnalytics();
             break;
@@ -445,6 +448,105 @@ async function loadLostFound() {
     } catch (error) {
         console.error('Error loading lost & found:', error);
         container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h4>Error loading items</h4></div>';
+    }
+}
+
+// Load Jobs
+async function loadJobs() {
+    const container = document.getElementById('jobsTableContainer');
+    container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><p>Loading jobs...</p></div>';
+
+    try {
+        const response = await fetch('api/jobs.php?all_jobs=1');
+        const data = await response.json();
+
+        if (data.success && data.jobs.length > 0) {
+            let html = '<table><thead><tr>';
+            html += '<th>Title</th><th>Company</th><th>Location</th><th>Category</th><th>Type</th><th>Posted By</th><th>Status</th><th>Applications</th><th>Actions</th>';
+            html += '</tr></thead><tbody>';
+
+            data.jobs.forEach(job => {
+                const statusClass = job.status === 'active' ? 'status-available' : 'status-not-available';
+                const postedDate = new Date(job.created_at).toLocaleDateString();
+                html += `<tr>
+                    <td>${job.title}</td>
+                    <td>${job.company || 'N/A'}</td>
+                    <td>${job.location}</td>
+                    <td>${job.category}</td>
+                    <td>${job.job_type}</td>
+                    <td>${job.poster_name || 'Admin'} (${job.poster_type || 'admin'})</td>
+                    <td><span class="status-badge ${statusClass}">${job.status}</span></td>
+                    <td>${job.application_count || 0}</td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="toggleJobStatus(${job.id}, '${job.status}')" style="padding: 6px 12px; margin-right: 5px;">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteJob(${job.id})" style="padding: 6px 12px;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-briefcase"></i><h4>No Jobs Posted</h4><p>There are currently no job listings.</p></div>';
+        }
+    } catch (error) {
+        console.error('Error loading jobs:', error);
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h4>Error loading jobs</h4></div>';
+    }
+}
+
+// Toggle Job Status
+async function toggleJobStatus(jobId, currentStatus) {
+    const newStatus = currentStatus === 'active' ? 'closed' : 'active';
+
+    try {
+        const response = await fetch('api/jobs.php', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id: jobId,
+                status: newStatus
+            })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            showToast('Job status updated', 'success');
+            loadJobs();
+        } else {
+            showToast(data.error || 'Failed to update job', 'error');
+        }
+    } catch (error) {
+        console.error('Error updating job:', error);
+        showToast('Failed to update job', 'error');
+    }
+}
+
+// Delete Job
+async function deleteJob(jobId) {
+    if (!confirm('Are you sure you want to delete this job?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`api/jobs.php?id=${jobId}`, {
+            method: 'DELETE'
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            showToast('Job deleted successfully', 'success');
+            loadJobs();
+        } else {
+            showToast(data.error || 'Failed to delete job', 'error');
+        }
+    } catch (error) {
+        console.error('Error deleting job:', error);
+        showToast('Failed to delete job', 'error');
     }
 }
 

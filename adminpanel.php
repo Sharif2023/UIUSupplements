@@ -1078,6 +1078,10 @@ $conn->close();
                     <i class="fas fa-search"></i>
                     <span>Lost & Found</span>
                 </div>
+                <div class="menu-item" data-page="jobs">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Jobs</span>
+                </div>
                 <div class="menu-item" data-page="shuttle">
                     <i class="fas fa-bus"></i>
                     <span>Shuttle Service</span>
@@ -1279,6 +1283,26 @@ $conn->close();
                         <div class="loading">
                             <i class="fas fa-spinner"></i>
                             <p>Loading items...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs Page -->
+            <div class="page-section" id="jobs">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Job Listings</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-primary" onclick="window.location.href='postjob.php'">
+                                <i class="fas fa-plus"></i> Post Job
+                            </button>
+                        </div>
+                    </div>
+                    <div id="jobsTableContainer">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            <p>Loading jobs...</p>
                         </div>
                     </div>
                 </div>
