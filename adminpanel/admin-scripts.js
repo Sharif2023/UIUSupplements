@@ -80,6 +80,9 @@ function loadPageData(page) {
         case 'analytics':
             loadAnalytics();
             break;
+        case 'activity':
+            loadActivityLogs();
+            break;
     }
 }
 
@@ -652,6 +655,154 @@ async function loadAnalytics() {
     }
 }
 
+// Load Activity Logs
+let activityFiltersInitialized = false;
+
+async function loadActivityLogs(page = 1) {
+    const container = document.getElementById('activityTableContainer');
+    container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><p>Loading activity logs...</p></div>';
+
+    // Get filter values
+    const actionType = document.getElementById('activityActionFilter').value;
+    const targetType = document.getElementById('activityTargetFilter').value;
+    const dateFrom = document.getElementById('activityDateFrom').value;
+    const dateTo = document.getElementById('activityDateTo').value;
+
+    try {
+        let url = `api/admin_activity.php?page=${page}&limit=10`;
+        if (actionType) url += `&action_type=${encodeURIComponent(actionType)}`;
+        if (targetType) url += `&target_type=${encodeURIComponent(targetType)}`;
+        if (dateFrom) url += `&date_from=${encodeURIComponent(dateFrom)}`;
+        if (dateTo) url += `&date_to=${encodeURIComponent(dateTo)}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.success) {
+            // Update statistics
+            if (data.stats) {
+                document.getElementById('totalActivities').textContent = data.stats.total_actions || 0;
+                document.getElementById('actionsToday').textContent = data.stats.actions_today || 0;
+                document.getElementById('createActions').textContent = data.stats.create_count || 0;
+                document.getElementById('updateActions').textContent = data.stats.update_count || 0;
+            }
+
+            // Populate filter dropdowns (only once)
+            if (!activityFiltersInitialized && data.action_types && data.target_types) {
+                populateActivityFilters(data.action_types, data.target_types);
+                activityFiltersInitialized = true;
+            }
+
+            // Render activity table
+            if (data.activities && data.activities.length > 0) {
+                let html = '<table><thead><tr>';
+                html += '<th>Action</th><th>Target</th><th>Description</th><th>Admin</th><th>Date & Time</th>';
+                html += '</tr></thead><tbody>';
+
+                data.activities.forEach(activity => {
+                    const actionClass = getActionClass(activity.action_type);
+                    const formattedDate = formatDateTime(activity.created_at);
+                    
+                    html += `<tr>
+                        <td><span class="status-badge ${actionClass}">${activity.action_type}</span></td>
+                        <td><span class="status-badge status-pending">${activity.target_type}</span> <small>${activity.target_id}</small></td>
+                        <td>${activity.description || '-'}</td>
+                        <td>${activity.admin_name}</td>
+                        <td>${formattedDate}</td>
+                    </tr>`;
+                });
+
+                html += '</tbody></table>';
+
+                // Add pagination
+                if (data.totalPages > 1) {
+                    html += '<div class="pagination">';
+                    html += `<button onclick="loadActivityLogs(${page - 1})" ${page === 1 ? 'disabled' : ''}>Previous</button>`;
+                    
+                    // Show page numbers
+                    const startPage = Math.max(1, page - 2);
+                    const endPage = Math.min(data.totalPages, page + 2);
+                    
+                    if (startPage > 1) {
+                        html += `<button onclick="loadActivityLogs(1)">1</button>`;
+                        if (startPage > 2) html += '<span style="padding: 8px;">...</span>';
+                    }
+                    
+                    for (let i = startPage; i <= endPage; i++) {
+                        html += `<button onclick="loadActivityLogs(${i})" ${i === page ? 'class="active"' : ''}>${i}</button>`;
+                    }
+                    
+                    if (endPage < data.totalPages) {
+                        if (endPage < data.totalPages - 1) html += '<span style="padding: 8px;">...</span>';
+                        html += `<button onclick="loadActivityLogs(${data.totalPages})">${data.totalPages}</button>`;
+                    }
+                    
+                    html += `<button onclick="loadActivityLogs(${page + 1})" ${page === data.totalPages ? 'disabled' : ''}>Next</button>`;
+                    html += '</div>';
+                }
+
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-history"></i><h4>No Activity Logs</h4><p>No admin activity has been recorded yet.</p></div>';
+            }
+        } else {
+            throw new Error(data.error || 'Failed to load activity logs');
+        }
+    } catch (error) {
+        console.error('Error loading activity logs:', error);
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h4>Error Loading Activity</h4><p>Failed to load activity logs.</p></div>';
+    }
+}
+
+function populateActivityFilters(actionTypes, targetTypes) {
+    const actionSelect = document.getElementById('activityActionFilter');
+    const targetSelect = document.getElementById('activityTargetFilter');
+
+    // Clear and populate action types
+    actionSelect.innerHTML = '<option value="">All Actions</option>';
+    actionTypes.forEach(type => {
+        actionSelect.innerHTML += `<option value="${type}">${type}</option>`;
+    });
+
+    // Clear and populate target types
+    targetSelect.innerHTML = '<option value="">All Targets</option>';
+    targetTypes.forEach(type => {
+        targetSelect.innerHTML += `<option value="${type}">${type}</option>`;
+    });
+}
+
+function getActionClass(actionType) {
+    switch (actionType) {
+        case 'CREATE':
+            return 'status-available';
+        case 'UPDATE':
+            return 'status-approved';
+        case 'DELETE':
+            return 'status-not-available';
+        default:
+            return 'status-pending';
+    }
+}
+
+function formatDateTime(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function resetActivityFilters() {
+    document.getElementById('activityActionFilter').value = '';
+    document.getElementById('activityTargetFilter').value = '';
+    document.getElementById('activityDateFrom').value = '';
+    document.getElementById('activityDateTo').value = '';
+    loadActivityLogs(1);
+}
+
 // CRUD Operations
 
 // Edit User
@@ -893,6 +1044,23 @@ function setupEventListeners() {
     document.getElementById('roomStatusFilter').addEventListener('change', function (e) {
         const search = document.getElementById('roomSearch').value;
         loadRooms(1, search, e.target.value);
+    });
+
+    // Activity filters
+    document.getElementById('activityActionFilter').addEventListener('change', function () {
+        loadActivityLogs(1);
+    });
+
+    document.getElementById('activityTargetFilter').addEventListener('change', function () {
+        loadActivityLogs(1);
+    });
+
+    document.getElementById('activityDateFrom').addEventListener('change', function () {
+        loadActivityLogs(1);
+    });
+
+    document.getElementById('activityDateTo').addEventListener('change', function () {
+        loadActivityLogs(1);
     });
 
     // Edit user form

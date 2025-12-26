@@ -52,14 +52,16 @@ if ($method === 'GET') {
     $bargain_sql = "SELECT b.*, p.product_name, u.username 
                     FROM bargains b 
                     JOIN products p ON b.product_id = p.id 
-                    LEFT JOIN users u ON b.user_id = u.id 
+                    LEFT JOIN users u ON b.buyer_id = u.id 
                     ORDER BY b.id DESC";
     
     $bargain_result = $conn->query($bargain_sql);
     $bargains = [];
     
-    while ($row = $bargain_result->fetch_assoc()) {
-        $bargains[] = $row;
+    if ($bargain_result) {
+        while ($row = $bargain_result->fetch_assoc()) {
+            $bargains[] = $row;
+        }
     }
     
     echo json_encode([

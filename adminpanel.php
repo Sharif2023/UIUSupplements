@@ -226,6 +226,8 @@ $conn->close();
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            text-decoration: none;
+            display: block;
         }
 
         .logout-btn:hover {
@@ -1091,6 +1093,10 @@ $conn->close();
                     <i class="fas fa-calendar-check"></i>
                     <span>Mentorship Sessions</span>
                 </div>
+                <div class="menu-item" data-page="activity">
+                    <i class="fas fa-history"></i>
+                    <span>Activity Log</span>
+                </div>
             </div>
         </div>
 
@@ -1382,6 +1388,74 @@ $conn->close();
                         <div class="stat-info">
                             <div class="stat-value" id="rentedRooms">0</div>
                             <div class="stat-label">Rented Rooms</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Log Page -->
+            <div class="page-section" id="activity">
+                <!-- Activity Stats -->
+                <div class="stats-grid" style="margin-bottom: 25px;">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalActivities">0</div>
+                            <div class="stat-label">Total Actions</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="actionsToday">0</div>
+                            <div class="stat-label">Actions Today</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="createActions">0</div>
+                            <div class="stat-label">Create Actions</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="updateActions">0</div>
+                            <div class="stat-label">Update Actions</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Admin Activity Log</h3>
+                        <div class="table-actions" style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <select id="activityActionFilter" style="padding: 10px; border-radius: 8px; border: 2px solid var(--border-color);">
+                                <option value="">All Actions</option>
+                            </select>
+                            <select id="activityTargetFilter" style="padding: 10px; border-radius: 8px; border: 2px solid var(--border-color);">
+                                <option value="">All Targets</option>
+                            </select>
+                            <input type="date" id="activityDateFrom" style="padding: 10px; border-radius: 8px; border: 2px solid var(--border-color);" placeholder="From Date">
+                            <input type="date" id="activityDateTo" style="padding: 10px; border-radius: 8px; border: 2px solid var(--border-color);" placeholder="To Date">
+                            <button class="btn btn-secondary" onclick="resetActivityFilters()">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div id="activityTableContainer">
+                        <div class="loading">
+                            <i class="fas fa-spinner"></i>
+                            <p>Loading activity logs...</p>
                         </div>
                     </div>
                 </div>
