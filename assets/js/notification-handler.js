@@ -57,11 +57,14 @@ class NotificationHandler {
             const data = await response.json();
 
             if (data.success) {
-                this.updateBadge(data.data.count);
+                // API returns unreadCount directly, not nested in data.data
+                const count = data.unreadCount || (data.data && data.data.count) || 0;
+                this.updateBadge(count);
 
                 // If there are new notifications, show a toast
-                if (data.data.count > 0 && data.data.latest) {
-                    this.showNewNotificationToast(data.data.latest);
+                const latest = data.latest || (data.data && data.data.latest);
+                if (count > 0 && latest) {
+                    this.showNewNotificationToast(latest);
                 }
             }
         } catch (error) {
@@ -75,7 +78,9 @@ class NotificationHandler {
             const data = await response.json();
 
             if (data.success) {
-                this.updateBadge(data.data.count);
+                // API returns unreadCount directly, not nested in data.data
+                const count = data.unreadCount || (data.data && data.data.count) || 0;
+                this.updateBadge(count);
             }
         } catch (error) {
             console.error('Error updating notification badge:', error);

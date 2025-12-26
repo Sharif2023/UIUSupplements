@@ -531,9 +531,12 @@ async function toggleJobStatus(jobId, currentStatus) {
 
 // Delete Job
 async function deleteJob(jobId) {
-    if (!confirm('Are you sure you want to delete this job?')) {
-        return;
-    }
+    const confirmed = await showConfirm('Are you sure you want to delete this job?', {
+        title: 'Delete Job',
+        confirmText: 'Delete',
+        dangerous: true
+    });
+    if (!confirmed) return;
 
     try {
         const response = await fetch(`api/jobs.php?id=${jobId}`, {
@@ -542,14 +545,14 @@ async function deleteJob(jobId) {
         const data = await response.json();
 
         if (data.success) {
-            showToast('Job deleted successfully', 'success');
+            showAlert('Job deleted successfully', 'success');
             loadJobs();
         } else {
-            showToast(data.error || 'Failed to delete job', 'error');
+            showAlert(data.error || 'Failed to delete job', 'error');
         }
     } catch (error) {
         console.error('Error deleting job:', error);
-        showToast('Failed to delete job', 'error');
+        showAlert('Failed to delete job', 'error');
     }
 }
 
@@ -702,7 +705,7 @@ async function loadActivityLogs(page = 1) {
                 data.activities.forEach(activity => {
                     const actionClass = getActionClass(activity.action_type);
                     const formattedDate = formatDateTime(activity.created_at);
-                    
+
                     html += `<tr>
                         <td><span class="status-badge ${actionClass}">${activity.action_type}</span></td>
                         <td><span class="status-badge status-pending">${activity.target_type}</span> <small>${activity.target_id}</small></td>
@@ -718,25 +721,25 @@ async function loadActivityLogs(page = 1) {
                 if (data.totalPages > 1) {
                     html += '<div class="pagination">';
                     html += `<button onclick="loadActivityLogs(${page - 1})" ${page === 1 ? 'disabled' : ''}>Previous</button>`;
-                    
+
                     // Show page numbers
                     const startPage = Math.max(1, page - 2);
                     const endPage = Math.min(data.totalPages, page + 2);
-                    
+
                     if (startPage > 1) {
                         html += `<button onclick="loadActivityLogs(1)">1</button>`;
                         if (startPage > 2) html += '<span style="padding: 8px;">...</span>';
                     }
-                    
+
                     for (let i = startPage; i <= endPage; i++) {
                         html += `<button onclick="loadActivityLogs(${i})" ${i === page ? 'class="active"' : ''}>${i}</button>`;
                     }
-                    
+
                     if (endPage < data.totalPages) {
                         if (endPage < data.totalPages - 1) html += '<span style="padding: 8px;">...</span>';
                         html += `<button onclick="loadActivityLogs(${data.totalPages})">${data.totalPages}</button>`;
                     }
-                    
+
                     html += `<button onclick="loadActivityLogs(${page + 1})" ${page === data.totalPages ? 'disabled' : ''}>Next</button>`;
                     html += '</div>';
                 }
@@ -816,9 +819,12 @@ function editUser(user) {
 
 // Delete User
 async function deleteUser(userId) {
-    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
-        return;
-    }
+    const confirmed = await showConfirm('Are you sure you want to delete this user? This action cannot be undone.', {
+        title: 'Delete User',
+        confirmText: 'Delete',
+        dangerous: true
+    });
+    if (!confirmed) return;
 
     try {
         const response = await fetch(`api/admin_users.php?id=${userId}`, {
@@ -827,22 +833,25 @@ async function deleteUser(userId) {
         const data = await response.json();
 
         if (data.success) {
-            showToast('User deleted successfully', 'success');
+            showAlert('User deleted successfully', 'success');
             loadUsers();
         } else {
-            showToast(data.error || 'Failed to delete user', 'error');
+            showAlert(data.error || 'Failed to delete user', 'error');
         }
     } catch (error) {
         console.error('Error deleting user:', error);
-        showToast('Failed to delete user', 'error');
+        showAlert('Failed to delete user', 'error');
     }
 }
 
 // Delete Mentor
 async function deleteMentor(mentorId) {
-    if (!confirm('Are you sure you want to delete this mentor? This action cannot be undone.')) {
-        return;
-    }
+    const confirmed = await showConfirm('Are you sure you want to delete this mentor? This action cannot be undone.', {
+        title: 'Delete Mentor',
+        confirmText: 'Delete',
+        dangerous: true
+    });
+    if (!confirmed) return;
 
     try {
         const response = await fetch(`api/admin_mentors.php?id=${mentorId}`, {
@@ -851,14 +860,14 @@ async function deleteMentor(mentorId) {
         const data = await response.json();
 
         if (data.success) {
-            showToast('Mentor deleted successfully', 'success');
+            showAlert('Mentor deleted successfully', 'success');
             loadMentors();
         } else {
-            showToast(data.error || 'Failed to delete mentor', 'error');
+            showAlert(data.error || 'Failed to delete mentor', 'error');
         }
     } catch (error) {
         console.error('Error deleting mentor:', error);
-        showToast('Failed to delete mentor', 'error');
+        showAlert('Failed to delete mentor', 'error');
     }
 }
 
@@ -892,9 +901,12 @@ async function toggleRoomStatus(roomId, currentStatus) {
 
 // Delete Room
 async function deleteRoom(roomId) {
-    if (!confirm('Are you sure you want to delete this room? This action cannot be undone.')) {
-        return;
-    }
+    const confirmed = await showConfirm('Are you sure you want to delete this room? This action cannot be undone.', {
+        title: 'Delete Room',
+        confirmText: 'Delete',
+        dangerous: true
+    });
+    if (!confirmed) return;
 
     try {
         const response = await fetch(`api/admin_rooms.php?room_id=${roomId}`, {
@@ -903,22 +915,25 @@ async function deleteRoom(roomId) {
         const data = await response.json();
 
         if (data.success) {
-            showToast('Room deleted successfully', 'success');
+            showAlert('Room deleted successfully', 'success');
             loadRooms();
         } else {
-            showToast(data.error || 'Failed to delete room', 'error');
+            showAlert(data.error || 'Failed to delete room', 'error');
         }
     } catch (error) {
         console.error('Error deleting room:', error);
-        showToast('Failed to delete room', 'error');
+        showAlert('Failed to delete room', 'error');
     }
 }
 
 // Delete Product
 async function deleteProduct(productId) {
-    if (!confirm('Are you sure you want to delete this product?')) {
-        return;
-    }
+    const confirmed = await showConfirm('Are you sure you want to delete this product?', {
+        title: 'Delete Product',
+        confirmText: 'Delete',
+        dangerous: true
+    });
+    if (!confirmed) return;
 
     try {
         const response = await fetch(`api/admin_products.php?id=${productId}`, {
@@ -927,14 +942,14 @@ async function deleteProduct(productId) {
         const data = await response.json();
 
         if (data.success) {
-            showToast('Product deleted successfully', 'success');
+            showAlert('Product deleted successfully', 'success');
             loadProducts();
         } else {
-            showToast(data.error || 'Failed to delete product', 'error');
+            showAlert(data.error || 'Failed to delete product', 'error');
         }
     } catch (error) {
         console.error('Error deleting product:', error);
-        showToast('Failed to delete product', 'error');
+        showAlert('Failed to delete product', 'error');
     }
 }
 
@@ -965,9 +980,12 @@ async function resolveItem(itemId) {
 
 // Delete Lost Item
 async function deleteLostItem(itemId) {
-    if (!confirm('Are you sure you want to delete this item?')) {
-        return;
-    }
+    const confirmed = await showConfirm('Are you sure you want to delete this item?', {
+        title: 'Delete Item',
+        confirmText: 'Delete',
+        dangerous: true
+    });
+    if (!confirmed) return;
 
     try {
         const response = await fetch(`api/admin_lostandfound.php?id=${itemId}`, {
@@ -976,22 +994,25 @@ async function deleteLostItem(itemId) {
         const data = await response.json();
 
         if (data.success) {
-            showToast('Item deleted successfully', 'success');
+            showAlert('Item deleted successfully', 'success');
             loadLostFound();
         } else {
-            showToast(data.error || 'Failed to delete item', 'error');
+            showAlert(data.error || 'Failed to delete item', 'error');
         }
     } catch (error) {
         console.error('Error deleting item:', error);
-        showToast('Failed to delete item', 'error');
+        showAlert('Failed to delete item', 'error');
     }
 }
 
 // Delete Driver
 async function deleteDriver(driverId) {
-    if (!confirm('Are you sure you want to delete this driver?')) {
-        return;
-    }
+    const confirmed = await showConfirm('Are you sure you want to delete this driver?', {
+        title: 'Delete Driver',
+        confirmText: 'Delete',
+        dangerous: true
+    });
+    if (!confirmed) return;
 
     try {
         const response = await fetch(`api/admin_shuttle.php?d_id=${driverId}`, {
@@ -1000,14 +1021,14 @@ async function deleteDriver(driverId) {
         const data = await response.json();
 
         if (data.success) {
-            showToast('Driver deleted successfully', 'success');
+            showAlert('Driver deleted successfully', 'success');
             loadDrivers();
         } else {
-            showToast(data.error || 'Failed to delete driver', 'error');
+            showAlert(data.error || 'Failed to delete driver', 'error');
         }
     } catch (error) {
         console.error('Error deleting driver:', error);
-        showToast('Failed to delete driver', 'error');
+        showAlert('Failed to delete driver', 'error');
     }
 }
 

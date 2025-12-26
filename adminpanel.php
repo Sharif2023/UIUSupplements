@@ -45,6 +45,9 @@ $conn->close();
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
+    <!-- Custom Modal Styles -->
+    <link rel="stylesheet" href="assets/css/modal-styles.css">
+    
     <style>
         :root {
             --primary-color: #6366f1;
@@ -1522,6 +1525,7 @@ $conn->close();
         </div>
     </div>
 
+    <script src="assets/js/modal-utils.js"></script>
     <script src="adminpanel/admin-scripts.js"></script>
 </body>
 </html>
