@@ -32,6 +32,7 @@ if (isset($_GET['cancel']) && is_numeric($_GET['cancel'])) {
 $stmt = $conn->prepare("
     SELECT r.session_id, r.mentor_id, r.session_time, r.session_price, 
            r.communication_method, r.session_date, r.problem_description, r.status, r.created_at,
+           r.meeting_link, r.mentor_message, r.responded_at,
            m.name AS mentor_name, m.photo AS mentor_photo, m.email AS mentor_email,
            m.whatsapp AS mentor_whatsapp, m.skills AS mentor_skills
     FROM request_mentorship_session r 
@@ -305,6 +306,65 @@ while ($row = $sessions->fetch_assoc()) {
             margin-top: 10px;
             border-left: 3px solid #FF3300;
         }
+
+        .meeting-link-box {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 12px;
+            border-left: 4px solid #10b981;
+        }
+
+        .meeting-link-box h4 {
+            color: #065f46;
+            font-size: 14px;
+            margin: 0 0 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meeting-link-box a {
+            color: #047857;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .meeting-link-box .btn-join {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .meeting-link-box .btn-join:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .mentor-message-box {
+            background: #f0f9ff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .mentor-message-box strong {
+            color: #1e40af;
+            font-size: 13px;
+        }
+
+        .mentor-message-box p {
+            margin: 5px 0 0;
+            color: #1e3a5f;
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -422,6 +482,22 @@ while ($row = $sessions->fetch_assoc()) {
                                 <?php if (!empty($session['problem_description'])): ?>
                                     <div class="problem-desc">
                                         <strong>Your Query:</strong> <?php echo htmlspecialchars($session['problem_description']); ?>
+                                    </div>
+                                <?php endif; ?>
+                                
+                                <?php if (!empty($session['meeting_link']) && strtolower($session['status']) === 'accepted'): ?>
+                                    <div class="meeting-link-box">
+                                        <h4><i class="fas fa-video"></i> Your Meeting Link is Ready!</h4>
+                                        <a href="<?php echo htmlspecialchars($session['meeting_link']); ?>" target="_blank" class="btn-join">
+                                            <i class="fas fa-external-link-alt"></i> Join Meeting
+                                        </a>
+                                    </div>
+                                <?php endif; ?>
+                                
+                                <?php if (!empty($session['mentor_message'])): ?>
+                                    <div class="mentor-message-box">
+                                        <strong><i class="fas fa-comment"></i> Message from Mentor:</strong>
+                                        <p><?php echo htmlspecialchars($session['mentor_message']); ?></p>
                                     </div>
                                 <?php endif; ?>
                             </div>

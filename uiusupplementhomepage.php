@@ -914,6 +914,9 @@ $stats['total_lost_items'] = $lost_result ? $lost_result->fetch_assoc()['total']
             <a href="useraccount.php"><i class="fas fa-user"></i> My Profile</a>
             <a href="myselllist.php"><i class="fas fa-store"></i> My Sell List</a>
             <a href="lostandfound.php?my=1"><i class="fas fa-search"></i> My Lost Items</a>
+            <?php if (isset($_SESSION['is_mentor']) && $_SESSION['is_mentor']): ?>
+            <a href="mentorpanel.php" style="color: #667eea; font-weight: 600;"><i class="fas fa-chalkboard-teacher"></i> Mentor Panel</a>
+            <?php endif; ?>
             <a href="mymentors.php"><i class="fas fa-user-graduate"></i> My Mentors</a>
             <a href="settings.php"><i class="fas fa-cog"></i> Settings & Privacy</a>
             <div style="border-top: 1px solid #eee; margin: 5px 0;"></div>

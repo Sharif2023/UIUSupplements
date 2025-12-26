@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 25, 2025 at 07:35 AM
+-- Generation Time: Dec 26, 2025 at 02:18 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -66,7 +66,16 @@ INSERT INTO `admin_activity_logs` (`log_id`, `admin_id`, `action_type`, `target_
 (3, 11221078, 'UPDATE', 'ROOM', 'uiu111', 'Updated room: uiu111', '2025-12-22 14:33:17'),
 (4, 11221078, 'UPDATE', 'USER', '11111111', 'Updated user: shariful Islam', '2025-12-22 14:33:45'),
 (5, 11221078, 'DELETE', 'ROOM', 'uiu111', 'Deleted room: uiu111', '2025-12-24 13:03:47'),
-(6, 11221078, 'CHECK_EXPIRATION', 'ROOM', 'SYSTEM', 'Checked rental expirations: 1 rooms flagged for relisting', '2025-12-24 13:04:13');
+(6, 11221078, 'CHECK_EXPIRATION', 'ROOM', 'SYSTEM', 'Checked rental expirations: 1 rooms flagged for relisting', '2025-12-24 13:04:13'),
+(7, 11221078, 'CREATE', 'ROOM', 'uiu-1', 'Added new room: uiu-1 at syednagar', '2025-12-25 06:42:13'),
+(8, 11221078, 'CREATE', 'ROOM', 'uiu-1', 'Added new room: uiu-1 at syednagar', '2025-12-25 06:50:18'),
+(9, 11221078, 'UPDATE', 'ROOM', 'uiu-1', 'Updated room status: uiu-1', '2025-12-25 06:56:04'),
+(10, 11221078, 'UPDATE', 'ROOM', 'uiu-1', 'Updated room status: uiu-1', '2025-12-25 06:56:08'),
+(11, 11221078, 'CREATE', 'ROOM', 'uiu-2', 'Added new room: uiu-2 at syednagar', '2025-12-25 06:57:19'),
+(12, 11221078, 'UPDATE', 'ROOM', 'uiu-2', 'Updated room status: uiu-2', '2025-12-25 07:43:15'),
+(13, 11221078, 'UPDATE', 'ROOM', 'uiu-2', 'Updated room status: uiu-2', '2025-12-25 07:43:16'),
+(14, 11221078, 'UPDATE', 'ROOM', 'uiu-1', 'Updated room status: uiu-1', '2025-12-25 07:43:17'),
+(15, 11221078, 'UPDATE', 'ROOM', 'uiu-1', 'Updated room status: uiu-1', '2025-12-25 07:43:17');
 
 -- --------------------------------------------------------
 
@@ -94,6 +103,14 @@ CREATE TABLE `availablerooms` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Room creation timestamp',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Last update timestamp'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `availablerooms`
+--
+
+INSERT INTO `availablerooms` (`serial`, `room_id`, `room_location`, `room_details`, `room_photos`, `available_from`, `available_to`, `status`, `room_rent`, `added_by_admin_id`, `rental_rules`, `rented_to_user_id`, `rented_from_date`, `rented_until_date`, `is_relisting_pending`, `is_visible_to_students`, `created_at`, `updated_at`) VALUES
+(2, 'uiu-1', 'syednagar', '2 rooms', 'uploads/room2.jpg,uploads/room1.jpg', '2025-12-25', '2025-12-26', 'available', 5000, 11221078, 'rent must be completed', NULL, NULL, NULL, 0, 1, '2025-12-25 06:50:18', '2025-12-25 07:43:17'),
+(3, 'uiu-2', 'syednagar', 'single', 'uploads/room2.jpg,uploads/room1.jpg', '2025-12-25', '2025-12-27', 'not-available', 7000, 11221078, 'CALL: 01xxxxxxxxx', 11221079, '2025-12-25', '2026-01-25', 0, 0, '2025-12-25 06:57:19', '2025-12-25 07:56:03');
 
 -- --------------------------------------------------------
 
@@ -541,6 +558,13 @@ CREATE TABLE `rentedrooms` (
   `rented_user_email` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `rentedrooms`
+--
+
+INSERT INTO `rentedrooms` (`rented_room_id`, `rented_user_id`, `rented_user_name`, `rented_user_email`) VALUES
+('uiu-2', 11221079, 'Mahmudul Hasan', 'mhasan221079@bscse.uiu.ac.bd');
+
 -- --------------------------------------------------------
 
 --
@@ -556,7 +580,10 @@ CREATE TABLE `request_mentorship_session` (
   `communication_method` varchar(255) NOT NULL,
   `session_date` date NOT NULL,
   `problem_description` text DEFAULT NULL,
-  `status` varchar(50) DEFAULT 'Pending',
+  `status` varchar(50) DEFAULT 'pending',
+  `mentor_message` text DEFAULT NULL COMMENT 'Message from mentor to student',
+  `meeting_link` varchar(500) DEFAULT NULL COMMENT 'Zoom/Meet link for session',
+  `responded_at` timestamp NULL DEFAULT NULL COMMENT 'When mentor responded',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -631,23 +658,24 @@ CREATE TABLE `uiumentorlist` (
   `email` varchar(100) NOT NULL,
   `whatsapp` varchar(20) DEFAULT NULL,
   `linkedin` varchar(255) DEFAULT NULL,
-  `facebook` varchar(255) DEFAULT NULL
+  `facebook` varchar(255) DEFAULT NULL,
+  `linked_user_id` int(11) DEFAULT NULL COMMENT 'Linked user account for profile switching'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `uiumentorlist`
 --
 
-INSERT INTO `uiumentorlist` (`id`, `photo`, `name`, `bio`, `language`, `response_time`, `industry`, `hourly_rate`, `company`, `country`, `skills`, `email`, `whatsapp`, `linkedin`, `facebook`) VALUES
-(6, 'uploads/mentor0.jpg', 'Shariful Islam', 'I am the source of coding', 'Bangla', '6 hours', 'Tech', '0 tk for 10 minutes', 'uiu', 'Bangladesh', 'c++', 'sharifislam0505@gmail.com', '01631223995', 'https://www.linkedin.com/18', 'https://www.facebook.com/sharif2018'),
-(7, 'uploads/mentor7.jpg', 'Zamil Khan', 'Learn business from me', 'Bangla', '6 hours', 'Tech', '0 tk for 10 minutes', 'Bkash', 'Bangladesh', 'marketing, promoting, branding', 'sharifislam0505@gmail.com', '01631223995', 'https://www.linkedin.com/18', 'https://www.linkedin.com/18'),
-(11, 'uploads/mentor2.jpg', 'Rafi Hasan', 'Learn code from me', 'Bangla', '6 hours', 'Tech', '0 tk for 10 minutes', 'Startech', 'Bangladesh', 'c++,c, java', 'Rafi@gmail.com', '01631223995', 'https://www.linkedin.com/18', 'https://www.facebook.com/sharif2018'),
-(12, 'uploads/mentor3.jpg', 'Ashik Khan', 'I am an engineer.', 'Bangla', '6 hours', 'Tech', '0 tk for 10 minutes', 'BrainStorm', 'Bangladesh', 'java,c++,python', 'sharifislam0505@gmail.com', '01631223995', 'https://www.linkedin.com/sharif', 'https://www.facebook.com/sharif'),
-(13, 'uploads/mentor4.jpg', 'S.I. Sharif', 'I am a professional Engineer. I want fun.', 'English', '48 hours', 'Tech', '100 tk for 30 minutes', 'UIU', 'Bangladesh', 'c++,gpu,office', 'si@gmail.com', '01632223995', 'https://www.linkedin.com/sharifsi', 'https://www.facebook.com/sharifsi'),
-(14, 'uploads/mentor5.jpg', 'AK Rayhan', 'I am a professional Business Man. I want fun.', 'English', '48 hours', 'Tech', '100 tk for 30 minutes', 'Brac', 'Bangladesh', 'c++,gpu,office', 'si@gmail.com', '01632223995', 'https://www.linkedin.com/sharifsi', 'https://www.facebook.com/sharifsi'),
-(15, 'uploads/mentor6.jpg', 'Shakib Khan', 'I am a professional Engineer. I want fun.', 'English', '48 hours', 'Tech', '100 tk for 30 minutes', 'United Group', 'Bangladesh', 'c++,gpu,office', 'si@gmail.com', '01632223995', 'https://www.linkedin.com/sharifsi', 'https://www.facebook.com/sharifsi'),
-(37, 'uploads/mentor7.jpg', 'AB Mahmud', 'Learn code from me', 'English', '', 'Finance', '', 'uiu', 'Bangladesh', 'marketing, promoting, branding', 'ab@gmail.com', '01800871179', 'https://www.linkedin.com/a', 'https://www.facebook.com/a'),
-(38, 'uploads/mentor8.jpg', 'Rana Raiyan', 'Learn Marketing Ideas from me', 'Bangla', '48 hours', 'Tech', '1 hour - 500 tk,2 hours - 1000 tk', 'Nagad', 'Bangladesh', 'networking, Promoting', 'ab@gmail.com', '01800871179', 'https://www.linkedin.com/a', 'https://www.facebook.com/a');
+INSERT INTO `uiumentorlist` (`id`, `photo`, `name`, `bio`, `language`, `response_time`, `industry`, `hourly_rate`, `company`, `country`, `skills`, `email`, `whatsapp`, `linkedin`, `facebook`, `linked_user_id`) VALUES
+(6, 'uploads/mentor0.jpg', 'Shariful Islam', 'I am the source of coding', 'Bangla', '6 hours', 'Tech', '0 tk for 10 minutes', 'uiu', 'Bangladesh', 'c++', 'sharifislam0505@gmail.com', '01631223995', 'https://www.linkedin.com/18', 'https://www.facebook.com/sharif2018', NULL),
+(7, 'uploads/mentor7.jpg', 'Zamil Khan', 'Learn business from me', 'Bangla', '6 hours', 'Tech', '0 tk for 10 minutes', 'Bkash', 'Bangladesh', 'marketing, promoting, branding', 'sharifislam0505@gmail.com', '01631223995', 'https://www.linkedin.com/18', 'https://www.linkedin.com/18', NULL),
+(11, 'uploads/mentor2.jpg', 'Rafi Hasan', 'Learn code from me', 'Bangla', '6 hours', 'Tech', '0 tk for 10 minutes', 'Startech', 'Bangladesh', 'c++,c, java', 'Rafi@gmail.com', '01631223995', 'https://www.linkedin.com/18', 'https://www.facebook.com/sharif2018', NULL),
+(12, 'uploads/mentor3.jpg', 'Ashik Khan', 'I am an engineer.', 'Bangla', '6 hours', 'Tech', '0 tk for 10 minutes', 'BrainStorm', 'Bangladesh', 'java,c++,python', 'sharifislam0505@gmail.com', '01631223995', 'https://www.linkedin.com/sharif', 'https://www.facebook.com/sharif', NULL),
+(13, 'uploads/mentor4.jpg', 'S.I. Sharif', 'I am a professional Engineer. I want fun.', 'English', '48 hours', 'Tech', '100 tk for 30 minutes', 'UIU', 'Bangladesh', 'c++,gpu,office', 'si@gmail.com', '01632223995', 'https://www.linkedin.com/sharifsi', 'https://www.facebook.com/sharifsi', NULL),
+(14, 'uploads/mentor5.jpg', 'AK Rayhan', 'I am a professional Business Man. I want fun.', 'English', '48 hours', 'Tech', '100 tk for 30 minutes', 'Brac', 'Bangladesh', 'c++,gpu,office', 'si@gmail.com', '01632223995', 'https://www.linkedin.com/sharifsi', 'https://www.facebook.com/sharifsi', NULL),
+(15, 'uploads/mentor6.jpg', 'Shakib Khan', 'I am a professional Engineer. I want fun.', 'English', '48 hours', 'Tech', '100 tk for 30 minutes', 'United Group', 'Bangladesh', 'c++,gpu,office', 'si@gmail.com', '01632223995', 'https://www.linkedin.com/sharifsi', 'https://www.facebook.com/sharifsi', NULL),
+(37, 'uploads/mentor7.jpg', 'AB Mahmud', 'Learn code from me', 'English', '', 'Finance', '', 'uiu', 'Bangladesh', 'marketing, promoting, branding', 'ab@gmail.com', '01800871179', 'https://www.linkedin.com/a', 'https://www.facebook.com/a', NULL),
+(38, 'uploads/mentor8.jpg', 'Rana Raiyan', 'Learn Marketing Ideas from me', 'Bangla', '48 hours', 'Tech', '1 hour - 500 tk,2 hours - 1000 tk', 'Nagad', 'Bangladesh', 'networking, Promoting', 'ab@gmail.com', '01800871179', 'https://www.linkedin.com/a', 'https://www.facebook.com/a', NULL);
 
 -- --------------------------------------------------------
 
@@ -662,17 +690,18 @@ CREATE TABLE `users` (
   `Gender` enum('m','f','o') NOT NULL,
   `password_hash` varchar(255) DEFAULT NULL,
   `mobilenumber` varchar(20) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_mentor` tinyint(1) DEFAULT 0 COMMENT 'Whether user is an approved mentor'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `Gender`, `password_hash`, `mobilenumber`, `created_at`) VALUES
-(11221078, 'Shariful Islam', '011221078', 'm', '$2y$10$zAuEsUA/9M0LKmWbBRHL5Oz7n6hFc7uEIoNQtrxaxnXg5F0wKeZvW', '1700871179', '2024-10-03 18:41:30'),
-(11221079, 'Mahmudul Hasan', 'mhasan221079@bscse.uiu.ac.bd', 'm', '$2y$10$brpUDs5I6/MM2bFc0ErhCOHuITpTSdY/0gYa2xKbHCEiTWoZDuSRi', '1700221079', '2025-12-23 16:55:43'),
-(11221080, 'Ashik Khan', 'akhan221080@bscse.uiu.ac.bd', 'm', '$2y$10$rKJy5xOgZ7f0sV0JOa0bCu9m00XopD.XF5Ex2vUnPGrYKnF6Dhg52', '1700221080', '2025-12-23 17:03:04');
+INSERT INTO `users` (`id`, `username`, `email`, `Gender`, `password_hash`, `mobilenumber`, `created_at`, `is_mentor`) VALUES
+(11221078, 'Shariful Islam', '011221078', 'm', '$2y$10$zAuEsUA/9M0LKmWbBRHL5Oz7n6hFc7uEIoNQtrxaxnXg5F0wKeZvW', '1700871179', '2024-10-03 18:41:30', 0),
+(11221079, 'Mahmudul Hasan', 'mhasan221079@bscse.uiu.ac.bd', 'm', '$2y$10$brpUDs5I6/MM2bFc0ErhCOHuITpTSdY/0gYa2xKbHCEiTWoZDuSRi', '1700221079', '2025-12-23 16:55:43', 0),
+(11221080, 'Ashik Khan', 'akhan221080@bscse.uiu.ac.bd', 'm', '$2y$10$rKJy5xOgZ7f0sV0JOa0bCu9m00XopD.XF5Ex2vUnPGrYKnF6Dhg52', '1700221080', '2025-12-23 17:03:04', 0);
 
 -- --------------------------------------------------------
 
@@ -890,7 +919,8 @@ ALTER TABLE `total_trip`
 -- Indexes for table `uiumentorlist`
 --
 ALTER TABLE `uiumentorlist`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_linked_user` (`linked_user_id`);
 
 --
 -- Indexes for table `users`
@@ -918,13 +948,13 @@ ALTER TABLE `user_settings`
 -- AUTO_INCREMENT for table `admin_activity_logs`
 --
 ALTER TABLE `admin_activity_logs`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `availablerooms`
 --
 ALTER TABLE `availablerooms`
-  MODIFY `serial` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `serial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `bargains`

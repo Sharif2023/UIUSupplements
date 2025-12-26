@@ -22,13 +22,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password = $_POST['password'];
 
         // Complex query to check if the user is in the admins table or the users table using a subquery
+        // Also checks if user is a mentor
         $stmt = $conn->prepare("
             SELECT 
                 u.id AS user_id, 
                 u.username, 
                 u.password_hash,
+                u.is_mentor,
                 (SELECT a.admin_id FROM admins a WHERE a.admin_id = u.id) AS admin_id,
-                (SELECT a.admin_name FROM admins a WHERE a.admin_id = u.id) AS admin_name
+                (SELECT a.admin_name FROM admins a WHERE a.admin_id = u.id) AS admin_name,
+                (SELECT m.id FROM uiumentorlist m WHERE m.linked_user_id = u.id LIMIT 1) AS mentor_id
             FROM users u
             WHERE (u.email = ? OR u.id = ?) 
             LIMIT 1
@@ -56,6 +59,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Set user session and return success with redirect URL
                     $_SESSION['user_id'] = $user['user_id'];
                     $_SESSION['username'] = $user['username'];
+                    
+                    // Check if user is a mentor and set mentor session
+                    if ($user['is_mentor'] == 1 || !is_null($user['mentor_id'])) {
+                        $_SESSION['is_mentor'] = true;
+                        $_SESSION['mentor_id'] = $user['mentor_id'];
+                    } else {
+                        $_SESSION['is_mentor'] = false;
+                    }
+                    
                     echo json_encode([
                         'success' => true,
                         'redirect' => 'uiusupplementhomepage.php'
