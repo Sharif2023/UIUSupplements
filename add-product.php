@@ -52,8 +52,16 @@ function resizeImage($file, $targetFile, $maxWidth, $maxHeight, $imageFileType)
     imagedestroy($src);
 }
 
+$successMessage = '';
+$errorMessage = '';
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $targetDir = "imgOfSell/";
+    
+    // Create the upload directory if it doesn't exist
+    if (!file_exists($targetDir)) {
+        mkdir($targetDir, 0777, true);
+    }
     $targetFile = $targetDir . basename($_FILES["image"]["name"]);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
@@ -67,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             // Move the uploaded image as it is
             if (!move_uploaded_file($_FILES["image"]["tmp_name"], $targetFile)) {
-                echo "Error uploading the image.";
+                $errorMessage = "Error uploading the image.";
                 $uploadOk = 0;
             }
         }
@@ -85,14 +93,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $userId = $_SESSION['user_id'];  // Get user_id from session
 
             if ($stmt->execute()) {
-                echo "Product added successfully.";
+                $successMessage = "Product added successfully!";
             } else {
-                echo "Error: " . $stmt->error;
+                $errorMessage = "Error: " . $stmt->error;
             }
             $stmt->close();
         }
     } else {
-        echo "File is not an image.";
+        $errorMessage = "File is not an image.";
     }
 }
 
@@ -222,6 +230,87 @@ $conn->close();
         button:hover {
             background-color: #1F1F1F;
         }
+
+        /* Success/Error Modal Styles */
+        .result-modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .result-modal.active {
+            display: flex;
+        }
+
+        .result-modal-content {
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            color: white;
+            text-align: center;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .result-modal-content.success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .result-modal-content.error {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px) scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .result-modal-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .result-modal h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+
+        .result-modal p {
+            margin: 0 0 25px 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .result-modal-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            background: white;
+            color: #333;
+        }
+
+        .result-modal-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 
@@ -335,6 +424,71 @@ $conn->close();
             function goBack() {
                 window.location.href = "SellAndExchange.php";
             }
+        </script>
+
+        <!-- Success/Error Modal -->
+        <div id="result-modal" class="result-modal">
+            <div id="result-modal-content" class="result-modal-content">
+                <div id="result-modal-icon" class="result-modal-icon"></div>
+                <h2 id="result-modal-title"></h2>
+                <p id="result-modal-message"></p>
+                <button class="result-modal-btn" onclick="closeResultModal()">OK</button>
+            </div>
+        </div>
+
+        <script>
+            // Check for success or error messages from PHP
+            const successMessage = <?php echo json_encode($successMessage); ?>;
+            const errorMessage = <?php echo json_encode($errorMessage); ?>;
+
+            function showResultModal(type, title, message) {
+                const modal = document.getElementById('result-modal');
+                const content = document.getElementById('result-modal-content');
+                const icon = document.getElementById('result-modal-icon');
+                const titleEl = document.getElementById('result-modal-title');
+                const messageEl = document.getElementById('result-modal-message');
+
+                content.classList.remove('success', 'error');
+                content.classList.add(type);
+
+                if (type === 'success') {
+                    icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                    titleEl.textContent = title || 'Success!';
+                } else {
+                    icon.innerHTML = '<i class="fas fa-times-circle"></i>';
+                    titleEl.textContent = title || 'Error!';
+                }
+
+                messageEl.textContent = message;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeResultModal() {
+                document.getElementById('result-modal').classList.remove('active');
+                document.body.style.overflow = '';
+                
+                // Redirect to Sell page on success
+                if (successMessage) {
+                    window.location.href = 'SellAndExchange.php';
+                }
+            }
+
+            // Show modal on page load if there's a message
+            document.addEventListener('DOMContentLoaded', function() {
+                if (successMessage) {
+                    showResultModal('success', 'Product Added!', successMessage);
+                } else if (errorMessage) {
+                    showResultModal('error', 'Oops!', errorMessage);
+                }
+            });
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && document.getElementById('result-modal').classList.contains('active')) {
+                    closeResultModal();
+                }
+            });
         </script>
     </div>
     <footer class="footer">

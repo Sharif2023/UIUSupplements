@@ -26,10 +26,12 @@ if ($isAdmin) {
     // Students ONLY see rooms that are:
     // 1. Explicitly visible (is_visible_to_students = 1)
     // 2. AND status is 'available'
-    // This MUST filter out all rented rooms
+    // 3. AND available_to date has NOT passed (or is NULL/empty)
+    // This MUST filter out all rented rooms AND expired listings
     $sql = "SELECT * FROM availablerooms 
             WHERE is_visible_to_students = 1 
             AND status = 'available' 
+            AND (available_to IS NULL OR available_to = '' OR available_to >= CURDATE())
             ORDER BY room_id DESC";
 }
 
@@ -53,6 +55,11 @@ if ($result) {
             // Skip if not available
             if ($row['status'] != 'available') {
                 error_log("Filtered out room (not available): " . $row['room_id']);  
+                continue;
+            }
+            // Skip if available_to date has passed
+            if (!empty($row['available_to']) && strtotime($row['available_to']) < strtotime(date('Y-m-d'))) {
+                error_log("Filtered out room (expired available_to): " . $row['room_id']);  
                 continue;
             }
         }

@@ -192,6 +192,133 @@ $unreadBargainNotifs = $notifData['count'];
             color: white;
         }
 
+        .btn-buy-now {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-buy-now:hover {
+            background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+        }
+
+        /* Buy Now Modal */
+        .buy-modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .buy-modal.active {
+            display: flex;
+        }
+
+        .buy-modal-content {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 420px;
+            width: 90%;
+            color: white;
+            animation: buyModalSlideIn 0.3s ease;
+        }
+
+        @keyframes buyModalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .buy-modal h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+
+        .buy-modal-product {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .buy-modal-product h4 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+        }
+
+        .buy-modal-product .price {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .buy-modal-input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        .buy-modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .buy-modal-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .buy-modal-btn-confirm {
+            background: white;
+            color: #28a745;
+        }
+
+        .buy-modal-btn-confirm:hover {
+            background: #1F1F1F;
+            color: white;
+        }
+
+        .buy-modal-btn-cancel {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .buy-modal-btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
         #bargain-success {
             position: fixed;
             top: 20px;
@@ -406,7 +533,10 @@ $unreadBargainNotifs = $notifData['count'];
                         if ($isOwnProduct) {
                             echo '                  <button class="btn btn-secondary" disabled><i class="fas fa-lock"></i> Your Product</button>';
                         } else {
-                            echo '                  <button class="btn btn-warning bargain-btn" data-bs-toggle="modal" data-bs-target="#bargainModal" data-product-id="' . $row['id'] . '" data-product-name="' . htmlspecialchars($row['product_name']) . '" data-product-price="' . $row['price'] . '">
+                            echo '                  <button class="btn btn-buy-now buy-now-btn" data-product-id="' . $row['id'] . '" data-product-name="' . htmlspecialchars($row['product_name']) . '" data-product-price="' . $row['price'] . '">
+                                                        <i class="fas fa-shopping-cart"></i> Buy
+                                                    </button>
+                                                    <button class="btn btn-warning bargain-btn" data-bs-toggle="modal" data-bs-target="#bargainModal" data-product-id="' . $row['id'] . '" data-product-name="' . htmlspecialchars($row['product_name']) . '" data-product-price="' . $row['price'] . '">
                                                         <i class="fas fa-tags"></i> Bargain
                                                     </button>';
                         }
@@ -502,6 +632,161 @@ $unreadBargainNotifs = $notifData['count'];
         <span class="image-modal-close" onclick="closeImageModal()">&times;</span>
         <img class="image-modal-content" id="modalImage">
     </div>
+
+    <!-- Buy Now Modal -->
+    <div id="buy-modal" class="buy-modal">
+        <div class="buy-modal-content">
+            <h2>🛒 Buy Now</h2>
+            <div class="buy-modal-product">
+                <h4 id="buy-product-name"></h4>
+                <div class="price">৳<span id="buy-product-price"></span></div>
+            </div>
+            <p style="margin-bottom: 15px; opacity: 0.9;">Enter your password to confirm purchase</p>
+            <input type="password" id="buy-password" class="buy-modal-input" placeholder="Enter your password">
+            <div class="buy-modal-buttons">
+                <button class="buy-modal-btn buy-modal-btn-cancel" onclick="closeBuyModal()">Cancel</button>
+                <button class="buy-modal-btn buy-modal-btn-confirm" onclick="confirmBuy()">
+                    <i class="fas fa-check"></i> Confirm Purchase
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Buy Success Modal -->
+    <div id="buy-success-modal" class="buy-modal">
+        <div class="buy-modal-content" style="text-align: center;">
+            <div style="font-size: 60px; margin-bottom: 20px;">🎉</div>
+            <h2>Purchase Successful!</h2>
+            <p style="margin-bottom: 25px; opacity: 0.9;">Your deal has been created. Check your deals page to complete the transaction.</p>
+            <button class="buy-modal-btn buy-modal-btn-confirm" onclick="goToDeals()" style="width: 100%;">
+                <i class="fas fa-handshake"></i> Go to My Deals
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Buy Now functionality
+        let currentBuyProductId = null;
+        let currentBuyProductName = '';
+        let currentBuyProductPrice = 0;
+
+        // Attach click handlers to all buy now buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.buy-now-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    currentBuyProductId = this.getAttribute('data-product-id');
+                    currentBuyProductName = this.getAttribute('data-product-name');
+                    currentBuyProductPrice = this.getAttribute('data-product-price');
+                    
+                    document.getElementById('buy-product-name').textContent = currentBuyProductName;
+                    document.getElementById('buy-product-price').textContent = parseFloat(currentBuyProductPrice).toLocaleString();
+                    document.getElementById('buy-password').value = '';
+                    
+                    document.getElementById('buy-modal').classList.add('active');
+                    document.getElementById('buy-password').focus();
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            // Allow Enter key to submit buy
+            const buyPasswordInput = document.getElementById('buy-password');
+            if (buyPasswordInput) {
+                buyPasswordInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        confirmBuy();
+                    }
+                });
+            }
+        });
+
+        function closeBuyModal() {
+            document.getElementById('buy-modal').classList.remove('active');
+            document.body.style.overflow = '';
+            currentBuyProductId = null;
+        }
+
+        function closeBuySuccessModal() {
+            document.getElementById('buy-success-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function goToDeals() {
+            window.location.href = 'mydeals.php';
+        }
+
+        function confirmBuy() {
+            const password = document.getElementById('buy-password').value;
+
+            if (!password) {
+                alert('Please enter your password');
+                return;
+            }
+
+            // Disable button during processing
+            const confirmBtn = document.querySelector('#buy-modal .buy-modal-btn-confirm');
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+            fetch('api/deals.php?action=direct_buy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    product_id: currentBuyProductId,
+                    password: password
+                })
+            })
+            .then(response => {
+                // Check if response is ok
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(text => {
+                // Try to parse as JSON
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('Failed to parse response:', text);
+                    throw new Error('Invalid server response');
+                }
+            })
+            .then(data => {
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = '<i class="fas fa-check"></i> Confirm Purchase';
+                
+                if (data.success) {
+                    closeBuyModal();
+                    // Show success modal
+                    document.getElementById('buy-success-modal').classList.add('active');
+                } else {
+                    alert(data.message || 'Failed to complete purchase');
+                    document.getElementById('buy-password').value = '';
+                    document.getElementById('buy-password').focus();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = '<i class="fas fa-check"></i> Confirm Purchase';
+                alert('An error occurred: ' + error.message);
+            });
+        }
+
+        // Close modals on Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (document.getElementById('buy-modal').classList.contains('active')) {
+                    closeBuyModal();
+                }
+                if (document.getElementById('buy-success-modal').classList.contains('active')) {
+                    closeBuySuccessModal();
+                }
+            }
+        });
+    </script>
 
     <script>
         // Fullscreen image modal functions

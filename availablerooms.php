@@ -284,7 +284,7 @@ $isAdmin = false;
             cursor: not-allowed;
             margin-top: 15px;
             width: 100px;
-            align-self: flex-end;
+            text-align: center;
         }
 
         .center-title {
@@ -395,6 +395,275 @@ $isAdmin = false;
         .rent-modal-btn-cancel:hover {
             background: rgba(255, 255, 255, 0.3);
         }
+
+        /* Rent Success Modal */
+        .rent-success-modal {
+            display: none;
+            position: fixed;
+            z-index: 10001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .rent-success-modal.active {
+            display: flex;
+        }
+
+        .rent-success-content {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 90%;
+            color: white;
+            text-align: center;
+            animation: rentSuccessSlideIn 0.4s ease;
+        }
+
+        @keyframes rentSuccessSlideIn {
+            from {
+                transform: translateY(-80px) scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .rent-success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: rentBounceIn 0.6s ease 0.2s both;
+        }
+
+        @keyframes rentBounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .rent-success-content h2 {
+            margin: 0 0 15px 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .rent-success-content p {
+            margin: 0 0 10px 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .rent-success-btn {
+            padding: 14px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            background: white;
+            color: #11998e;
+            margin-top: 15px;
+        }
+
+        .rent-success-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Details Button */
+        .card-btn-details {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
+        }
+
+        .card-btn-details:hover {
+            background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4);
+        }
+
+        /* Room Details Modal */
+        .room-details-modal {
+            display: none;
+            position: fixed;
+            z-index: 10002;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .room-details-modal.active {
+            display: flex;
+        }
+
+        .room-details-modal-content {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: detailsModalSlideIn 0.3s ease;
+        }
+
+        @keyframes detailsModalSlideIn {
+            from {
+                transform: translateY(-50px) scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .room-details-modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .room-details-modal-header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .room-details-modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .room-details-modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .room-details-modal-body {
+            padding: 30px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+            min-width: 140px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .detail-label i {
+            margin-right: 10px;
+            color: #667eea;
+            width: 20px;
+        }
+
+        .detail-value {
+            color: #333;
+            flex: 1;
+        }
+
+        .detail-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: #FF3300;
+            background: linear-gradient(135deg, #fff5f2 0%, #ffe0d6 100%);
+            padding: 15px 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .detail-status {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .detail-status.available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .detail-status.rented {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .rental-rules-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        .rental-rules-section h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .rental-rules-section p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
     </style>
 </head>
 
@@ -490,6 +759,139 @@ $isAdmin = false;
             </div>
         </div>
     </div>
+
+    <!-- Rent Success Modal -->
+    <div id="rent-success-modal" class="rent-success-modal">
+        <div class="rent-success-content">
+            <div class="rent-success-icon">🎉</div>
+            <h2>Room Rented Successfully!</h2>
+            <p>Congratulations! You have successfully rented this room.</p>
+            <p style="font-size: 14px; opacity: 0.8; margin-top: 15px;">The room owner will be notified and will contact you soon with further details.</p>
+            <button class="rent-success-btn" onclick="closeRentSuccessModal()">
+                <i class="fas fa-check"></i> Got It!
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Rent Success Modal Functions
+        function showRentSuccessModal() {
+            document.getElementById('rent-success-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeRentSuccessModal() {
+            document.getElementById('rent-success-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close on Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('rent-success-modal').classList.contains('active')) {
+                closeRentSuccessModal();
+            }
+        });
+    </script>
+
+    <!-- Room Details Modal -->
+    <div id="room-details-modal" class="room-details-modal">
+        <div class="room-details-modal-content">
+            <div class="room-details-modal-header">
+                <h2><i class="fas fa-building"></i> Room Details</h2>
+                <button class="room-details-modal-close" onclick="closeRoomDetailsModal()">&times;</button>
+            </div>
+            <div class="room-details-modal-body">
+                <div class="detail-price" id="modal-room-rent">৳0/month</div>
+                
+                <div class="detail-row">
+                    <div class="detail-label"><i class="fas fa-hashtag"></i> Room ID</div>
+                    <div class="detail-value" id="modal-room-id">-</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label"><i class="fas fa-map-marker-alt"></i> Location</div>
+                    <div class="detail-value" id="modal-room-location">-</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label"><i class="fas fa-bed"></i> Details</div>
+                    <div class="detail-value" id="modal-room-details">-</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label"><i class="fas fa-check-circle"></i> Status</div>
+                    <div class="detail-value" id="modal-room-status">-</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label"><i class="fas fa-calendar-alt"></i> Available From</div>
+                    <div class="detail-value" id="modal-room-from">-</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label"><i class="fas fa-calendar-check"></i> Available To</div>
+                    <div class="detail-value" id="modal-room-to">-</div>
+                </div>
+                
+                <div class="rental-rules-section" id="modal-rental-rules-section">
+                    <h4><i class="fas fa-file-alt"></i> Rules, Regulations & Payment Procedures</h4>
+                    <p id="modal-rental-rules">-</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Room Details Modal Functions
+        function showRoomDetailsModal(room) {
+            document.getElementById('modal-room-id').textContent = room.room_id || '-';
+            document.getElementById('modal-room-location').textContent = room.room_location || '-';
+            document.getElementById('modal-room-details').textContent = room.room_details || '-';
+            document.getElementById('modal-room-rent').textContent = '৳' + (room.room_rent || '0') + '/month';
+            document.getElementById('modal-room-from').textContent = room.available_from || '-';
+            document.getElementById('modal-room-to').textContent = room.available_to || 'Not specified';
+            
+            // Status with styling
+            const statusEl = document.getElementById('modal-room-status');
+            if (room.status === 'available') {
+                statusEl.innerHTML = '<span class="detail-status available">Available</span>';
+            } else {
+                statusEl.innerHTML = '<span class="detail-status rented">Rented</span>';
+            }
+            
+            // Rental rules
+            const rulesSection = document.getElementById('modal-rental-rules-section');
+            const rulesEl = document.getElementById('modal-rental-rules');
+            if (room.rental_rules && room.rental_rules.trim()) {
+                rulesEl.textContent = room.rental_rules;
+                rulesSection.style.display = 'block';
+            } else {
+                rulesSection.style.display = 'none';
+            }
+            
+            document.getElementById('room-details-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeRoomDetailsModal() {
+            document.getElementById('room-details-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close on Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('room-details-modal').classList.contains('active')) {
+                closeRoomDetailsModal();
+            }
+        });
+
+        // Close on click outside modal
+        document.getElementById('room-details-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeRoomDetailsModal();
+            }
+        });
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -596,9 +998,21 @@ $isAdmin = false;
                                 <p><strong>Rent:</strong> ${room.room_rent}</p>
                             `;
 
-                            // Rent button at the bottom
+                            // Buttons container
                             const buttonDiv = document.createElement('div');
                             buttonDiv.classList.add('button-container');
+                            buttonDiv.style.display = 'flex';
+                            buttonDiv.style.gap = '8px';
+                            buttonDiv.style.justifyContent = 'flex-end';
+
+                            // Details button (always visible)
+                            const detailsButton = document.createElement('button');
+                            detailsButton.innerHTML = '<i class="fas fa-info-circle"></i> Details';
+                            detailsButton.classList.add('card-btn-details');
+                            detailsButton.addEventListener('click', function() {
+                                showRoomDetailsModal(room);
+                            });
+                            buttonDiv.appendChild(detailsButton);
 
                             if (room.status === 'available') {
                                 const rentButton = document.createElement('button');
@@ -751,12 +1165,12 @@ $isAdmin = false;
                     .then(data => {
                         console.log(data);
                         if (data.status === 'success') {
-                            alert('Room rented successfully!');
                             currentRentButton.textContent = 'Rented';
                             currentRentButton.classList.remove('card-btn');
                             currentRentButton.classList.add('card-btn-appointed');
                             currentRentButton.setAttribute('disabled', 'disabled');
                             closeRentModal();
+                            showRentSuccessModal();
                         } else {
                             alert(data.message || 'Failed to rent room');
                             document.getElementById('rent-password').value = '';

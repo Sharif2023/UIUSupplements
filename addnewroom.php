@@ -341,6 +341,103 @@ $adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
             color: white;
             text-decoration: none;
         }
+
+        /* Success Modal Styles */
+        .success-modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .success-modal.active {
+            display: flex;
+        }
+
+        .success-modal-content {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 90%;
+            color: white;
+            text-align: center;
+            animation: successModalSlideIn 0.4s ease;
+        }
+
+        @keyframes successModalSlideIn {
+            from {
+                transform: translateY(-80px) scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounceIn 0.6s ease 0.2s both;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .success-modal h2 {
+            margin: 0 0 15px 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .success-modal p {
+            margin: 0 0 10px 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .room-id-display {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            display: inline-block;
+        }
+
+        .success-modal-btn {
+            padding: 14px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            background: white;
+            color: #11998e;
+            margin-top: 15px;
+        }
+
+        .success-modal-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .error-modal-content {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        }
     </style>
     <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script>
 </head>
@@ -415,8 +512,9 @@ $adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
             <form id="add-room-form" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="room-id">Room ID</label>
-                    <input type="text" id="room-id" name="room-id" placeholder="Enter Room ID (e.g., uiu-12345)"
-                        required>
+                    <input type="text" id="room-id" name="room-id" value="Auto-generated (UIU-X)" readonly
+                        style="background-color: #e9ecef; color: #666; cursor: not-allowed;">
+                    <small style="color: #666;">Room ID will be automatically generated when you submit the form.</small>
                 </div>
                 <div class="form-group">
                     <label for="room-location">Location</label>
@@ -493,7 +591,7 @@ $adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
             // Get file input
             const photoFiles = document.getElementById('room-photos').files;
             
-            // Remove old field names with dashes
+            // Remove old field names with dashes (room-id is now auto-generated)
             formData.delete('room-id');
             formData.delete('room-location');
             formData.delete('room-details');
@@ -504,8 +602,7 @@ $adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
             formData.delete('room-rent');
             formData.delete('room-photos[]');
             
-            // Add fields with underscores (API format)
-            formData.append('room_id', document.getElementById('room-id').value);
+            // Add fields with underscores (API format) - room_id is auto-generated, don't send it
             formData.append('room_location', document.getElementById('room-location').value);
             formData.append('room_details', document.getElementById('room-details').value);
             formData.append('rental_rules', document.getElementById('rental-rules').value);
@@ -526,17 +623,72 @@ $adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
-                        alert('Room added successfully!');
                         document.getElementById('add-room-form').reset();
-                        window.location.href = 'availablerooms.php';
+                        showSuccessModal(result.room_id);
                     } else {
-                        alert('Error: ' + result.error);
+                        showErrorModal(result.error || 'Failed to add room');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('There was a problem adding the room.');
+                    showErrorModal('There was a problem connecting to the server.');
                 });
+        });
+    </script>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="success-modal">
+        <div class="success-modal-content">
+            <div class="success-icon">🏠</div>
+            <h2>Room Added Successfully!</h2>
+            <p>The new room has been added to the system.</p>
+            <div class="room-id-display" id="new-room-id">UIU-1</div>
+            <p style="font-size: 14px; opacity: 0.8;">The room is now visible to students.</p>
+            <button class="success-modal-btn" onclick="goToRooms()">
+                <i class="fas fa-arrow-right"></i> View All Rooms
+            </button>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="success-modal">
+        <div class="success-modal-content error-modal-content">
+            <div class="success-icon">❌</div>
+            <h2>Failed to Add Room</h2>
+            <p id="error-message">An error occurred while adding the room.</p>
+            <button class="success-modal-btn" onclick="closeErrorModal()" style="color: #eb3349;">
+                Try Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function showSuccessModal(roomId) {
+            document.getElementById('new-room-id').textContent = roomId;
+            document.getElementById('success-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function showErrorModal(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeErrorModal() {
+            document.getElementById('error-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function goToRooms() {
+            window.location.href = 'adminpanel.php';
+        }
+
+        // Close modals on Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeErrorModal();
+            }
         });
     </script>
 </body>

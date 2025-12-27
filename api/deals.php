@@ -1,5 +1,6 @@
 <?php
 session_start();
+error_reporting(0); // Suppress PHP warnings that break JSON output
 header('Content-Type: application/json');
 
 // Database connection
@@ -85,7 +86,7 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("iiidi", $product_id, $seller_id, $buyer_id, $final_price, $bargain_id);
     
     if ($stmt->execute()) {
-        $deal_id = $conn->insert_id();
+        $deal_id = $conn->insert_id;
         
         // Update product status to pending
         $stmt = $conn->prepare("UPDATE products SET status = 'pending' WHERE id = ?");
@@ -102,6 +103,101 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         sendResponse(true, 'Deal created successfully', ['deal_id' => $deal_id]);
     } else {
         sendResponse(false, 'Failed to create deal');
+    }
+}
+
+// Direct buy - purchase at listed price without bargaining
+elseif ($action === 'direct_buy' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $product_id = intval($_POST['product_id'] ?? 0);
+    $password = $_POST['password'] ?? '';
+    
+    if ($product_id <= 0) {
+        sendResponse(false, 'Invalid product ID');
+    }
+    
+    if (empty($password)) {
+        sendResponse(false, 'Password is required');
+    }
+    
+    // Verify buyer's password
+    $stmt = $conn->prepare("SELECT password_hash FROM users WHERE id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows === 0) {
+        sendResponse(false, 'User not found');
+    }
+    
+    $user = $result->fetch_assoc();
+    
+    // Verify password
+    if (!password_verify($password, $user['password_hash'])) {
+        sendResponse(false, 'Incorrect password');
+    }
+    
+    // Get product details
+    $stmt = $conn->prepare("SELECT * FROM products WHERE id = ?");
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows === 0) {
+        sendResponse(false, 'Product not found');
+    }
+    
+    $product = $result->fetch_assoc();
+    $seller_id = $product['user_id'];
+    $price = $product['price'];
+    
+    // Check user is not buying their own product
+    if ($user_id == $seller_id) {
+        sendResponse(false, 'You cannot buy your own product');
+    }
+    
+    // Verify product is available
+    if ($product['status'] !== 'available') {
+        sendResponse(false, 'Product is no longer available');
+    }
+    
+    // Check if deal already exists for this product
+    $stmt = $conn->prepare("SELECT id FROM deals WHERE product_id = ? AND status != 'cancelled'");
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        sendResponse(false, 'A deal already exists for this product');
+    }
+    
+    // Create deal at full price (no bargain)
+    $stmt = $conn->prepare("INSERT INTO deals (product_id, seller_id, buyer_id, final_price, bargain_id) VALUES (?, ?, ?, ?, NULL)");
+    $stmt->bind_param("iiid", $product_id, $seller_id, $user_id, $price);
+    
+    if ($stmt->execute()) {
+        $deal_id = $conn->insert_id;
+        
+        // Update product status to pending
+        $stmt = $conn->prepare("UPDATE products SET status = 'pending' WHERE id = ?");
+        $stmt->bind_param("i", $product_id);
+        $stmt->execute();
+        
+        // Create notification for seller (non-blocking)
+        try {
+            $notification_message = "Your product has been purchased at full price!";
+            $stmt = $conn->prepare("INSERT INTO notifications (user_id, type, message, related_id) VALUES (?, 'direct_buy', ?, ?)");
+            if ($stmt) {
+                $stmt->bind_param("isi", $seller_id, $notification_message, $deal_id);
+                $stmt->execute();
+            }
+        } catch (Exception $e) {
+            // Notification insert failed, but don't fail the entire purchase
+            error_log("Failed to create notification: " . $e->getMessage());
+        }
+        
+        sendResponse(true, 'Purchase successful! Check your deals for next steps.', ['deal_id' => $deal_id]);
+    } else {
+        sendResponse(false, 'Failed to complete purchase');
     }
 }
 

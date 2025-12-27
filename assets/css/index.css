@@ -196,7 +196,7 @@ nav ul li a .nav-item {
 .card-btn {
     background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
     color: white;
-    padding: 10px 18px;
+    padding: 8px 16px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -205,6 +205,8 @@ nav ul li a .nav-item {
     font-size: 14px;
     transition: all 0.3s ease;
     box-shadow: 0 2px 8px rgba(255, 51, 0, 0.3);
+    width: 100px;
+    text-align: center;
 }
 
 .card-btn:hover {

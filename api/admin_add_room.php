@@ -25,8 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-// Get form data
-$roomId = $_POST['room_id'] ?? '';
+// Get form data (room_id will be auto-generated)
 $location = $_POST['room_location'] ?? '';
 $details = $_POST['room_details'] ?? '';
 $availableFrom = $_POST['available_from'] ?? '';
@@ -36,8 +35,15 @@ $rent = $_POST['room_rent'] ?? 0;
 $rentalRules = $_POST['rental_rules'] ?? '';
 $adminId = $_SESSION['admin_id'];
 
+// Auto-generate room_id in format UIU-X
+$nextIdQuery = "SELECT MAX(CAST(SUBSTRING(room_id, 5) AS UNSIGNED)) as max_num FROM availablerooms WHERE room_id LIKE 'UIU-%'";
+$result = $conn->query($nextIdQuery);
+$row = $result->fetch_assoc();
+$nextNum = ($row['max_num'] ?? 0) + 1;
+$roomId = 'UIU-' . $nextNum;
+
 // Validate required fields
-if (empty($roomId) || empty($location) || empty($availableFrom) || empty($rent)) {
+if (empty($location) || empty($availableFrom) || empty($rent)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'error' => 'Missing required fields']);
     exit();
@@ -46,15 +52,24 @@ if (empty($roomId) || empty($location) || empty($availableFrom) || empty($rent))
 // Handle photo uploads
 $photoPaths = [];
 if (isset($_FILES['room_photos']) && !empty($_FILES['room_photos']['name'][0])) {
-    $uploadDir = '../uploads/';
+    $uploadDir = '../uploads/rooms/';
+    
+    // Create the rooms upload directory if it doesn't exist
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
     
     foreach ($_FILES['room_photos']['tmp_name'] as $key => $tmpName) {
         if ($_FILES['room_photos']['error'][$key] === UPLOAD_ERR_OK) {
-            $fileName = basename($_FILES['room_photos']['name'][$key]);
-            $targetPath = $uploadDir . $fileName;
+            $originalName = basename($_FILES['room_photos']['name'][$key]);
+            $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+            
+            // Generate unique filename: roomId_timestamp_random.extension
+            $uniqueName = $roomId . '_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $extension;
+            $targetPath = $uploadDir . $uniqueName;
             
             if (move_uploaded_file($tmpName, $targetPath)) {
-                $photoPaths[] = 'uploads/' . $fileName;
+                $photoPaths[] = 'uploads/rooms/' . $uniqueName;
             }
         }
     }
