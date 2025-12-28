@@ -87,17 +87,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $confirmPassword = $_POST['confirm_password'] ?? '';
         
         // Verify current password
-        $stmt = $conn->prepare("SELECT password FROM users WHERE id = ?");
+        $stmt = $conn->prepare("SELECT password_hash FROM users WHERE id = ?");
         $stmt->bind_param("i", $userId);
         $stmt->execute();
         $result = $stmt->get_result();
         $userData = $result->fetch_assoc();
         
-        if ($userData['password'] == $currentPassword) {
+        if (password_verify($currentPassword, $userData['password_hash'])) {
             if ($newPassword == $confirmPassword) {
                 if (strlen($newPassword) >= 6) {
-                    $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
-                    $stmt->bind_param("si", $newPassword, $userId);
+                    $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+                    $stmt = $conn->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
+                    $stmt->bind_param("si", $newPasswordHash, $userId);
                     
                     if ($stmt->execute()) {
                         $successMessage = "Password changed successfully!";
