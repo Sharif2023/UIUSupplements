@@ -343,12 +343,12 @@
             const gender = document.querySelector('input[name="gender"]:checked');
 
             if (!idValid || !nameValid || !emailValid || !passwordValid || !mobileValid) {
-                alert("Please fill in all fields correctly according to the specified formats.");
+                showErrorModal("Please fill in all fields correctly according to the specified formats.");
                 return;
             }
 
             if (!gender) {
-                alert("Please select a gender.");
+                showErrorModal("Please select a gender.");
                 return;
             }
 
@@ -367,7 +367,7 @@
                 if (emailMatch) {
                     const emailDigits = emailMatch[1];
                     if (emailDigits !== last6DigitsOfId) {
-                        alert(`Email validation failed: The 6 digits in your email (${emailDigits}) must match the last 6 digits of your Student ID (${last6DigitsOfId}).`);
+                        showErrorModal(`Email validation failed: The 6 digits in your email (${emailDigits}) must match the last 6 digits of your Student ID (${last6DigitsOfId}).`);
                         return;
                     }
                 }
@@ -393,7 +393,8 @@
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
-                        alert("Registration successful! You can now login.");
+                        // Show beautiful success modal
+                        showSuccessModal("Registration Successful!", "Your account has been created. You can now login with your credentials.");
 
                         // Reset form fields
                         document.getElementById("regId").value = "";
@@ -409,15 +410,17 @@
                             field.classList.remove("valid", "invalid");
                         });
 
-                        // Switch to login form
-                        login();
+                        // Switch to login form after a short delay
+                        setTimeout(() => {
+                            login();
+                        }, 500);
                     } else {
-                        alert("Registration failed: " + result.message);
+                        showErrorModal("Registration failed: " + result.message);
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert("An error occurred while registering. Please try again.");
+                    showErrorModal("An error occurred while registering. Please try again.");
                 });
         }
 
@@ -491,10 +494,30 @@
         }
 
         // Close modal when clicking outside
+        // Show Success Modal
+        function showSuccessModal(title, message) {
+            const modal = document.getElementById('successModal');
+            const titleElement = document.getElementById('successTitle');
+            const messageElement = document.getElementById('successMessage');
+            titleElement.textContent = title;
+            messageElement.textContent = message;
+            modal.style.display = 'flex';
+        }
+
+        // Close Success Modal
+        function closeSuccessModal() {
+            const modal = document.getElementById('successModal');
+            modal.style.display = 'none';
+        }
+
         window.onclick = function (event) {
-            const modal = document.getElementById('errorModal');
-            if (event.target === modal) {
+            const errorModal = document.getElementById('errorModal');
+            const successModal = document.getElementById('successModal');
+            if (event.target === errorModal) {
                 closeErrorModal();
+            }
+            if (event.target === successModal) {
+                closeSuccessModal();
             }
         }
 
@@ -509,6 +532,18 @@
             <h2>Login Failed</h2>
             <p id="errorMessage"></p>
             <button onclick="closeErrorModal()" class="modal-close-btn">Try Again</button>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="success-modal">
+        <div class="success-modal-content">
+            <div class="success-icon">
+                <i class='bx bx-check-circle'></i>
+            </div>
+            <h2 id="successTitle">Success!</h2>
+            <p id="successMessage"></p>
+            <button onclick="closeSuccessModal()" class="success-close-btn">Continue to Login</button>
         </div>
     </div>
 
