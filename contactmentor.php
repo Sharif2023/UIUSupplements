@@ -607,7 +607,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
                     <button type="submit" class="confirm-btn">Confirm Request</button>
-                    <a href="contactmentor.php?mentor_id=<?php echo $mentor_id; ?>" class="nav-btn">View Mentor Profile</a>
+                    <a href="viewmentorprofile.php?id=<?php echo $mentor_id; ?>" class="nav-btn">View Mentor Profile</a>
                 </form>
 
             </div>

@@ -64,7 +64,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($photo["error"] == UPLOAD_ERR_OK) {
         $photoName = 'mentor' . time() . '_' . basename($photo["name"]);
-        $photoPath = 'uploads/' . $photoName;
+        $uploadDir = 'uploads/mentors/';
+        
+        // Ensure the mentors directory exists
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        
+        $photoPath = $uploadDir . $photoName;
         move_uploaded_file($photo["tmp_name"], $photoPath);
     }
 

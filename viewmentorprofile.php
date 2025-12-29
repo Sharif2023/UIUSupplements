@@ -39,13 +39,12 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f0f5;
+            min-height: 100vh;
             margin: 0;
             padding: 20px;
         }
-
-
 
         /* Sidebar Navigation */
         nav {
@@ -58,6 +57,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             position: fixed;
             top: 0;
             left: 0;
+            z-index: 1000;
         }
 
         .styled-title {
@@ -76,7 +76,6 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             0% {
                 text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
             }
-
             100% {
                 text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff, 0 0 160px #00d4ff;
             }
@@ -134,27 +133,30 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             background-color: #1F1F1F;
         }
 
-        /* Styling for profile page */
+        /* Main Content Area */
         .main {
             flex: 1;
-            margin-left: 250px;
+            margin-left: 270px;
             padding: 40px;
-            background-color: #f0f0f5;
         }
 
+        /* Profile Container - Modern Card Design */
         .profile-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 900px;
             margin: 20px auto;
-            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
         }
 
+        /* Profile Header Section */
         .profile-header {
+            background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
+            padding: 50px 40px;
             text-align: center;
-            margin-bottom: 20px;
+            color: white;
+            position: relative;
         }
 
         .profile-photo {
@@ -162,122 +164,275 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            margin-bottom: 10px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
         }
 
         .profile-header h2 {
-            font-size: 28px;
-            color: #333;
+            font-size: 32px;
+            font-weight: 700;
             margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
         .profile-bio {
             font-size: 16px;
-            color: #666;
-            margin-bottom: 20px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
 
+        /* Profile Body */
+        .profile-body {
+            padding: 40px;
+        }
+
+        /* Back Button */
+        .back-button {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+
+        /* Detail Items Section */
         .profile-details {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
             margin-bottom: 30px;
         }
 
         .detail-item {
             display: flex;
             align-items: center;
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 10px;
-            padding: 5px 0;
-            /* Add padding for better spacing */
-            overflow: hidden;
-            /* Prevent overlap */
+            font-size: 15px;
+            color: #4a5568;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .detail-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         .detail-item img {
+            width: 28px;
+            height: 28px;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .detail-item .detail-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .detail-item .detail-label {
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .detail-item .detail-value {
+            font-weight: 600;
+            color: #1e293b;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* Skills Section - Fixed Overflow */
+        .skills-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title img {
             width: 24px;
             height: 24px;
-            margin-right: 10px;
         }
 
-        .detail-item span {
-            white-space: nowrap;
-            /* Prevent wrapping if needed */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .back-button,
-        .browse-mentors-button {
-            background-color: #FF3300;
+        .skill-tag {
+            background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
             color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
             display: inline-flex;
             align-items: center;
-            margin-bottom: 20px;
-            /* Space below the back button */
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(255, 51, 0, 0.3);
         }
 
-        .back-button:hover {
-            background-color: #1F1F1F;
+        .skill-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 51, 0, 0.4);
         }
 
-        .browse-mentors-button {
-            background-color: #FF3300;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            display: inline-flex;
+        .skill-tag i {
+            font-size: 12px;
+        }
+
+        /* Contact Info Section - Shows Actual Values */
+        .contact-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #f1f5f9;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .contact-item {
+            display: flex;
             align-items: center;
-            margin: 20px auto;
-            /* Center the button */
+            text-decoration: none;
+            color: #1e293b;
+            padding: 18px 24px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            border-color: #FF3300;
+            background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 51, 0, 0.3);
+        }
+
+        .contact-item img {
+            width: 32px;
+            height: 32px;
+            margin-right: 16px;
+            flex-shrink: 0;
+            transition: filter 0.3s ease;
+        }
+
+        .contact-item:hover img {
+            filter: brightness(0) invert(1);
+        }
+
+        .contact-item-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .contact-item-label {
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             display: block;
-            /* Make it a block-level element */
-            max-width: 200px;
-            /* Optional: limit the button width */
+            margin-bottom: 4px;
+        }
+
+        .contact-item:hover .contact-item-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .contact-item-value {
+            font-weight: 600;
+            font-size: 14px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* Browse Mentors Button */
+        .browse-mentors-button {
+            background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 14px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            font-weight: 700;
+            font-size: 16px;
+            margin: 30px auto;
+            max-width: 300px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(255, 51, 0, 0.4);
         }
 
         .browse-mentors-button:hover {
-            background-color: #1F1F1F;
-        }
-
-
-        .contact-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .contact-info a {
-            text-decoration: none;
-            color: #333;
-            padding: 10px 15px;
-            border-radius: 5px;
-            background-color: #f0f0f5;
-            display: flex;
-            align-items: center;
-        }
-
-        .contact-info a img {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-        }
-
-        .contact-info a:hover {
-            background-color: #FF3300;
-            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 51, 0, 0.5);
+            background: #1F1F1F;
         }
 
         /* Media Queries */
         @media (max-width: 768px) {
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .profile-header {
+                padding: 30px 20px;
+            }
+
+            .profile-header h2 {
+                font-size: 24px;
+            }
+
+            .profile-body {
+                padding: 25px;
+            }
+
             .profile-details {
-                gap: 5px;
+                grid-template-columns: 1fr;
+            }
+
+            .contact-info {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -328,9 +483,6 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
         <section class="main">
             <div class="profile-container">
-                <a href="browsementors.php" class="back-button">
-                    <i class="fas fa-arrow-left"></i> Back
-                </a>
                 <?php
                 if ($mentor_id) {
                     // Fetch mentor details from database
@@ -347,61 +499,124 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                             <p class='profile-bio'><?php echo $mentor["bio"]; ?></p>
                         </div>
 
-                        <div class='profile-details'>
-                            <div class='detail-item'>
-                                <img src='https://img.icons8.com/material-rounded/24/000000/marker.png' alt='Location'>
-                                <?php echo $mentor["country"]; ?>
-                            </div>
-                            <div class='detail-item'>
-                                <img src='https://img.icons8.com/material-rounded/24/000000/language.png' alt='Language'>
-                                <?php echo $mentor["language"]; ?>
-                            </div>
-                            <div class='detail-item'>
-                                <img src='https://img.icons8.com/emoji/24/4CAF50/high-voltage.png' alt='Response Time'>
-                                <?php echo $mentor["response_time"]; ?>
-                            </div>
-                            <div class='detail-item'>
-                                <img src='https://img.icons8.com/material-outlined/24/000000/briefcase.png' alt='Industry'>
-                                <?php echo $mentor["industry"]; ?>
-                            </div>
-                            <div class='detail-item'>
-                                <img src='https://img.icons8.com/material-outlined/24/000000/money.png' alt='Hourly Rate'>
-                                $<?php echo $mentor["hourly_rate"]; ?> per hour
-                            </div>
-                            <div class='detail-item'>
-                                <img src='https://uxwing.com/wp-content/themes/uxwing/download/business-professional-services/professional-skills-icon.png' alt='Skills'>
-                                <span><?php echo $mentor["skills"]; ?></span>
-                            </div>
-
-                        </div>
-
-                        <div class='contact-info'>
-                            <a href='mailto:<?php echo $mentor["email"]; ?>'>
-                                <img src='https://img.icons8.com/ios-filled/50/000000/email.png'>Email
+                        <div class='profile-body'>
+                            <a href="browsementors.php" class="back-button">
+                                <i class="fas fa-arrow-left"></i> Back to Mentors
                             </a>
-                            <?php if ($mentor["whatsapp"]) { ?>
-                                <a href='https://wa.me/<?php echo $mentor["whatsapp"]; ?>'>
-                                    <img src='https://img.icons8.com/ios-filled/50/000000/whatsapp.png'>WhatsApp
-                                </a>
-                            <?php } ?>
-                            <?php if ($mentor["linkedin"]) { ?>
-                                <a href='<?php echo $mentor["linkedin"]; ?>'>
-                                    <img src='https://img.icons8.com/ios-filled/50/000000/linkedin.png'>LinkedIn
-                                </a>
-                            <?php } ?>
-                            <?php if ($mentor["facebook"]) { ?>
-                                <a href='<?php echo $mentor["facebook"]; ?>'>
-                                    <img src='https://img.icons8.com/ios-filled/50/000000/facebook.png'>Facebook
-                                </a>
-                            <?php } ?>
+
+                            <div class='profile-details'>
+                                <div class='detail-item'>
+                                    <img src='https://img.icons8.com/material-rounded/24/000000/marker.png' alt='Location'>
+                                    <div class='detail-content'>
+                                        <div class='detail-label'>Location</div>
+                                        <div class='detail-value'><?php echo $mentor["country"]; ?></div>
+                                    </div>
+                                </div>
+                                <div class='detail-item'>
+                                    <img src='https://img.icons8.com/material-rounded/24/000000/language.png' alt='Language'>
+                                    <div class='detail-content'>
+                                        <div class='detail-label'>Language</div>
+                                        <div class='detail-value'><?php echo $mentor["language"]; ?></div>
+                                    </div>
+                                </div>
+                                <div class='detail-item'>
+                                    <img src='https://img.icons8.com/emoji/24/4CAF50/high-voltage.png' alt='Response Time'>
+                                    <div class='detail-content'>
+                                        <div class='detail-label'>Response Time</div>
+                                        <div class='detail-value'><?php echo $mentor["response_time"]; ?></div>
+                                    </div>
+                                </div>
+                                <div class='detail-item'>
+                                    <img src='https://img.icons8.com/material-outlined/24/000000/briefcase.png' alt='Industry'>
+                                    <div class='detail-content'>
+                                        <div class='detail-label'>Industry</div>
+                                        <div class='detail-value'><?php echo $mentor["industry"]; ?></div>
+                                    </div>
+                                </div>
+                                <div class='detail-item'>
+                                    <img src='https://img.icons8.com/material-outlined/24/000000/organization.png' alt='Company'>
+                                    <div class='detail-content'>
+                                        <div class='detail-label'>Company</div>
+                                        <div class='detail-value'><?php echo $mentor["company"] ?: 'Not specified'; ?></div>
+                                    </div>
+                                </div>
+                                <div class='detail-item'>
+                                    <img src='https://img.icons8.com/material-outlined/24/000000/money.png' alt='Hourly Rate'>
+                                    <div class='detail-content'>
+                                        <div class='detail-label'>Hourly Rates</div>
+                                        <div class='detail-value'><?php echo $mentor["hourly_rate"] ?: 'Contact for pricing'; ?></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Skills Section with Tags -->
+                            <div class='skills-section'>
+                                <div class='section-title'>
+                                    <i class="fas fa-cogs"></i> Skills & Expertise
+                                </div>
+                                <div class='skills-container'>
+                                    <?php 
+                                    $skills = explode(',', $mentor["skills"]);
+                                    foreach ($skills as $skill) {
+                                        $skill = trim($skill);
+                                        if (!empty($skill)) {
+                                            echo "<span class='skill-tag'><i class='fas fa-check'></i> " . htmlspecialchars($skill) . "</span>";
+                                        }
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+
+                            <!-- Contact Section with Visible Values -->
+                            <div class='contact-section'>
+                                <div class='section-title'>
+                                    <i class="fas fa-address-book"></i> Contact Information
+                                </div>
+                                <div class='contact-info'>
+                                    <a href='mailto:<?php echo $mentor["email"]; ?>' class='contact-item'>
+                                        <img src='https://img.icons8.com/ios-filled/50/000000/email.png'>
+                                        <div class='contact-item-content'>
+                                            <span class='contact-item-label'>Email</span>
+                                            <span class='contact-item-value'><?php echo $mentor["email"]; ?></span>
+                                        </div>
+                                    </a>
+                                    <?php if ($mentor["whatsapp"]) { ?>
+                                        <a href='https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $mentor["whatsapp"]); ?>' class='contact-item' target='_blank'>
+                                            <img src='https://img.icons8.com/ios-filled/50/25D366/whatsapp.png'>
+                                            <div class='contact-item-content'>
+                                                <span class='contact-item-label'>WhatsApp</span>
+                                                <span class='contact-item-value'><?php echo $mentor["whatsapp"]; ?></span>
+                                            </div>
+                                        </a>
+                                    <?php } ?>
+                                    <?php if ($mentor["linkedin"]) { ?>
+                                        <a href='<?php echo $mentor["linkedin"]; ?>' class='contact-item' target='_blank'>
+                                            <img src='https://img.icons8.com/ios-filled/50/0077B5/linkedin.png'>
+                                            <div class='contact-item-content'>
+                                                <span class='contact-item-label'>LinkedIn</span>
+                                                <span class='contact-item-value'><?php echo $mentor["linkedin"]; ?></span>
+                                            </div>
+                                        </a>
+                                    <?php } ?>
+                                    <?php if ($mentor["facebook"]) { ?>
+                                        <a href='<?php echo $mentor["facebook"]; ?>' class='contact-item' target='_blank'>
+                                            <img src='https://img.icons8.com/ios-filled/50/1877F2/facebook.png'>
+                                            <div class='contact-item-content'>
+                                                <span class='contact-item-label'>Facebook</span>
+                                                <span class='contact-item-value'><?php echo $mentor["facebook"]; ?></span>
+                                            </div>
+                                        </a>
+                                    <?php } ?>
+                                </div>
+                            </div>
                         </div>
 
                 <?php
                     } else {
-                        echo "<p>Mentor not found.</p>";
+                        echo "<div class='profile-body'><p style='text-align:center; padding: 40px; color: #666;'>Mentor not found.</p></div>";
                     }
                 } else {
-                    echo "<p>No mentor selected.</p>";
+                    echo "<div class='profile-body'><p style='text-align:center; padding: 40px; color: #666;'>No mentor selected.</p></div>";
                 }
                 ?>
             </div>
