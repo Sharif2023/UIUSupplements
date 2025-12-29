@@ -389,6 +389,208 @@ if (!isset($_SESSION['user_id'])) {
             color: #6b7280;
         }
 
+        /* Job Details Modal */
+        .job-details-modal .modal-content {
+            max-width: 700px;
+        }
+
+        .job-details-header {
+            background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
+            margin: -30px -30px 25px -30px;
+            padding: 30px;
+            border-radius: 20px 20px 0 0;
+            color: white;
+        }
+
+        .job-details-header .job-type-badge {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .job-details-header h2 {
+            font-size: 24px;
+            margin: 0 0 10px;
+        }
+
+        .job-details-header .company-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .job-details-body {
+            padding: 0;
+        }
+
+        .job-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .job-info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .job-info-item i {
+            font-size: 18px;
+            color: #FF3300;
+            width: 24px;
+            text-align: center;
+        }
+
+        .job-info-item .info-content {
+            flex: 1;
+        }
+
+        .job-info-item .info-label {
+            font-size: 11px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .job-info-item .info-value {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        .job-section {
+            margin-bottom: 25px;
+        }
+
+        .job-section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .job-section-title i {
+            color: #FF3300;
+        }
+
+        .job-section-content {
+            color: #4b5563;
+            line-height: 1.7;
+            font-size: 14px;
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .job-section-content ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .job-section-content li {
+            margin-bottom: 8px;
+        }
+
+        .contact-cards {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .contact-card {
+            flex: 1;
+            min-width: 200px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+        }
+
+        .contact-card:hover {
+            border-color: #FF3300;
+            background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
+            color: white;
+        }
+
+        .contact-card i {
+            font-size: 20px;
+            color: #FF3300;
+            margin-bottom: 8px;
+            display: block;
+            transition: color 0.3s;
+        }
+
+        .contact-card:hover i {
+            color: white;
+        }
+
+        .contact-card .contact-label {
+            font-size: 11px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .contact-card:hover .contact-label {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .contact-card .contact-value {
+            font-weight: 600;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .job-details-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .job-details-actions button {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .job-card {
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .job-info-grid {
+                grid-template-columns: 1fr;
+            }
+            .contact-cards {
+                flex-direction: column;
+            }
+        }
+
         @media (max-width: 768px) {
             .jobs-grid {
                 grid-template-columns: 1fr;
@@ -491,6 +693,16 @@ if (!isset($_SESSION['user_id'])) {
         </section>
     </div>
 
+    <!-- Job Details Modal -->
+    <div class="modal job-details-modal" id="jobDetailsModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeJobDetailsModal()" style="position:absolute; right:20px; top:20px; z-index:10; background:rgba(255,255,255,0.2); border-radius:50%; width:36px; height:36px;">&times;</button>
+            <div id="jobDetailsContent">
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading job details...</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Apply Modal -->
     <div class="modal" id="applyModal">
         <div class="modal-content">
@@ -590,7 +802,7 @@ if (!isset($_SESSION['user_id'])) {
             grid.innerHTML = jobs.map(job => {
                 const isOwnJob = job.posted_by_user_id == userId;
                 return `
-                <div class="job-card">
+                <div class="job-card" onclick="viewJobDetails(${job.id})">
                     <div class="job-card-header">
                         <span class="job-type-badge ${job.job_type}">${job.job_type.replace('-', ' ')}</span>
                         <h3 class="job-title">${escapeHtml(job.title)}</h3>
@@ -627,7 +839,7 @@ if (!isset($_SESSION['user_id'])) {
                         </span>
                         ${isOwnJob ? 
                             `<span class="applied-badge"><i class="fas fa-user-edit"></i> Your Job</span>` :
-                            `<button class="apply-btn" onclick="openApplyModal(${job.id}, '${escapeHtml(job.title)}')">
+                            `<button class="apply-btn" onclick="event.stopPropagation(); openApplyModal(${job.id}, '${escapeHtml(job.title).replace(/'/g, "\\'")}')">
                                 <i class="fas fa-paper-plane"></i> Apply
                             </button>`
                         }
@@ -635,6 +847,130 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
                 `;
             }).join('');
+        }
+
+        function viewJobDetails(jobId) {
+            document.getElementById('jobDetailsModal').classList.add('active');
+            document.getElementById('jobDetailsContent').innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading job details...</div>';
+            
+            fetch(`api/jobs.php?id=${jobId}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.job) {
+                        const job = data.job;
+                        const isOwnJob = job.posted_by_user_id == userId;
+                        
+                        document.getElementById('jobDetailsContent').innerHTML = `
+                            <div class="job-details-header">
+                                <span class="job-type-badge">${job.job_type.replace('-', ' ').toUpperCase()}</span>
+                                <h2>${escapeHtml(job.title)}</h2>
+                                <div class="company-name">
+                                    <i class="fas fa-building"></i> ${escapeHtml(job.company || 'Not specified')}
+                                </div>
+                            </div>
+                            <div class="job-details-body">
+                                <div class="job-info-grid">
+                                    <div class="job-info-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <div class="info-content">
+                                            <div class="info-label">Location</div>
+                                            <div class="info-value">${escapeHtml(job.location)}</div>
+                                        </div>
+                                    </div>
+                                    <div class="job-info-item">
+                                        <i class="fas fa-tag"></i>
+                                        <div class="info-content">
+                                            <div class="info-label">Category</div>
+                                            <div class="info-value">${escapeHtml(job.category)}</div>
+                                        </div>
+                                    </div>
+                                    ${job.salary ? `
+                                    <div class="job-info-item">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                        <div class="info-content">
+                                            <div class="info-label">Salary</div>
+                                            <div class="info-value" style="color: #059669;">${escapeHtml(job.salary)}</div>
+                                        </div>
+                                    </div>` : ''}
+                                    ${job.days_per_week ? `
+                                    <div class="job-info-item">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <div class="info-content">
+                                            <div class="info-label">Days per Week</div>
+                                            <div class="info-value">${job.days_per_week} days</div>
+                                        </div>
+                                    </div>` : ''}
+                                    <div class="job-info-item">
+                                        <i class="fas fa-user"></i>
+                                        <div class="info-content">
+                                            <div class="info-label">Posted By</div>
+                                            <div class="info-value">${escapeHtml(job.poster_name || 'Admin')}</div>
+                                        </div>
+                                    </div>
+                                    <div class="job-info-item">
+                                        <i class="fas fa-users"></i>
+                                        <div class="info-content">
+                                            <div class="info-label">Applications</div>
+                                            <div class="info-value">${job.application_count || 0} received</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                ${job.description ? `
+                                <div class="job-section">
+                                    <div class="job-section-title"><i class="fas fa-align-left"></i> Job Description</div>
+                                    <div class="job-section-content">${formatMultiline(job.description)}</div>
+                                </div>` : ''}
+                                
+                                ${job.requirements ? `
+                                <div class="job-section">
+                                    <div class="job-section-title"><i class="fas fa-clipboard-list"></i> Requirements</div>
+                                    <div class="job-section-content">${formatMultiline(job.requirements)}</div>
+                                </div>` : ''}
+                                
+                                ${(job.contact_email || job.contact_phone) ? `
+                                <div class="job-section">
+                                    <div class="job-section-title"><i class="fas fa-address-book"></i> Contact Information</div>
+                                    <div class="contact-cards">
+                                        ${job.contact_email ? `
+                                        <a href="mailto:${escapeHtml(job.contact_email)}" class="contact-card">
+                                            <i class="fas fa-envelope"></i>
+                                            <div class="contact-label">Email</div>
+                                            <div class="contact-value">${escapeHtml(job.contact_email)}</div>
+                                        </a>` : ''}
+                                        ${job.contact_phone ? `
+                                        <a href="tel:${escapeHtml(job.contact_phone)}" class="contact-card">
+                                            <i class="fas fa-phone"></i>
+                                            <div class="contact-label">Phone</div>
+                                            <div class="contact-value">${escapeHtml(job.contact_phone)}</div>
+                                        </a>` : ''}
+                                    </div>
+                                </div>` : ''}
+                                
+                                <div class="job-details-actions">
+                                    <button class="btn-cancel" onclick="closeJobDetailsModal()">
+                                        <i class="fas fa-arrow-left"></i> Back to Jobs
+                                    </button>
+                                    ${isOwnJob ? 
+                                        `<span class="applied-badge" style="flex:1; text-align:center; padding:14px;"><i class="fas fa-user-edit"></i> This is your job posting</span>` :
+                                        `<button class="btn-submit" onclick="closeJobDetailsModal(); openApplyModal(${job.id}, '${escapeHtml(job.title).replace(/'/g, "\\'")}')">
+                                            <i class="fas fa-paper-plane"></i> Apply Now
+                                        </button>`
+                                    }
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        document.getElementById('jobDetailsContent').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Job not found</h3></div>';
+                    }
+                })
+                .catch(err => {
+                    document.getElementById('jobDetailsContent').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Error loading job details</h3></div>';
+                });
+        }
+
+        function closeJobDetailsModal() {
+            document.getElementById('jobDetailsModal').classList.remove('active');
         }
 
         function openApplyModal(jobId, title) {
@@ -706,9 +1042,25 @@ if (!isset($_SESSION['user_id'])) {
             return div.innerHTML;
         }
 
+        // Format multiline text - handles both actual newlines and literal \n strings
+        function formatMultiline(text) {
+            if (!text) return '';
+            // First escape HTML
+            let escaped = escapeHtml(text);
+            // Replace literal \n strings (backslash + n) with <br>
+            escaped = escaped.replace(/\\n/g, '<br>');
+            // Also replace actual newlines with <br>
+            escaped = escaped.replace(/\n/g, '<br>');
+            return escaped;
+        }
+
         // Close modal on outside click
         document.getElementById('applyModal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
+        });
+        
+        document.getElementById('jobDetailsModal').addEventListener('click', function(e) {
+            if (e.target === this) closeJobDetailsModal();
         });
     </script>
 
