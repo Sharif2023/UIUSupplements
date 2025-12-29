@@ -6,42 +6,6 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: uiusupplementlogin.html");
     exit();
 }
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "uiusupplements";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Check if the form data was submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['car_no']) && isset($_POST['current_location']) && isset($_POST['totalclicks']) && isset($_POST['needTime']) && isset($_POST['next_destination'])) {
-        $car_no = $_POST['car_no'];
-        $current_location = $_POST['current_location'];
-        $remaining_capacity = $_POST['totalclicks'];
-        $approximate_time = $_POST['needTime'];
-        $next_destination = $_POST['next_destination'];
-
-        // Prepare and execute the SQL insert query
-        $sql = "INSERT INTO shuttle_tracking (car_no, current_location, remaining_capacity, approximate_time, next_destination)
-                VALUES ('$car_no', '$current_location', '$remaining_capacity', '$approximate_time', '$next_destination')";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "Record added successfully";
-        } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
-        }
-    }
-}
-
-$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,256 +13,416 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shuttle Tracking System</title>
+    <title>Shuttle Tracking System | UIU Supplement</title>
     <link rel="icon" type="image/x-icon" href="logo/title.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/index.css" />
-    <script src="https://maps.gomaps.pro/maps/api/js?key=AlzaSygAfpRH_g78jn6CrKdPpNZivYCddRS7LRz&libraries=places"></script>
 
     <style>
-        /* Page-specific styles for Shuttle Tracking */
-        .shuttle-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-top: 20px;
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        .shuttle-card {
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        /* Route Tabs */
+        .route-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .route-tab {
+            padding: 15px 30px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            color: #555;
+            position: relative;
+        }
+
+        .route-tab:hover {
+            border-color: #FF3300;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 51, 0, 0.15);
+        }
+
+        .route-tab.active {
+            background: linear-gradient(135deg, #FF3300 0%, #ff6b4a 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 5px 25px rgba(255, 51, 0, 0.3);
+        }
+
+        .route-tab.active i {
+            color: white;
+        }
+
+        .route-tab i {
+            font-size: 20px;
+            color: #FF3300;
+        }
+
+        .coming-soon-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
+            color: #333;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            box-shadow: 0 2px 10px rgba(255, 193, 7, 0.4);
+        }
+
+        /* Route Content */
+        .route-content {
+            display: none;
+        }
+
+        .route-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Route Overview */
+        .route-overview {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .route-overview h3 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .route-overview h3 i {
+            color: #FF3300;
+        }
+
+        /* Route Timeline */
+        .route-timeline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            position: relative;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .route-timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FF3300, #ff6b4a, #ffaa80, #ff6b4a, #FF3300);
+            border-radius: 2px;
+            z-index: 0;
+        }
+
+        .timeline-stop {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            z-index: 1;
+            background: white;
+            padding: 10px;
+        }
+
+        .stop-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #FF3300 0%, #ff6b4a 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(255, 51, 0, 0.3);
+        }
+
+        .stop-icon.uiu {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .stop-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        /* Direction Toggle */
+        .direction-toggle {
+            display: flex;
+            background: #f0f0f5;
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 25px;
+            max-width: 400px;
+        }
+
+        .direction-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .direction-btn.active {
+            background: linear-gradient(135deg, #FF3300 0%, #ff6b4a 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 51, 0, 0.3);
+        }
+
+        .direction-btn:hover:not(.active) {
+            background: #e0e0e0;
+        }
+
+        /* Map Container */
+        .map-container {
             background: white;
             border-radius: 16px;
             padding: 25px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
         }
 
-        .shuttle-card h3 {
-            font-size: 18px;
-            font-weight: 600;
+        .map-container h4 {
+            font-size: 16px;
             color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f0f0f5;
-        }
-
-        /* Map Container */
-        #map {
-            height: 350px;
-            width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        /* Control Buttons */
-        .control-panel {
+            margin-bottom: 15px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 20px;
+            align-items: center;
+            gap: 10px;
         }
 
-        .control-panel .btn {
+        .map-container h4 i {
+            color: #FF3300;
+        }
+
+        .map-iframe {
+            width: 100%;
+            height: 450px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
             padding: 10px 20px;
+            background: linear-gradient(135deg, #FF3300 0%, #ff6b4a 100%);
+            color: white;
+            text-decoration: none;
             border-radius: 8px;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 14px;
             transition: all 0.3s ease;
         }
 
-        .btn-start {
-            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-            color: white;
-            border: none;
-        }
-
-        .btn-start:hover {
-            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        .map-link:hover {
             transform: translateY(-2px);
-        }
-
-        .btn-pick {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            box-shadow: 0 5px 20px rgba(255, 51, 0, 0.3);
             color: white;
-            border: none;
         }
 
-        .btn-pick:hover {
-            background: linear-gradient(135deg, #218838 0%, #1aa179 100%);
-        }
-
-        .btn-drop {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-            color: white;
-            border: none;
-        }
-
-        .btn-drop:hover {
-            background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
-        }
-
-        .btn-query {
-            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
-            color: white;
-            border: none;
-        }
-
-        /* Destination Select */
-        #destination {
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: 2px solid #e0e0e0;
-            font-size: 14px;
-            min-width: 200px;
-            transition: border-color 0.3s ease;
-        }
-
-        #destination:focus {
-            border-color: #2196F3;
-            outline: none;
-        }
-
-        /* Status Info Cards */
-        .status-grid {
+        /* Segment Cards */
+        .segment-cards {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .segment-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            border-left: 4px solid #FF3300;
+            transition: all 0.3s ease;
+        }
+
+        .segment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .segment-card h5 {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .segment-card h5 i {
+            color: #FF3300;
+        }
+
+        .segment-card a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #FF3300;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .segment-card a:hover {
+            color: #cc2900;
+            gap: 10px;
+        }
+
+        /* Coming Soon */
+        .coming-soon-container {
+            text-align: center;
+            padding: 60px 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .coming-soon-icon {
+            font-size: 80px;
+            color: #ffc107;
             margin-bottom: 20px;
         }
 
-        .status-item {
+        .coming-soon-container h3 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .coming-soon-container p {
+            color: #666;
+            font-size: 15px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Route Info Grid */
+        .route-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .route-info-card {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 15px;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 12px;
             text-align: center;
         }
 
-        .status-item label {
+        .route-info-card i {
+            font-size: 28px;
+            color: #FF3300;
+            margin-bottom: 10px;
+        }
+
+        .route-info-card .label {
             font-size: 12px;
             color: #666;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            margin-bottom: 5px;
         }
 
-        .status-item .value {
-            font-size: 24px;
+        .route-info-card .value {
+            font-size: 20px;
             font-weight: 700;
             color: #333;
-            margin-top: 5px;
         }
 
-        /* Seat Layout */
-        .seat-section {
-            margin-top: 20px;
-        }
+        @media (max-width: 768px) {
+            .route-tabs {
+                flex-direction: column;
+            }
 
-        .seat-legend {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
+            .route-tab {
+                width: 100%;
+                justify-content: center;
+            }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #666;
-        }
+            .direction-toggle {
+                max-width: 100%;
+            }
 
-        .legend-dot {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-        }
+            .route-timeline {
+                flex-direction: column;
+                gap: 20px;
+            }
 
-        .legend-dot.available {
-            background-color: #9ce3f3;
-        }
+            .route-timeline::before {
+                width: 4px;
+                height: 100%;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+            }
 
-        .legend-dot.booked {
-            background-color: #ff9f43;
-        }
-
-        .bus-container {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            border-radius: 20px;
-            padding: 20px;
-            max-width: 280px;
-        }
-
-        .bus-front {
-            background: #1a252f;
-            height: 30px;
-            border-radius: 15px 15px 0 0;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 12px;
-        }
-
-        .seat-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            column-gap: 15px;
-        }
-
-        .seat-grid::after {
-            content: '';
-            grid-column: 2 / 3;
-        }
-
-        .seat {
-            font-size: 22px;
-            color: #9ce3f3;
-            text-align: center;
-            transition: all 0.2s ease;
-        }
-
-        .seat.taken {
-            color: #ff9f43;
-        }
-
-        .seat.dropped {
-            color: #9ce3f3;
-        }
-
-        /* Shuttle Info Table */
-        .shuttle-table {
-            margin-top: 30px;
-        }
-
-        .shuttle-table table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .shuttle-table th {
-            background: linear-gradient(135deg, #FF3300 0%, #FF6B35 100%);
-            color: white;
-            padding: 15px;
-            font-weight: 600;
-            text-align: left;
-        }
-
-        .shuttle-table td {
-            padding: 15px;
-            background: white;
-            border-bottom: 1px solid #f0f0f5;
-        }
-
-        .shuttle-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        @media (max-width: 992px) {
-            .shuttle-container {
-                grid-template-columns: 1fr;
+            .map-iframe {
+                height: 350px;
             }
         }
     </style>
@@ -344,380 +468,240 @@ $conn->close();
                 <i class="fas fa-sign-out-alt"></i> Log Out
             </a>
         </nav>
-        <section class="main">
-            <div class="main-top">
 
-                <button id="startButton" class="btn btn-primary">Start</button>
-                <!-- Select destination for map -->
-                <div id="controls">
-                    <!-- <label for="destination">Select Destination:</label> -->
-                    <select id="destination">
-                        <option value="">--Choose a destination--</option>
-                        <option value="NotunBazar">Notun Bazar</option>
-                        <option value="Sayednagar">Sayednagar</option>
-                        <option value="FamilyBazar">FamilyBazar</option>
-                        <option value="UIU">UIU</option>
-                    </select>
+        <section class="main">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1><i class="fas fa-bus-alt"></i> UIU Shuttle Routes</h1>
+                <p>Track shuttle routes and plan your commute with live maps</p>
+            </div>
+
+            <!-- Route Tabs -->
+            <div class="route-tabs">
+                <div class="route-tab active" onclick="switchRoute('notunbazar')">
+                    <i class="fas fa-route"></i>
+                    <span>UIU ↔ Notunbazar</span>
+                </div>
+                <div class="route-tab" onclick="switchRoute('kuril')">
+                    <i class="fas fa-route"></i>
+                    <span>UIU ↔ Kuril</span>
+                    <span class="coming-soon-badge">Coming Soon</span>
+                </div>
+                <div class="route-tab" onclick="switchRoute('ewugate')">
+                    <i class="fas fa-route"></i>
+                    <span>UIU ↔ EWU Gate</span>
+                    <span class="coming-soon-badge">Coming Soon</span>
                 </div>
             </div>
 
-
-            <div class=" text-center ">
-                <div class="product-cards">
-                    <div class="col">
-                        <button class="btn"><a class="page-link" href="shulltequery.php">complex Query</a></button>
-                        <button onclick="totalclick(-1)" id="PICK" class="btn btn-outline-dark btn-success">PICK</button>
-                        <button onclick="totalclick(1)" id="dropBtn" class="btn btn-outline-dark btn-danger">DROP</button>
-                        <br> <br> Remaining Capacity: <h3 id="totalclicks">40</h3>
-                        Duration: <h2 id="needTime">-</h3>
-                            <button class="btn" style="background-color:#9ce3f3;" disabled>available</button>
-                            <button class="btn" style="background-color:orange;" disabled>booked</button><br>
-
-
-                            <div class="" style="margin-left: 30px;"> <!-- 5 seats for the example -->
-                                <br>
-                                <i id="seat1" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat2" class="fa-solid fa-couch fa-sm seat" style="margin-right: 10px;"></i>
-                                <i id="seat3" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat4" class="fa-solid fa-couch fa-sm seat"></i><br>
-                                <i id="seat5" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat6" class="fa-solid fa-couch fa-sm seat" style="margin-right: 10px;"></i>
-                                <i id="seat7" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat8" class="fa-solid fa-couch fa-sm seat"></i><br>
-                                <i id="seat9" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat10" class="fa-solid fa-couch fa-sm seat" style="margin-right: 10px;"></i>
-                                <i id="seat11" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat12" class="fa-solid fa-couch fa-sm seat"></i><br>
-                                <i id="seat13" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat14" class="fa-solid fa-couch fa-sm seat" style="margin-right: 10px;"></i>
-                                <i id="seat15" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat16" class="fa-solid fa-couch fa-sm seat"></i><br>
-                                <i id="seat17" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat18" class="fa-solid fa-couch fa-sm seat" style="margin-right: 10px;"></i>
-                                <i id="seat19" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat20" class="fa-solid fa-couch fa-sm seat"></i><br>
-                                <i id="seat21" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat22" class="fa-solid fa-couch fa-sm seat" style="margin-right: 10px;"></i>
-                                <i id="seat23" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat24" class="fa-solid fa-couch fa-sm seat"></i><br>
-                                <i id="seat25" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat26" class="fa-solid fa-couch fa-sm seat" style="margin-right: 10px;"></i>
-                                <i id="seat27" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat28" class="fa-solid fa-couch fa-sm seat"></i><br>
-                                <i id="seat29" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat30" class="fa-solid fa-couch fa-sm seat" style="margin-right: 10px;"></i>
-                                <i id="seat31" class="fa-solid fa-couch fa-sm seat"></i>
-                                <i id="seat32" class="fa-solid fa-couch fa-sm seat"></i><br>
-                                <i id="seat33" class="fa-solid fa-couch fa-sm seat" style="visibility: hidden;"></i>
-                                <i id="seat34" class="fa-solid fa-couch fa-sm seat" style="visibility: hidden;" style="margin-right: 10px;"></i>
-                                <i id="seat35" class="fa-solid fa-couch fa-sm seat" style="visibility: hidden;"></i>
-                                <i id="seat36" class="fa-solid fa-couch fa-sm seat" style="visibility: hidden;"></i><br>
-                                <i id="seat37" class="fa-solid fa-couch fa-sm seat" style="visibility: hidden;"></i>
-                                <i id="seat38" class="fa-solid fa-couch fa-sm seat" style="visibility: hidden;" style="margin-right: 10px;"></i>
-                                <i id="seat39" class="fa-solid fa-couch fa-sm seat" style="visibility: hidden;"></i>
-                                <i id="seat40" class="fa-solid fa-couch fa-sm seat" style="visibility: hidden;"></i><br>
-                            </div>
+            <!-- Notunbazar Route Content -->
+            <div id="notunbazar-route" class="route-content active">
+                <!-- Route Overview -->
+                <div class="route-overview">
+                    <h3><i class="fas fa-map-marked-alt"></i> Route Overview</h3>
+                    
+                    <!-- Route Info -->
+                    <div class="route-info-grid">
+                        <div class="route-info-card">
+                            <i class="fas fa-map-signs"></i>
+                            <div class="label">Total Stops</div>
+                            <div class="value">4</div>
+                        </div>
+                        <div class="route-info-card">
+                            <i class="fas fa-road"></i>
+                            <div class="label">Route Distance</div>
+                            <div class="value">~3 KM</div>
+                        </div>
+                        <div class="route-info-card">
+                            <i class="fas fa-clock"></i>
+                            <div class="label">Est. Duration</div>
+                            <div class="value">15-20 Min</div>
+                        </div>
                     </div>
-                    <script>
-                        let totalSeats = 39;
-                        let currentSeat = 1;
 
-                        // Function to update seat color and status
-                        function updateSeatStatus(seatIndex, action) {
-                            const seat = document.getElementById(`seat${seatIndex}`);
-                            if (action === 'PICK') {
-                                seat.classList.add('taken'); // Color for PICK
-                                seat.classList.remove('dropped');
-                            } else if (action === 'DROP') {
-                                seat.classList.add('dropped'); // Color for DROP
-                                seat.classList.remove('taken');
-                            }
-                        }
-
-                        // PICK button logic: change seat color to orange serially
-                        document.getElementById('PICK').addEventListener('click', function() {
-                            if (currentSeat > totalSeats) {
-                                alert("Full/empty");
-                            } else if (currentSeat <= totalSeats) {
-                                updateSeatStatus(currentSeat, 'PICK');
-                                currentSeat++;
-                                if (currentSeat <= 40) {
-                                    const totalclicks = document.getElementById('totalclicks');
-                                    const remainingCapacity = document.getElementById('remaining-capacity');
-                                    totalclicks.innerHTML = parseInt(totalclicks.innerHTML) - 1;
-                                    remainingCapacity.innerHTML = parseInt(totalclicks.innerHTML);
-                                }
-                            }
-
-                        });
-
-                        // DROP button logic: change seat color to black serially, starting from the last updated seat
-                        document.getElementById('dropBtn').addEventListener('click', function() {
-                            if (currentSeat <= 1) {
-                                alert("Full/empty");
-                            } else if (currentSeat > 1) {
-
-                                currentSeat--; // Move backwards from the last updated seat
-                                updateSeatStatus(currentSeat, 'DROP');
-                                const totalclicks = document.getElementById('totalclicks');
-                                const remainingCapacity = document.getElementById('remaining-capacity');
-                                totalclicks.innerHTML = parseInt(totalclicks.innerHTML) + 1;
-
-                            }
-                        });
-                    </script>
-                    <!-- FINISH seat arragement -->
-                    <div class="col" id="map"></div>
+                    <!-- Route Timeline -->
+                    <div class="route-timeline">
+                        <div class="timeline-stop">
+                            <div class="stop-icon uiu"><i class="fas fa-university"></i></div>
+                            <span class="stop-name">UIU Campus</span>
+                        </div>
+                        <div class="timeline-stop">
+                            <div class="stop-icon"><i class="fas fa-map-pin"></i></div>
+                            <span class="stop-name">Sayednagar</span>
+                        </div>
+                        <div class="timeline-stop">
+                            <div class="stop-icon"><i class="fas fa-shopping-cart"></i></div>
+                            <span class="stop-name">Family Bazar</span>
+                        </div>
+                        <div class="timeline-stop">
+                            <div class="stop-icon"><i class="fas fa-flag-checkered"></i></div>
+                            <span class="stop-name">Notun Bazar</span>
+                        </div>
+                    </div>
                 </div>
-                <script>
-                    let map, marker, directionsService, directionsRenderer;
-                    let currentLocation = {
-                        lat: 23.797193,
-                        lng: 90.449684
-                    };
 
-                    const destinations = {
-                        "NotunBazar": {
-                            lat: 23.797965,
-                            lng: 90.425739
-                        },
-                        "Sayednagar": {
-                            lat: 23.798630,
-                            lng: 90.434937
-                        },
-                        "FamilyBazar": {
-                            lat: 23.798195,
-                            lng: 90.429263
-                        },
-                        "UIU": {
-                            lat: 23.797193,
-                            lng: 90.449684
-                        }
-                    };
+                <!-- Direction Toggle -->
+                <div class="direction-toggle">
+                    <button class="direction-btn active" onclick="switchDirection('from-uiu')">
+                        <i class="fas fa-arrow-right"></i> UIU → Notunbazar
+                    </button>
+                    <button class="direction-btn" onclick="switchDirection('to-uiu')">
+                        <i class="fas fa-arrow-left"></i> Notunbazar → UIU
+                    </button>
+                </div>
 
-                    // Initialize the map after the page loads
-                    window.onload = function() {
-                        initMap();
-                        document.getElementById('destination').addEventListener('change', calculateRoute);
-                    }
+                <!-- Main Map - From UIU -->
+                <div id="map-from-uiu" class="map-container">
+                    <h4><i class="fas fa-map"></i> UIU to Notun Bazar Route</h4>
+                    <iframe 
+                        class="map-iframe"
+                        src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d14606.394949967895!2d90.42910469999999!3d23.7978829!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x3755c7d8042caf2d%3A0x686fa3e360361ddf!2sUnited%20International%20University%2C%20QCXX%2B5V2%2C%20United%20City%2C%20Madani%20Ave%2C%20Dhaka%201212!3m2!1d23.7978829!2d90.44971!4m5!1s0x3755c7b0e0a0c82d%3A0x9f6e0b0c0b0d0e0f!2sNotun%20Bazar%2C%20Dhaka!3m2!1d23.797965!2d90.425739!5e0!3m2!1sen!2sbd!4v1703891234567!5m2!1sen!2sbd"
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                    <a href="https://maps.app.goo.gl/uoYcfuUXJkagbjWX7" target="_blank" class="map-link">
+                        <i class="fas fa-external-link-alt"></i> Open in Google Maps
+                    </a>
+                </div>
 
-                    // Function to initialize and display the map
-                    function initMap() {
-                        map = new google.maps.Map(document.getElementById("map"), {
-                            zoom: 14,
-                            center: currentLocation,
-                            mapTypeControl: false,
-                            streetViewControl: false,
-                        });
+                <!-- Main Map - To UIU (Hidden by default) -->
+                <div id="map-to-uiu" class="map-container" style="display: none;">
+                    <h4><i class="fas fa-map"></i> Notun Bazar to UIU Route</h4>
+                    <iframe 
+                        class="map-iframe"
+                        src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d14606.394949967895!2d90.42910469999999!3d23.7978829!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x3755c7b0e0a0c82d%3A0x9f6e0b0c0b0d0e0f!2sNotun%20Bazar%2C%20Dhaka!3m2!1d23.797965!2d90.425739!4m5!1s0x3755c7d8042caf2d%3A0x686fa3e360361ddf!2sUnited%20International%20University%2C%20QCXX%2B5V2%2C%20United%20City%2C%20Madani%20Ave%2C%20Dhaka%201212!3m2!1d23.7978829!2d90.44971!5e0!3m2!1sen!2sbd!4v1703891234567!5m2!1sen!2sbd"
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                    <a href="https://maps.app.goo.gl/mPkADk7N3SFTCQ2R9" target="_blank" class="map-link">
+                        <i class="fas fa-external-link-alt"></i> Open in Google Maps
+                    </a>
+                </div>
 
-                        directionsService = new google.maps.DirectionsService();
-                        directionsRenderer = new google.maps.DirectionsRenderer();
-                        directionsRenderer.setMap(map);
-
-                        // Check if the browser supports Geolocation API
-                        if (navigator.geolocation) {
-                            navigator.geolocation.getCurrentPosition(
-                                (position) => {
-                                    currentLocation = {
-                                        lat: position.coords.latitude,
-                                        lng: position.coords.longitude,
-                                    };
-                                    map.setCenter(currentLocation);
-
-                                    // Place a marker at the user's current location
-                                    marker = new google.maps.Marker({
-                                        position: currentLocation,
-                                        map: map,
-                                        title: "You are here",
-                                    });
-                                },
-                                (error) => {
-                                    console.error("Geolocation error: ", error);
-                                    alert("Unable to retrieve your location. Please allow location access.");
-                                }
-                            );
-                        } else {
-                            alert("Geolocation is not supported by your browser.");
-                        }
-                    }
-
-                    // Function to calculate and display route
-                    function calculateRoute() {
-                        const destination = document.getElementById('destination').value;
-
-                        if (destination) {
-                            const destinationLatLng = destinations[destination];
-
-                            const request = {
-                                origin: currentLocation,
-                                destination: destinationLatLng,
-                                travelMode: google.maps.TravelMode.DRIVING
-                            };
-
-                            directionsService.route(request, function(result, status) {
-                                if (status === 'OK') {
-                                    directionsRenderer.setDirections(result);
-
-                                    // Place a marker at the destination
-                                    new google.maps.Marker({
-                                        position: destinationLatLng,
-                                        map: map,
-                                        title: destination
-                                    });
-
-                                    // Optionally, display duration
-                                    const duration = result.routes[0].legs[0].duration.text;
-                                    document.getElementById('needTime').innerText = duration;
-                                    alert(`Estimated travel time: ${duration}`);
-                                } else {
-                                    alert("Could not calculate route.");
-                                }
-                            });
-                        }
-                    }
-                </script>
-                <script>
-                    function updateShuttleInfo() {
-                        var car_no = document.getElementById('car_no').innerText;
-                        var current_location = document.getElementById('current_location').innerText;
-                        var remaining_capacity = document.getElementById('remaining_capacity').innerText;
-                        var approximate_time = document.getElementById('approximate_time').innerText;
-                        var next_destination = document.getElementById('next_destination').innerText;
-
-                        // Simulate shuttle moving to the next location
-                        if (current_location === "UIU") {
-                            current_location = "Sayednagar";
-                            next_destination = "Familybazar";
-                        } else if (current_location === "Sayednagar") {
-                            current_location = "Familybazar";
-                            next_destination = "Notun Bazar";
-                        } else if (current_location === "Familybazar") {
-                            current_location = "Notun Bazar";
-                            next_destination = "UIU";
-                        } else if (current_location === "Notun Bazar") {
-                            current_location = "UIU";
-                            next_destination = "Sayednagar";
-                        }
-
-                        // Update the values in the HTML
-                        document.getElementById('current_location').innerText = current_location;
-                        document.getElementById('next_destination').innerText = next_destination;
-
-                        // Create an AJAX request to store the updated values
-                        var xhttp = new XMLHttpRequest();
-                        xhttp.onreadystatechange = function() {
-                            if (this.readyState == 4 && this.status == 200) {
-                                console.log(this.responseText);
-                            }
-                        };
-                        xhttp.open("POST", "shuttle_tracking_system.php", true);
-                        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                        xhttp.send("car_no=" + car_no + "&current_location=" + current_location + "&remaining_capacity=" + remaining_capacity + "&approximate_time=" + approximate_time + "&next_destination=" + next_destination);
-                    }
-                </script>
-
-
-                <!-- Popup Modal for DID, CarNo Input -->
-                <div class="modal fade" id="startModal" tabindex="-1" aria-labelledby="startModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="startModalLabel">Enter Details</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="startForm">
-                                    <div class="mb-3">
-                                        <label for="DID" class="form-label">DID</label>
-                                        <input type="text" class="form-control" id="DID" name="DID" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="CarNo" class="form-label">Car Number</label>
-                                        <input type="text" class="form-control" id="CarNo" name="CarNo" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </form>
-                            </div>
+                <!-- Segment Routes -->
+                <div class="route-overview">
+                    <h3><i class="fas fa-map-pin"></i> Segment Routes</h3>
+                    <p style="color: #666; margin-bottom: 20px;">Quick access to individual route segments</p>
+                    
+                    <div class="segment-cards">
+                        <div class="segment-card">
+                            <h5><i class="fas fa-arrow-right"></i> UIU → Sayednagar</h5>
+                            <a href="https://maps.app.goo.gl/RMq5DxjF43PedF8S7" target="_blank">
+                                View on Maps <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="segment-card">
+                            <h5><i class="fas fa-arrow-left"></i> Sayednagar → UIU</h5>
+                            <a href="https://maps.app.goo.gl/S3GzjCLwwJuWjo8g6" target="_blank">
+                                View on Maps <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="segment-card">
+                            <h5><i class="fas fa-arrow-right"></i> UIU → Family Bazar</h5>
+                            <a href="https://maps.app.goo.gl/dgwgZUr36J5EArS97" target="_blank">
+                                View on Maps <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="segment-card">
+                            <h5><i class="fas fa-arrow-left"></i> Family Bazar → UIU</h5>
+                            <a href="https://maps.app.goo.gl/BUfBQiTc5b3bcB3Y8" target="_blank">
+                                View on Maps <i class="fas fa-external-link-alt"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-            <button id="nextBtn" class="btn btn-success" disabled>Next</button>
-            <!-- Table to Show Shuttle Details -->
-            <div class="container mt-5">
 
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>CarNo</th>
-                            <th>Current Location</th>
-
-                            <th>Departure Time</th>
-                            <th>Next Destination</th>
-                        </tr>
-                    </thead>
-                    <tbody id="output-table">
-                        <!-- Output will be shown here dynamically -->
-                    </tbody>
-                </table>
+            <!-- Kuril Route Content -->
+            <div id="kuril-route" class="route-content">
+                <div class="coming-soon-container">
+                    <div class="coming-soon-icon">
+                        <i class="fas fa-hard-hat"></i>
+                    </div>
+                    <h3>UIU ↔ Kuril Route</h3>
+                    <p>This route is currently under development. We're working on adding detailed maps and route information. Check back soon!</p>
+                    <div style="margin-top: 20px;">
+                        <span style="display: inline-flex; align-items: center; gap: 8px; background: #fff3cd; padding: 12px 20px; border-radius: 8px; color: #856404; font-weight: 600;">
+                            <i class="fas fa-clock"></i> Coming Soon
+                        </span>
+                    </div>
+                </div>
             </div>
 
+            <!-- EWU Gate Route Content -->
+            <div id="ewugate-route" class="route-content">
+                <div class="coming-soon-container">
+                    <div class="coming-soon-icon">
+                        <i class="fas fa-hard-hat"></i>
+                    </div>
+                    <h3>UIU ↔ EWU Gate Route</h3>
+                    <p>This route is currently under development. We're working on adding detailed maps and route information. Check back soon!</p>
+                    <div style="margin-top: 20px;">
+                        <span style="display: inline-flex; align-items: center; gap: 8px; background: #fff3cd; padding: 12px 20px; border-radius: 8px; color: #856404; font-weight: 600;">
+                            <i class="fas fa-clock"></i> Coming Soon
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-            <script>
-                // Locations array for cycling through
-                let route = ['UIU', 'Sayednager', 'Familybazar', 'Notunbazar', 'Familybazar', 'Sayednager'];
-                let currentIndex = 0;
-                let cycleCount = 0;
-
-                // Event listener for Start button to show the modal
-                document.getElementById('startButton').addEventListener('click', function() {
-                    new bootstrap.Modal(document.getElementById('startModal')).show();
-                });
-
-                // Handle form submission and populate the table with the details
-                document.getElementById('startForm').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    let DID = document.getElementById('DID').value;
-                    let CarNo = document.getElementById('CarNo').value;
-
-                    // After submission, populate the table
-                    let tbody = document.getElementById('output-table');
-                    tbody.innerHTML = `
-                <tr>
-                    <td>${CarNo}</td>
-                    <td id="current-location">UIU</td>
-                    
-                    <td id="approximate-time">${new Date().toLocaleTimeString()}</td>
-                    <td id="next-destination">Sayednager</td>
-                </tr>
-            `;
-
-                    document.getElementById('nextBtn').disabled = false;
-
-                    // Close the modal
-                    let modal = bootstrap.Modal.getInstance(document.getElementById('startModal'));
-                    modal.hide();
-                });
-
-                // Handle NEXT button click to update the route and table dynamically
-                document.getElementById('nextBtn').addEventListener('click', function() {
-                    currentIndex = (currentIndex + 1) % route.length;
-                    if (currentIndex === 0) cycleCount++; // Increment cycle count on completing a route
-
-                    let currentLocation = route[currentIndex];
-                    let nextLocation = route[(currentIndex + 1) % route.length];
-
-                    // Update table
-                    document.getElementById('current-location').innerText = currentLocation;
-                    document.getElementById('next-destination').innerText = nextLocation;
-
-                    document.getElementById('needTime').innerText = new Date().toLocaleTimeString();
-                });
-            </script>
         </section>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
 
+    <script>
+        // Route Tab Switching
+        function switchRoute(route) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.route-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Add active class to clicked tab
+            event.currentTarget.classList.add('active');
+            
+            // Hide all route contents
+            document.querySelectorAll('.route-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Show selected route content
+            document.getElementById(route + '-route').classList.add('active');
+        }
+
+        // Direction Toggle
+        function switchDirection(direction) {
+            // Update buttons
+            document.querySelectorAll('.direction-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Toggle map containers
+            if (direction === 'from-uiu') {
+                document.getElementById('map-from-uiu').style.display = 'block';
+                document.getElementById('map-to-uiu').style.display = 'none';
+            } else {
+                document.getElementById('map-from-uiu').style.display = 'none';
+                document.getElementById('map-to-uiu').style.display = 'block';
+            }
+        }
+    </script>
+
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="https://www.facebook.com/sharif.me2018"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-google"></i></a>
+            <a href="https://www.instagram.com/shariful_islam10"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.github.com/sharif2023"><i class="fab fa-github"></i></a>
+        </div>
+        <div class="copyright">
+            &copy; 2020 Copyright: <a href="https://www.youtube.com/@SHARIFsCODECORNER">Sharif Code Corner</a>
+        </div>
+    </footer>
+    <script src="assets/js/index.js"></script>
 </body>
-<script src="assets/js/index.js"></script>
 
 </html>

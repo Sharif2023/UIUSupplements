@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 26, 2025 at 03:43 PM
+-- Generation Time: Dec 29, 2025 at 06:47 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -75,7 +75,38 @@ INSERT INTO `admin_activity_logs` (`log_id`, `admin_id`, `action_type`, `target_
 (12, 11221078, 'UPDATE', 'ROOM', 'uiu-2', 'Updated room status: uiu-2', '2025-12-25 07:43:15'),
 (13, 11221078, 'UPDATE', 'ROOM', 'uiu-2', 'Updated room status: uiu-2', '2025-12-25 07:43:16'),
 (14, 11221078, 'UPDATE', 'ROOM', 'uiu-1', 'Updated room status: uiu-1', '2025-12-25 07:43:17'),
-(15, 11221078, 'UPDATE', 'ROOM', 'uiu-1', 'Updated room status: uiu-1', '2025-12-25 07:43:17');
+(15, 11221078, 'UPDATE', 'ROOM', 'uiu-1', 'Updated room status: uiu-1', '2025-12-25 07:43:17'),
+(16, 11221078, 'DELETE', 'MENTOR', '38', 'Deleted mentor ID: 38', '2025-12-26 17:57:45'),
+(17, 11221078, 'DELETE', 'MENTOR', '37', 'Deleted mentor ID: 37', '2025-12-26 17:57:50'),
+(18, 11221078, 'DELETE', 'MENTOR', '15', 'Deleted mentor ID: 15', '2025-12-26 17:57:52'),
+(19, 11221078, 'DELETE', 'MENTOR', '14', 'Deleted mentor ID: 14', '2025-12-26 17:57:55'),
+(20, 11221078, 'DELETE', 'MENTOR', '6', 'Deleted mentor ID: 6', '2025-12-26 17:58:06'),
+(21, 11221078, 'DELETE', 'MENTOR', '12', 'Deleted mentor ID: 12', '2025-12-26 17:58:09'),
+(22, 11221078, 'DELETE', 'MENTOR', '11', 'Deleted mentor ID: 11', '2025-12-26 17:58:12'),
+(23, 11221078, 'DELETE', 'MENTOR', '7', 'Deleted mentor ID: 7', '2025-12-26 17:58:14'),
+(24, 11221078, 'DELETE', 'MENTOR', '13', 'Deleted mentor ID: 13', '2025-12-26 17:58:21'),
+(25, 11221078, 'DELETE', 'MENTOR', '39', 'Deleted mentor ID: 39', '2025-12-26 17:58:28'),
+(26, 11221078, 'DELETE', 'LOST_FOUND', '1', 'Deleted lost & found item', '2025-12-26 17:58:48'),
+(27, 11221078, 'DELETE', 'LOST_FOUND', '2', 'Deleted lost & found item', '2025-12-26 17:58:50'),
+(28, 11221078, 'DELETE', 'DRIVER', '011221212', 'Deleted driver', '2025-12-26 17:59:58'),
+(29, 11221078, 'DELETE', 'DRIVER', 'd1', 'Deleted driver', '2025-12-26 18:00:00'),
+(30, 11221078, 'DELETE', 'DRIVER', 'd2', 'Deleted driver', '2025-12-26 18:00:03'),
+(31, 11221078, 'DELETE', 'PRODUCT', '1', 'Deleted product', '2025-12-26 18:04:42'),
+(32, 11221078, 'DELETE', 'PRODUCT', '2', 'Deleted product', '2025-12-26 18:04:44'),
+(33, 11221078, 'DELETE', 'PRODUCT', '3', 'Deleted product', '2025-12-26 18:04:46'),
+(34, 11221078, 'DELETE', 'USER', '11221081', 'Deleted user ID: 11221081', '2025-12-26 18:23:36'),
+(35, 11221078, 'DELETE', 'ROOM', 'uiu-2', 'Deleted room: uiu-2', '2025-12-27 17:32:08'),
+(36, 11221078, 'DELETE', 'ROOM', 'uiu-1', 'Deleted room: uiu-1', '2025-12-27 17:32:12'),
+(37, 11221078, 'CREATE', 'ROOM', 'UIU-1', 'Added new room: UIU-1 at syednagar', '2025-12-27 18:20:41'),
+(38, 11221078, 'CREATE', 'ROOM', 'UIU-2', 'Added new room: UIU-2 at Family Bazar', '2025-12-27 18:28:54'),
+(39, 11221078, 'CREATE', 'ROOM', 'UIU-1', 'Added new room: UIU-1 at syednagar', '2025-12-27 18:35:23'),
+(40, 11221078, 'CREATE', 'ROOM', 'UIU-2', 'Added new room: UIU-2 at Family Bazar', '2025-12-27 18:36:44'),
+(41, 11221078, 'CREATE', 'ROOM', 'UIU-3', 'Added new room: UIU-3 at 10 Tola', '2025-12-27 18:42:36'),
+(42, 11221078, 'CREATE', 'ROOM', 'UIU-4', 'Added new room: UIU-4 at Family Bazar', '2025-12-27 18:44:40'),
+(43, 11221078, 'CREATE', 'ROOM', 'UIU-5', 'Added new room: UIU-5 at Notunbazar', '2025-12-27 18:47:00'),
+(44, 11221078, 'DELETE', 'LOST_FOUND', '4', 'Deleted lost & found item', '2025-12-29 13:58:13'),
+(45, 11221078, 'DELETE', 'LOST_FOUND', '3', 'Deleted lost & found item', '2025-12-29 13:58:17'),
+(46, 11221078, 'CREATE', 'DRIVER', 'D01', 'Added new driver: Test', '2025-12-29 17:25:17');
 
 -- --------------------------------------------------------
 
@@ -109,8 +140,11 @@ CREATE TABLE `availablerooms` (
 --
 
 INSERT INTO `availablerooms` (`serial`, `room_id`, `room_location`, `room_details`, `room_photos`, `available_from`, `available_to`, `status`, `room_rent`, `added_by_admin_id`, `rental_rules`, `rented_to_user_id`, `rented_from_date`, `rented_until_date`, `is_relisting_pending`, `is_visible_to_students`, `created_at`, `updated_at`) VALUES
-(2, 'uiu-1', 'syednagar', '2 rooms', 'uploads/room2.jpg,uploads/room1.jpg', '2025-12-25', '2025-12-26', 'available', 5000, 11221078, 'rent must be completed', NULL, NULL, NULL, 0, 1, '2025-12-25 06:50:18', '2025-12-25 07:43:17'),
-(3, 'uiu-2', 'syednagar', 'single', 'uploads/room2.jpg,uploads/room1.jpg', '2025-12-25', '2025-12-27', 'not-available', 7000, 11221078, 'CALL: 01xxxxxxxxx', 11221079, '2025-12-25', '2026-01-25', 0, 0, '2025-12-25 06:57:19', '2025-12-25 07:56:03');
+(6, 'UIU-1', 'syednagar', 'single room, 1 bath, 1 kitchen', 'uploads/rooms/UIU-1_1766860523_71075586.jpg', '2026-01-01', '2026-06-01', 'available', 6500, 11221078, 'Complete Rent till date 5.\r\nContact: 017xxxxxxxxx\r\nNo smoke, No drugs.\r\nEnter house between 11.30 PM.', NULL, NULL, NULL, 0, 1, '2025-12-27 18:35:23', '2025-12-27 18:35:23'),
+(7, 'UIU-2', 'Family Bazar', 'double room, 1 coridoor, 1 washroom', 'uploads/rooms/UIU-2_1766860604_ff5af84d.jpg,uploads/rooms/UIU-2_1766860604_464181a4.jpg', '2026-01-01', '2026-06-01', 'not-available', 8500, 11221078, 'Complete Rent till date 5.\r\nContact: 018xxxxxxxxx\r\nNo smoke, No drugs.\r\nEnter house between 11.30 PM.', 11221080, '2025-12-27', '2026-01-27', 0, 0, '2025-12-27 18:36:44', '2025-12-27 18:37:21'),
+(8, 'UIU-3', '10 Tola', 'single room, 1 bath, 1 kitchen', 'uploads/rooms/UIU-3_1766860956_d80fef59.jpg,uploads/rooms/UIU-3_1766860956_d60739ac.jpg', '2026-01-01', '2026-06-01', 'available', 7000, 11221078, 'Complete Rent till date 5.\r\nContact: 017xxxxxxxxx\r\nNo smoke, No drugs.\r\nEnter house between 11.30 PM.', NULL, NULL, NULL, 0, 1, '2025-12-27 18:42:36', '2025-12-27 18:42:36'),
+(9, 'UIU-4', 'Family Bazar', '1 sublet', 'uploads/rooms/UIU-4_1766861080_5eff361b.jpg,uploads/rooms/UIU-4_1766861080_6b706282.jpg', '2026-02-01', '2026-05-06', 'available', 3500, 11221078, 'Complete Rent till date 5.\r\nContact: 017xxxxxxxxx\r\nNo smoke, No drugs.\r\nEnter house between 11.30 PM.', NULL, NULL, NULL, 0, 1, '2025-12-27 18:44:40', '2025-12-27 18:44:40'),
+(10, 'UIU-5', 'Notunbazar', 'single room, 1 bath, 1 kitchen', 'uploads/rooms/UIU-5_1766861220_85cdaf5c.jpg,uploads/rooms/UIU-5_1766861220_553d885e.jpg', '2026-01-01', '2026-12-01', 'available', 5500, 11221078, 'Complete Rent till date 5.\r\nContact: 017xxxxxxxxx\r\nNo smoke, No drugs.\r\nEnter house between 11.30 PM.', NULL, NULL, NULL, 0, 1, '2025-12-27 18:47:00', '2025-12-27 18:47:00');
 
 -- --------------------------------------------------------
 
@@ -135,7 +169,7 @@ CREATE TABLE `bargains` (
 --
 
 INSERT INTO `bargains` (`id`, `product_id`, `buyer_id`, `seller_id`, `bargain_price`, `status`, `buyer_message`, `created_at`, `updated_at`) VALUES
-(1, 3, 11221079, 11221080, 260.00, 'accepted', 'If possible then inbox.', '2025-12-23 17:06:54', '2025-12-23 17:20:44');
+(2, 4, 11221080, 11221079, 90.00, 'accepted', '', '2025-12-27 18:10:12', '2025-12-27 18:11:32');
 
 --
 -- Triggers `bargains`
@@ -218,11 +252,9 @@ CREATE TABLE `chat_messages` (
 --
 
 INSERT INTO `chat_messages` (`id`, `chat_id`, `sender_id`, `receiver_id`, `message`, `message_type`, `is_read`, `created_at`) VALUES
-(1, 1, 11221079, 11221080, 'Chat started! Discuss pickup/delivery, payment method (Cash, bKash, Nagad), and meeting details.', 'system', 1, '2025-12-23 19:12:58'),
-(2, 1, 11221080, 11221079, 'Where should we meet?', 'text', 0, '2025-12-23 19:13:00'),
-(3, 1, 11221080, 11221079, 'hii', 'text', 0, '2025-12-23 19:13:09'),
-(4, 1, 11221080, 11221079, 'dfsd', 'text', 0, '2025-12-23 19:15:28'),
-(5, 1, 11221080, 11221079, 'dfsdfa', 'text', 0, '2025-12-23 19:15:33');
+(6, 2, 11221080, 11221079, 'Chat started! Discuss pickup/delivery, payment method (Cash, bKash, Nagad), and meeting details.', 'system', 1, '2025-12-27 18:11:39'),
+(7, 2, 11221079, 11221080, 'Collect it on time', 'text', 1, '2025-12-27 18:11:49'),
+(8, 2, 11221080, 11221079, 'ok', 'text', 0, '2025-12-27 18:12:23');
 
 --
 -- Triggers `chat_messages`
@@ -281,7 +313,7 @@ CREATE TABLE `claims` (
 
 INSERT INTO `claims` (`id`, `item_id`, `user_id`, `email`, `identification_info`) VALUES
 (4, NULL, '011111111', 'dsa@gmail.com', 'contact: 01855255815'),
-(8, 2, '11221081', 'sharifislam0505@gmail.com', 'test');
+(9, 9, '11221079', 'mhasan221079@bscse.uiu.ac.bd', 'It\'s mine when I was practicing code at there I dropped it.');
 
 -- --------------------------------------------------------
 
@@ -306,6 +338,13 @@ CREATE TABLE `deals` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `completed_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `deals`
+--
+
+INSERT INTO `deals` (`id`, `product_id`, `seller_id`, `buyer_id`, `final_price`, `bargain_id`, `status`, `seller_confirmed`, `buyer_confirmed`, `seller_contact`, `buyer_contact`, `meeting_location`, `notes`, `created_at`, `completed_at`) VALUES
+(5, 5, 11221079, 11221080, 85.00, NULL, 'pending', 0, 0, NULL, NULL, NULL, NULL, '2025-12-27 18:09:24', NULL);
 
 --
 -- Triggers `deals`
@@ -354,7 +393,7 @@ CREATE TABLE `deal_chats` (
 --
 
 INSERT INTO `deal_chats` (`id`, `deal_id`, `bargain_id`, `buyer_id`, `seller_id`, `product_id`, `last_message_at`, `buyer_unread_count`, `seller_unread_count`, `created_at`) VALUES
-(1, NULL, 1, 11221079, 11221080, 3, '2025-12-23 19:15:33', 4, 0, '2025-12-23 19:12:58');
+(2, NULL, 2, 11221080, 11221079, 4, '2025-12-27 18:12:23', 0, 1, '2025-12-27 18:11:39');
 
 -- --------------------------------------------------------
 
@@ -403,11 +442,10 @@ CREATE TABLE `jobs` (
 --
 
 INSERT INTO `jobs` (`id`, `title`, `description`, `company`, `location`, `job_type`, `category`, `salary`, `days_per_week`, `requirements`, `contact_email`, `contact_phone`, `posted_by_user_id`, `posted_by_admin_id`, `status`, `created_at`, `expires_at`) VALUES
-(1, 'Teaching Assistant - CSE', 'Assist professors with lab sessions and grading assignments for CSE courses.', 'UIU', 'UIU Campus', 'part-time', 'Teaching', '8000-10000 BDT/month', 3, 'CGPA above 3.5, completed CSE 1111', 'cse@uiu.ac.bd', NULL, NULL, 11221078, 'active', '2025-12-26 13:49:02', NULL),
-(2, 'Research Assistant', 'Help with ongoing research projects in machine learning and data science.', 'UIU Research Lab', 'UIU Campus', 'part-time', 'Research', '12000 BDT/month', 4, 'Knowledge of Python, ML basics', 'research@uiu.ac.bd', NULL, NULL, 11221078, 'active', '2025-12-26 13:49:02', NULL),
-(3, 'Campus Ambassador', 'Represent the company on campus and organize events.', 'Tech Startup BD', 'Remote/Campus', 'part-time', 'Marketing', '5000 BDT/month + Commission', 2, 'Good communication skills', 'hr@techstartup.com', NULL, NULL, 11221078, 'active', '2025-12-26 13:49:02', NULL),
-(4, 'TA - CSE', 'test', 'UIU', 'UIU campus', 'part-time', 'Teaching', '8000', 3, 'cgpa: 3.7', 'job@gmail.com', '01000000000', NULL, 11221078, 'active', '2025-12-26 14:18:48', '2025-12-27'),
-(5, 'test', 'test', 'test', 'test', 'part-time', 'Teaching', '5000', NULL, 'test', 'test@gmail.com', '01000000000', NULL, 11221078, 'active', '2025-12-26 14:26:03', '2025-12-27');
+(7, 'Teaching Assistant – SPL', 'Assist faculty members in conducting lab classes, evaluating assignments, and supporting students during lab hours. The role also includes helping prepare course materials and guiding junior students in programming fundamentals.', 'United International University (UIU)', 'UIU Campus, Dhaka', 'part-time', 'Teaching', '8,000 – 12,000 BDT / month', 3, '1. Studying or completed BSc in CSE\\n2. Good communication skills\\n3. Prior TA experience preferred\\n4. Strong knowledge of C/C++ or Python', 'hr@uiu.edu.bd', '017XXXXXXXX', NULL, 11221078, 'active', '2025-12-29 12:58:30', '2026-12-30'),
+(8, 'Junior Web Developer', 'Develop and maintain responsive websites and web applications. Work closely with senior developers to implement UI features and fix bugs.', 'TechSpark Solutions', 'Remote', 'part-time', 'IT', '15,000 – 20,000 BDT / month', 5, '1. Knowledge of HTML, CSS, JavaScript\\n2. Basic understanding of React or Vue\\n3. Git & GitHub experience\\n4. Portfolio or GitHub profile preferred', 'careers@techspark.com', '018XXXXXXXX', 11221080, NULL, 'active', '2025-12-29 13:08:37', '2027-12-01'),
+(9, 'Research Assistant – Electrical & Electronic Engineering', 'Assist in research related to renewable energy systems, data collection, simulation, and technical report writing.', 'Smart Energy Research Lab', 'Dhaka', 'part-time', 'Research', '10,000 – 15,000 BDT / month', 4, '1. BSc in EEE (running or completed)\\n2. Knowledge of MATLAB/Simulink\\n3. Basic research and documentation skills', 'research@smartenergy.org', '016XXXXXXXX', NULL, 11221078, 'active', '2025-12-29 13:10:32', '2027-12-01'),
+(10, 'Digital Marketing Intern', 'Support digital marketing campaigns, manage social media posts, assist with content creation, and analyze engagement performance.', 'GrowthLab Agency', 'Remote', 'internship', 'Marketing', '6,000 – 8,000 BDT / month', 5, '1. Basic knowledge of social media marketing\\n2. Familiarity with Canva or similar tools\\n3. Good communication skills', 'hr@growthlab.com', '019XXXXXXXX', 11221080, NULL, 'active', '2025-12-29 13:12:28', '2027-12-01');
 
 -- --------------------------------------------------------
 
@@ -425,14 +463,6 @@ CREATE TABLE `job_applications` (
   `applied_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `reviewed_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `job_applications`
---
-
-INSERT INTO `job_applications` (`id`, `job_id`, `user_id`, `cover_letter`, `cv_path`, `status`, `applied_at`, `reviewed_at`) VALUES
-(1, 4, 11221081, 'test', NULL, 'pending', '2025-12-26 14:19:59', NULL),
-(2, 5, 11221081, 'test', 'uploads/cv/cv_11221081_5_1766760078.pdf', 'pending', '2025-12-26 14:41:18', NULL);
 
 -- --------------------------------------------------------
 
@@ -458,8 +488,11 @@ CREATE TABLE `lost_and_found` (
 --
 
 INSERT INTO `lost_and_found` (`id`, `user_id`, `email`, `category`, `image_path`, `foundPlace`, `date_time`, `contact_info`, `where_now`, `claim_status`) VALUES
-(1, 11111111, 'shariful@gmail.com', 'Others', 'imgOfLost/robert-bye-tG36rvCeqng-unsplash.jpg', '6th floor near room 631.', '2024-10-01 00:00:00', '01855222222', NULL, 1),
-(2, 11111112, 'abcd@gmail.com', 'ID card', 'imgOfLost/book2.jpeg', 'Canteen', '2024-10-09 16:04:00', '01700871179', NULL, 1);
+(5, 11221079, 'mhasan221079@bscse.uiu.ac.bd', 'id_card', 'LostandFound/imgOfLost/lost_6952895242e220.93532329.jpg', 'Library', '2025-12-29 16:04:00', NULL, 'Room 101', 0),
+(6, 11221075, 'rislam221075@bscse.uiu.ac.bd', 'others', 'LostandFound/imgOfLost/lost_695289cfd35724.71602510.webp', 'Canteen', '2025-12-28 15:16:00', NULL, 'With Me', 0),
+(7, 11221075, 'rislam221075@bscse.uiu.ac.bd', 'others', 'LostandFound/imgOfLost/lost_69528a1d86cce4.84855733.webp', 'Room 631', '2025-12-27 09:07:00', NULL, 'With Me', 0),
+(8, 11221075, 'rislam221075@bscse.uiu.ac.bd', 'gadgets', 'LostandFound/imgOfLost/lost_69528c6a18af75.16512528.jpg', 'Lab room 325', '2025-12-29 13:17:00', NULL, 'With Me', 0),
+(9, 11221075, 'rislam221075@bscse.uiu.ac.bd', 'gadgets', 'LostandFound/imgOfLost/lost_69528cad8a17b1.11318981.jpg', 'Lab room 325', '2025-12-29 09:13:00', NULL, 'attendent', 2);
 
 -- --------------------------------------------------------
 
@@ -523,7 +556,12 @@ INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `link`
 (14, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:13:09'),
 (15, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:15:28'),
 (16, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=1', 1, '2025-12-23 19:15:33'),
-(17, 11221079, 'session_accepted', 'Session Accepted!', 'Your mentorship session with Ashiq Khan has been accepted! Check the meeting link.', 'mymentors.php', 0, '2025-12-26 13:34:27');
+(17, 11221079, 'session_accepted', 'Session Accepted!', 'Your mentorship session with Ashiq Khan has been accepted! Check the meeting link.', 'mymentors.php', 1, '2025-12-26 13:34:27'),
+(18, 11221079, 'bargain', 'New Bargain Offer', 'You received a bargain offer of ৳90.00 on your product', 'myselllist.php?product_id=4', 1, '2025-12-27 18:10:12'),
+(19, 11221080, 'bargain_accepted', 'Bargain Accepted!', 'Your bargain offer of ৳90.00 has been accepted', 'mybargains.php?bargain_id=2', 1, '2025-12-27 18:11:32'),
+(20, 11221080, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=2', 1, '2025-12-27 18:11:49'),
+(21, 11221079, 'deal_chat_message', 'New Deal Message', 'You have a new message about a deal', 'mydeals.php?chat_id=2', 1, '2025-12-27 18:12:23'),
+(22, 11221079, 'claim_approved', 'Claim Approved!', 'Your claim for the gadgets has been approved! Please contact the finder to collect your item.', 'lostandfound.php', 1, '2025-12-29 14:33:22');
 
 -- --------------------------------------------------------
 
@@ -539,14 +577,6 @@ CREATE TABLE `offers` (
   `status` enum('pending','accepted','rejected') DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `offers`
---
-
-INSERT INTO `offers` (`id`, `bargain_id`, `offered_price`, `seller_message`, `status`, `created_at`) VALUES
-(1, 1, 280.00, '', 'pending', '2025-12-23 17:15:46'),
-(2, 1, 260.00, '', 'pending', '2025-12-23 17:20:18');
 
 --
 -- Triggers `offers`
@@ -592,9 +622,9 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `product_name`, `category`, `price`, `description`, `image_path`, `bargain_price`, `user_id`, `status`, `created_at`, `updated_at`, `view_count`, `bargain_count`) VALUES
-(1, 'jbl', 'gadget', 5000.00, 'no Scratch ', 'imgOfSell/gadgets2.jpeg', NULL, NULL, 'available', '2025-12-23 15:22:16', '2025-12-23 15:22:16', 0, 0),
-(2, 'Intensive English', 'book', 300.00, 'Full Fresh Condition', 'imgOfSell/book1.jpeg', NULL, NULL, 'available', '2025-12-23 15:22:16', '2025-12-23 15:22:16', 0, 0),
-(3, 'host', 'other', 300.00, 'per month 300 TK', 'imgOfSell/byte backend.png', NULL, 11221080, 'available', '2025-12-23 17:06:02', '2025-12-23 17:06:54', 0, 1);
+(4, 'Chicken Biriyani', 'other', 100.00, 'Meet at Shuttle Line.\r\nTime: 11AM-2PM', 'imgOfSell/bir.jpg', NULL, 11221079, 'available', '2025-12-27 17:50:22', '2025-12-27 18:10:12', 0, 1),
+(5, 'Bhuna Khichuri', 'other', 85.00, 'Meet at Shuttle Line between 11AM to 1PM', 'imgOfSell/Bhuna-khichuri-recipe.jpg', NULL, 11221079, 'pending', '2025-12-27 17:55:02', '2025-12-27 18:09:24', 0, 0),
+(6, 'Bhuna Khichuri', 'other', 85.00, 'Collect at canteen between 11.30AM to 1.30PM', 'imgOfSell/Bhuna-khichuri-recipe.jpg', NULL, 11221079, 'available', '2025-12-28 06:58:53', '2025-12-28 06:58:53', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -627,7 +657,7 @@ CREATE TABLE `rentedrooms` (
 --
 
 INSERT INTO `rentedrooms` (`rented_room_id`, `rented_user_id`, `rented_user_name`, `rented_user_email`) VALUES
-('uiu-2', 11221079, 'Mahmudul Hasan', 'mhasan221079@bscse.uiu.ac.bd');
+('UIU-2', 11221080, 'Ashik Khan', 'akhan221080@bscse.uiu.ac.bd');
 
 -- --------------------------------------------------------
 
@@ -650,14 +680,6 @@ CREATE TABLE `request_mentorship_session` (
   `responded_at` timestamp NULL DEFAULT NULL COMMENT 'When mentor responded',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `request_mentorship_session`
---
-
-INSERT INTO `request_mentorship_session` (`session_id`, `user_id`, `mentor_id`, `session_time`, `session_price`, `communication_method`, `session_date`, `problem_description`, `status`, `mentor_message`, `meeting_link`, `responded_at`, `created_at`) VALUES
-(3, 11221081, 39, '19:30', '45 min - 500 tk', 'Meet', '2025-12-27', 'CI/CD issue', 'Cancelled', NULL, NULL, NULL, '2025-12-26 08:31:07'),
-(4, 11221079, 39, '19:30', '45 min - 500 tk', 'Meet', '2025-12-27', 'CI/CD', 'completed', 'accepted', 'https://meet.google.com/123-123-1234', '2025-12-26 13:34:27', '2025-12-26 08:32:35');
 
 -- --------------------------------------------------------
 
@@ -694,9 +716,7 @@ CREATE TABLE `shuttle_driver` (
 --
 
 INSERT INTO `shuttle_driver` (`d_id`, `d_name`, `d_contactNo`, `d_password`) VALUES
-('011221212', 'abdus salam', '01900990099', '1234'),
-('d1', 'Hasnat', '01700112233', '1234'),
-('d2', 'Shafiq Khan', '01700112234', '1234');
+('D01', 'Test', '+8801711111111', '123456');
 
 -- --------------------------------------------------------
 
@@ -739,16 +759,11 @@ CREATE TABLE `uiumentorlist` (
 --
 
 INSERT INTO `uiumentorlist` (`id`, `photo`, `name`, `bio`, `language`, `response_time`, `industry`, `hourly_rate`, `company`, `country`, `skills`, `email`, `whatsapp`, `linkedin`, `facebook`, `linked_user_id`) VALUES
-(6, 'uploads/mentor0.jpg', 'Shariful Islam', 'I am the source of coding', 'Bangla', '6 hours', 'Tech', '0 tk for 10 minutes', 'uiu', 'Bangladesh', 'c++', 'sharifislam0505@gmail.com', '01631223995', 'https://www.linkedin.com/18', 'https://www.facebook.com/sharif2018', NULL),
-(7, 'uploads/mentor7.jpg', 'Zamil Khan', 'Learn business from me', 'Bangla', '6 hours', 'Tech', '0 tk for 10 minutes', 'Bkash', 'Bangladesh', 'marketing, promoting, branding', 'sharifislam0505@gmail.com', '01631223995', 'https://www.linkedin.com/18', 'https://www.linkedin.com/18', NULL),
-(11, 'uploads/mentor2.jpg', 'Rafi Hasan', 'Learn code from me', 'Bangla', '6 hours', 'Tech', '0 tk for 10 minutes', 'Startech', 'Bangladesh', 'c++,c, java', 'Rafi@gmail.com', '01631223995', 'https://www.linkedin.com/18', 'https://www.facebook.com/sharif2018', NULL),
-(12, 'uploads/mentor3.jpg', 'Ashik Khan', 'I am an engineer.', 'Bangla', '6 hours', 'Tech', '0 tk for 10 minutes', 'BrainStorm', 'Bangladesh', 'java,c++,python', 'sharifislam0505@gmail.com', '01631223995', 'https://www.linkedin.com/sharif', 'https://www.facebook.com/sharif', NULL),
-(13, 'uploads/mentor4.jpg', 'S.I. Sharif', 'I am a professional Engineer. I want fun.', 'English', '48 hours', 'Tech', '100 tk for 30 minutes', 'UIU', 'Bangladesh', 'c++,gpu,office', 'si@gmail.com', '01632223995', 'https://www.linkedin.com/sharifsi', 'https://www.facebook.com/sharifsi', NULL),
-(14, 'uploads/mentor5.jpg', 'AK Rayhan', 'I am a professional Business Man. I want fun.', 'English', '48 hours', 'Tech', '100 tk for 30 minutes', 'Brac', 'Bangladesh', 'c++,gpu,office', 'si@gmail.com', '01632223995', 'https://www.linkedin.com/sharifsi', 'https://www.facebook.com/sharifsi', NULL),
-(15, 'uploads/mentor6.jpg', 'Shakib Khan', 'I am a professional Engineer. I want fun.', 'English', '48 hours', 'Tech', '100 tk for 30 minutes', 'United Group', 'Bangladesh', 'c++,gpu,office', 'si@gmail.com', '01632223995', 'https://www.linkedin.com/sharifsi', 'https://www.facebook.com/sharifsi', NULL),
-(37, 'uploads/mentor7.jpg', 'AB Mahmud', 'Learn code from me', 'English', '', 'Finance', '', 'uiu', 'Bangladesh', 'marketing, promoting, branding', 'ab@gmail.com', '01800871179', 'https://www.linkedin.com/a', 'https://www.facebook.com/a', NULL),
-(38, 'uploads/mentor8.jpg', 'Rana Raiyan', 'Learn Marketing Ideas from me', 'Bangla', '48 hours', 'Tech', '1 hour - 500 tk,2 hours - 1000 tk', 'Nagad', 'Bangladesh', 'networking, Promoting', 'ab@gmail.com', '01800871179', 'https://www.linkedin.com/a', 'https://www.facebook.com/a', NULL),
-(39, 'uploads/mentor1766755802_me no bg.png', 'Ashiq Khan', 'I\'m a web developer.', 'Bangla', '12 hours', 'Tech', '45 min - 500 tk', 'techland', 'Bangladesh', 'React,Angular,Laravel,Mysql', 'akhan221081@bscse.uiu.ac.bd', '01700221081', 'https://www.linkedin.com/akhan', 'https://www.facebook.com/akhan', 11221081);
+(40, 'uploads/mentors/mentor1767010724_m1.jpg', 'Naimur Rahman', 'Business strategist with 10+ years of experience in corporate management, startup mentoring, and SME growth planning. Specializes in marketing analytics and business development.', 'Bangla', '6 hours', 'Tech', '30 Min - 350 tk,1 Hour - 600 tk,2 Hour - 1000 tk', '', 'Bangladesh', 'Business Strategy,Marketing Management,Financial Analysis,Entrepreneurship,Team Leadership', 'naimur.bba@example.com', '+880-1000-000001', 'https://linkedin.com/in/naimur-bba', 'https://facebook.com/in/naimur-bba', 11221081),
+(41, 'uploads/mentors/mentor1767011953_m2.jpg', 'Naimul Rahman', 'Software engineer and coding mentor with expertise in full-stack development and competitive programming. Passionate about mentoring students for industry readiness.', 'Bangla', '24 hours', 'Tech', '30 Min - 400 tk,1 Hour - 750 tk,2 Hour - 1000 tk,3', 'StarTech', 'Bangladesh', 'Python, Java, C++,Web Development (React, Node.js),Data Structures & Algorithms,Git & DevOps Basics', 'naimul.cse@example.com', '+880-1000-000002', 'https://linkedin.com/in/naimul-bba', 'https://facebook.com/in/naimul-bba', 11221082),
+(42, 'uploads/mentors/mentor1767012215_m3.jpg', 'Mehedi Hasan', 'Electrical engineer with strong experience in power systems, renewable energy, and industrial automation. Works with final-year students on practical engineering projects.', 'English', '24 hours', 'Tech', '2 Hour - 800 tk,4 Hour - 1500 tk', '', 'Bangladesh', 'Power System Analysis,Renewable Energy Systems,MATLAB & Simulink,Electrical Machines', 'mehedi.cse@gmail.com', '+880-1000-000003', 'https://linkedin.com/in/mehedi-bba', 'https://facebook.com/in/mehedi-bba', 11221083),
+(43, 'uploads/mentors/mentor1767012362_m4.jpg', 'Rasel Mia', 'HR professional and career coach focused on talent management, organizational behavior, and leadership development.', 'Bangla', '24 hours', 'Tech', '30 Min - 250 tk,1 Hour - 450 tk', '', 'Bangladesh', 'Human Resource Management,Recruitment & Training,Organizational Psychology,Corporate Communication', 'rasel.hr@gmail.com', '+880-1000-000004', 'https://linkedin.com/in/rasel-hr', 'https://facebook.com/in/rasel-hr', 11221084),
+(44, 'uploads/mentors/mentor1767012518_m5.webp', 'Rafiul Islam', 'AI enthusiast and data analyst working with machine learning models and real-world datasets. Guides students in research and project-based learning.', 'Bangla', '6 hours', 'Tech', '45 Min - 300 tk,1.5 Hours - 500 tk', '', 'Bangladesh', 'Machine Learning,Python & TensorFlow,Data Analysis,Research Methodology', 'rafiul.ai@gmail.com', '+880-1000-000005', 'https://linkedin.com/in/rafiul-ai', 'https://facebook.com/in/rafiul-ai', 11221085);
 
 -- --------------------------------------------------------
 
@@ -772,10 +787,15 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `Gender`, `password_hash`, `mobilenumber`, `created_at`, `is_mentor`) VALUES
+(11221075, 'Rafiul Islam', 'rislam221075@bscse.uiu.ac.bd', 'm', '$2y$10$6tshsprijyOBFgNBbE5Rx.YxuoFz/SeR.7nx9.9CAsyZiFC6Gmlq6', '1700221075', '2025-12-28 07:10:40', 0),
 (11221078, 'Shariful Islam', '011221078', 'm', '$2y$10$zAuEsUA/9M0LKmWbBRHL5Oz7n6hFc7uEIoNQtrxaxnXg5F0wKeZvW', '1700871179', '2024-10-03 18:41:30', 0),
-(11221079, 'Mahmudul Hasan', 'mhasan221079@bscse.uiu.ac.bd', 'm', '$2y$10$brpUDs5I6/MM2bFc0ErhCOHuITpTSdY/0gYa2xKbHCEiTWoZDuSRi', '1700221079', '2025-12-23 16:55:43', 0),
+(11221079, 'Mahmudul Hasan', 'mhasan221079@bscse.uiu.ac.bd', 'm', '$2y$10$oYCyRZNWe7mmxQFMsuYLuuxPlkMJsshQMhrUO7UjxmMgBuuGK5bvm', '1700221079', '2025-12-23 16:55:43', 0),
 (11221080, 'Ashik Khan', 'akhan221080@bscse.uiu.ac.bd', 'm', '$2y$10$rKJy5xOgZ7f0sV0JOa0bCu9m00XopD.XF5Ex2vUnPGrYKnF6Dhg52', '1700221080', '2025-12-23 17:03:04', 0),
-(11221081, 'Ashik Khan', 'akhan221081@bscse.uiu.ac.bd', 'm', '$2y$10$8/.pYeGHCtDR/WcAbVk/Fe19Uiaez0qjoR/vVf.ZTsMUjB0O.ztCG', '1700221080', '2025-12-26 13:23:00', 1);
+(11221081, 'Naimur Rahman', 'nrahman221081@bscse.uiu.ac.bd', 'm', '$2y$10$rypcY7wE7shYr.lrPbXrLOyxfg6Jb0OcSyGcVqR39vMHB4F3h4G26', '1700221081', '2025-12-28 07:01:17', 1),
+(11221082, 'Naimul Rahman', 'nrahman221082@bscse.uiu.ac.bd', 'm', '$2y$10$MOqp8MyaVsUg1TgChB/GKeWDm41S.BgegE37OU88QNUZurH0Hf9Qe', '1700221082', '2025-12-28 07:02:19', 1),
+(11221083, 'Mehedi Hasan', 'mhasan221083@bscse.uiu.ac.bd', 'm', '$2y$10$FUJqSDkNRyOyaqvsnTtdyOwJPRhAfLoEUAWTkFcJxMvEhp3gWZfrm', '1700221083', '2025-12-28 07:03:13', 1),
+(11221084, 'Rasel Mia', 'rmia221084@bscse.uiu.ac.bd', 'm', '$2y$10$BJmQSu5EwI9m0Gcjlgsz9uF/rjyWGkD2M1TD4H.4IZDYdoHGomUby', '1700221084', '2025-12-28 07:04:32', 1),
+(11221085, 'Ziaur Rahman', 'zrahman221085@bscse.uiu.ac.bd', 'm', '$2y$10$2kg8kXwKkbPxI1G0OgO6H.65JK4eWA4MLP1XG8cd5cGCON9uRogUe', '1700221085', '2025-12-28 07:12:47', 1);
 
 -- --------------------------------------------------------
 
@@ -794,6 +814,7 @@ CREATE TABLE `user_profiles` (
 --
 
 INSERT INTO `user_profiles` (`user_id`, `user_photo`, `user_bio`) VALUES
+(11221079, 'uploads/1766906322_hasan.jpg', 'I\'m a photographer'),
 (11221122, 'uploads/1766232983_IMG_99950 (1).jpg', 'I\'m Shakib'),
 (11221369, 'uploads/1766233021_IMG_99950 (1).jpg', 'Hello I\'m Shakib');
 
@@ -1040,43 +1061,43 @@ ALTER TABLE `user_settings`
 -- AUTO_INCREMENT for table `admin_activity_logs`
 --
 ALTER TABLE `admin_activity_logs`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `availablerooms`
 --
 ALTER TABLE `availablerooms`
-  MODIFY `serial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `serial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `bargains`
 --
 ALTER TABLE `bargains`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `chat_messages`
 --
 ALTER TABLE `chat_messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `claims`
 --
 ALTER TABLE `claims`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `deals`
 --
 ALTER TABLE `deals`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `deal_chats`
 --
 ALTER TABLE `deal_chats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `events`
@@ -1088,7 +1109,7 @@ ALTER TABLE `events`
 -- AUTO_INCREMENT for table `jobs`
 --
 ALTER TABLE `jobs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `job_applications`
@@ -1100,7 +1121,7 @@ ALTER TABLE `job_applications`
 -- AUTO_INCREMENT for table `lost_and_found`
 --
 ALTER TABLE `lost_and_found`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `messages`
@@ -1112,7 +1133,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `offers`
@@ -1124,7 +1145,7 @@ ALTER TABLE `offers`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `product_views`
@@ -1148,7 +1169,7 @@ ALTER TABLE `sell_exchange_list`
 -- AUTO_INCREMENT for table `uiumentorlist`
 --
 ALTER TABLE `uiumentorlist`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- Constraints for dumped tables
