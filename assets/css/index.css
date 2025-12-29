@@ -272,6 +272,7 @@ nav ul li a .nav-item {
     background-color: #fff;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .card:hover {
