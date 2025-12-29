@@ -631,7 +631,7 @@ $conn->close();
             </div>
         </div>
         
-        <a href="uiusupplementlogin.html" class="logout-btn">
+        <a href="logout.php" class="logout-btn">
             <i class="fas fa-sign-out-alt"></i> Log Out
         </a>
     </div>

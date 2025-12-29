@@ -871,7 +871,7 @@ $stats['total_lost_items'] = $lost_result ? $lost_result->fetch_assoc()['total']
       </ul>
 
       <!-- Log Out Button -->
-      <a href="uiusupplementlogin.html" class="logout-btn">
+      <a href="logout.php" class="logout-btn">
         <i class="fas fa-sign-out-alt"></i> Log Out
       </a>
     </nav>

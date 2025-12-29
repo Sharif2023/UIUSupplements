@@ -9,6 +9,11 @@ $conn = getDbConnection();
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // IMPORTANT: Clear any existing session data to prevent session conflicts
+    // This fixes the bug where admin session persists after logout
+    session_unset();
+    session_regenerate_id(true); // Regenerate session ID for security
+    
     if (isset($_POST['userIdOrEmail']) && isset($_POST['password'])) {
         $userIdOrEmail = $_POST['userIdOrEmail'];
         $password = $_POST['password'];

@@ -501,7 +501,7 @@ $adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
                 </div>
             </div>
 
-            <a href="uiusupplementlogin.html" class="logout-btn">
+            <a href="logout.php" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
         </div>

@@ -704,7 +704,7 @@ $isAdmin = false;
                     </a></li>
             </ul>
 
-            <a href="uiusupplementlogin.html" class="logout-btn">
+            <a href="logout.php" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i> Log Out
             </a>
         </nav>
