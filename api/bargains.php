@@ -85,6 +85,13 @@ if ($action === 'submit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if ($stmt->execute()) {
         $bargain_id = $conn->insert_id;
+        
+        // Update bargain_count in products table (replaces MySQL trigger for free hosting compatibility)
+        $updateStmt = $conn->prepare("UPDATE products SET bargain_count = bargain_count + 1 WHERE id = ?");
+        $updateStmt->bind_param("i", $product_id);
+        $updateStmt->execute();
+        $updateStmt->close();
+        
         sendResponse(true, 'Bargain submitted successfully', ['bargain_id' => $bargain_id]);
     } else {
         sendResponse(false, 'Failed to submit bargain');

@@ -59,7 +59,13 @@ Upload all project files to your yzz.me hosting via:
 ### Step 3: Import Database
 1. Access phpMyAdmin on yzz.me
 2. Select database: `yzzme_40788122_uiusupplements`
-3. Import the `uiusupplements_backup.sql` file
+3. Go to "Import" tab
+4. **IMPORTANT**: Before importing, edit your SQL file to remove all `CREATE TRIGGER` statements:
+   - Remove `after_bargain_insert` trigger
+   - Remove any other `CREATE TRIGGER ... END` blocks
+   - (Free hosting doesn't allow trigger creation)
+5. Upload your edited `.sql` file
+6. Click "Go" to import
 
 ### Step 4: Set Directory Permissions
 Ensure these directories are writable (chmod 755 or 777):
