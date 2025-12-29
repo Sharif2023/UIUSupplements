@@ -474,7 +474,7 @@ $isAdmin = true; // Always true since we checked above
     <div class="social-icons">
         <a href="https://www.facebook.com/sharif.me2018"><i class="fab fa-facebook-f"></i></a>
         <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-google"></i></a>
+        <a href="http://uiusupplements.yzz.me/"><i class="fab fa-google"></i></a>
         <a href="https://www.instagram.com/shariful_islam10"><i class="fab fa-instagram"></i></a>
         <a href="#"><i class="fab fa-linkedin-in"></i></a>
         <a href="https://www.github.com/sharif2023"><i class="fab fa-github"></i></a>
