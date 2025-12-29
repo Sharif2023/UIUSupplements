@@ -1,5 +1,9 @@
 <?php
-$conn = new mysqli('localhost', 'root', '', 'uiusupplements');
+// Include centralized configuration
+require_once 'config.php';
+
+// Get database connection
+$conn = getDbConnection();
 $data = json_decode(file_get_contents("php://input"), true);
 $senderId = $data['senderId'];
 $receiverId = $data['receiverId'];

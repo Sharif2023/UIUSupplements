@@ -8,17 +8,11 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "uiusupplements";
+// Include centralized configuration
+require_once '../config.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    echo json_encode(['success' => false, 'error' => 'Database connection failed']);
-    exit();
-}
+// Get database connection
+$conn = getDbConnection();
 
 $userId = $_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];

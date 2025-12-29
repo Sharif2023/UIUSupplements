@@ -5,12 +5,11 @@
  * to check for rooms with expired rental periods
  */
 
-// Database connection
-$conn = new mysqli('localhost', 'root', '', 'uiusupplements');
+// Include centralized configuration
+require_once '../config.php';
 
-if ($conn->connect_error) {
-    die('Database connection failed: ' . $conn->connect_error);
-}
+// Get database connection
+$conn = getDbConnection();
 
 // Find rooms where rental has expired
 $today = date('Y-m-d');

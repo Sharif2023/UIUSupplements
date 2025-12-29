@@ -1,13 +1,11 @@
 <?php
 session_start();
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "uiusupplements";
+// Include centralized configuration
+require_once 'config.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Get database connection
+$conn = getDbConnection();
 
 // Handle AJAX requests before authentication redirect
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

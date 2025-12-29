@@ -1,19 +1,11 @@
 <?php
 session_start(); // Start a session to store user data
 
-// Database connection parameters
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "uiusupplements";
+// Include centralized configuration
+require_once 'config.php';
 
-// Create a connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check the connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Get database connection
+$conn = getDbConnection();
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

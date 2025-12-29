@@ -1,16 +1,9 @@
 <?php
-// Database connection
-$host = 'localhost';
-$db   = 'uiusupplements'; // Replace with your database name
-$user = 'root';       // Replace with your username
-$pass = '';       // Replace with your password
+// Include centralized configuration
+require_once 'config.php';
 
-$conn = new mysqli($host, $user, $pass, $db);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Get database connection
+$conn = getDbConnection();
 
 // Subquery to get remaining_capacity less than the average
 $sql = "

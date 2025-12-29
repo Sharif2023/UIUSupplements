@@ -7,13 +7,11 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Database connection
-$conn = new mysqli('localhost', 'root', '', 'uiusupplements');
+// Include centralized configuration
+require_once 'config.php';
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Get database connection
+$conn = getDbConnection();
 
 // Get mentor ID from URL
 $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;

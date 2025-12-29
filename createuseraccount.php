@@ -1,17 +1,9 @@
 <?php
-// Database configuration
-$servername = "localhost";
-$username = "root"; // Your database username
-$password = ""; // Your database password
-$dbname = "uiusupplements";
+// Include centralized configuration
+require_once 'config.php';
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Get database connection
+$conn = getDbConnection();
 
 // Prepare and bind
 $stmt = $conn->prepare("INSERT INTO users (id, username, email,gender, password_hash, mobilenumber) VALUES (?, ?, ?, ?, ?, ?)");

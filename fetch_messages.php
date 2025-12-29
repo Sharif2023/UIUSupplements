@@ -1,5 +1,9 @@
 <?php
-$conn = new mysqli('localhost', 'root', '', 'uiusupplements');
+// Include centralized configuration
+require_once 'config.php';
+
+// Get database connection
+$conn = getDbConnection();
 $userId = $_GET['userId'];
 $query = $conn->prepare("SELECT * FROM messages WHERE sender_id = ? OR receiver_id = ? ORDER BY timestamp");
 $query->bind_param("ii", $userId, $userId);

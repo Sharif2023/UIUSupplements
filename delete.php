@@ -1,10 +1,9 @@
 <?php
-// Database connection
-$conn = new mysqli('localhost', 'root', '', 'uiusupplements');
+// Include centralized configuration
+require_once 'config.php';
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Get database connection
+$conn = getDbConnection();
 
 if ($_POST['action'] == 'delete_user') {
     $user_id = $_POST['user_id'];

@@ -9,14 +9,11 @@ if (!isset($_SESSION['admin_id'])) {
     exit();
 }
 
-// Database connection
-$conn = new mysqli('localhost', 'root', '', 'uiusupplements');
+// Include centralized configuration
+require_once '../config.php';
 
-if ($conn->connect_error) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Database connection failed']);
-    exit();
-}
+// Get database connection
+$conn = getDbConnection();
 
 $admin_id = $_SESSION['admin_id'];
 

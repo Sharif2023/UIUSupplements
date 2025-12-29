@@ -1,19 +1,11 @@
 <?php
 session_start();
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "uiusupplements";
+// Include centralized configuration
+require_once '../config.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    header('Content-Type: application/json');
-    echo json_encode(['error' => 'Database connection failed']);
-    exit();
-}
+// Get database connection
+$conn = getDbConnection();
 
 // Fetch rented rooms with full details from availablerooms table
 $sql = "SELECT ar.*, 

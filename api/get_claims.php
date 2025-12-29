@@ -15,18 +15,11 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "uiusupplements";
+// Include centralized configuration
+require_once '../config.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    echo json_encode(['success' => false, 'error' => 'Database connection failed']);
-    exit();
-}
+// Get database connection
+$conn = getDbConnection();
 
 // Get item_id from request
 $item_id = isset($_GET['item_id']) ? (int)$_GET['item_id'] : 0;

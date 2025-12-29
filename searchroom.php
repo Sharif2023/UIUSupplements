@@ -1,17 +1,9 @@
 <?php
-// Database configuration
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "uiusupplements";
+// Include centralized configuration
+require_once 'config.php';
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Get database connection
+$conn = getDbConnection();
 
 // Fetching parameters from the request
 $searchLocation = isset($_GET['location']) ? $_GET['location'] : '';

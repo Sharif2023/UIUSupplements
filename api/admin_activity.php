@@ -16,12 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Database connection
-$conn = new mysqli('localhost', 'root', '', 'uiusupplements');
+// Include centralized configuration
+require_once '../config.php';
 
-if ($conn->connect_error) {
-    die(json_encode(['success' => false, 'error' => 'Database connection failed']));
-}
+// Get database connection
+$conn = getDbConnection();
 
 // Check if user is admin
 if (!isset($_SESSION['admin_id'])) {

@@ -1,17 +1,9 @@
 <?php
-// Database connection
-$servername = "localhost"; // e.g., "localhost"
-$username = "root"; // e.g., "root"
-$password = ""; // your database password
-$dbname = "uiusupplements";
+// Include centralized configuration
+require_once 'config.php';
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die(json_encode(array("success" => false, "message" => "Connection failed: " . $conn->connect_error)));
-}
+// Get database connection
+$conn = getDbConnection();
 
 // Get the POST data
 $data = json_decode(file_get_contents("php://input"));

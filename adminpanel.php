@@ -7,13 +7,11 @@ if (!isset($_SESSION['admin_id'])) {
     exit();
 }
 
-// Database connection
-$conn = new mysqli('localhost', 'root', '', 'uiusupplements');
+// Include centralized configuration
+require_once 'config.php';
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Get database connection
+$conn = getDbConnection();
 
 // Fetch admin info
 $admin_sql = "SELECT * FROM admins WHERE admin_id = ?";

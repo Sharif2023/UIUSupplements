@@ -2,19 +2,11 @@
 session_start();
 header('Content-Type: application/json');
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "uiusupplements";
+// Include centralized configuration
+require_once '../config.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Database connection failed']);
-    exit();
-}
+// Get database connection
+$conn = getDbConnection();
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
