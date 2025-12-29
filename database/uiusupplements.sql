@@ -171,64 +171,8 @@ CREATE TABLE `bargains` (
 INSERT INTO `bargains` (`id`, `product_id`, `buyer_id`, `seller_id`, `bargain_price`, `status`, `buyer_message`, `created_at`, `updated_at`) VALUES
 (2, 4, 11221080, 11221079, 90.00, 'accepted', '', '2025-12-27 18:10:12', '2025-12-27 18:11:32');
 
---
--- Triggers `bargains`
---
-DELIMITER $$
-CREATE TRIGGER `after_bargain_insert` AFTER INSERT ON `bargains` FOR EACH ROW BEGIN
-  UPDATE products SET bargain_count = bargain_count + 1 WHERE id = NEW.product_id;
-END
-$$
-DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `after_bargain_insert_notification` AFTER INSERT ON `bargains` FOR EACH ROW BEGIN
-  INSERT INTO notifications (user_id, type, title, message, link)
-  SELECT 
-    NEW.seller_id,
-    'bargain',
-    'New Bargain Offer',
-    CONCAT('You received a bargain offer of ৳', NEW.bargain_price, ' on your product'),
-    CONCAT('myselllist.php?product_id=', NEW.product_id)
-  FROM products WHERE id = NEW.product_id;
-END
-$$
-DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `after_bargain_update_notification` AFTER UPDATE ON `bargains` FOR EACH ROW BEGIN
-  IF NEW.status != OLD.status THEN
-    -- Notify buyer about status change
-    IF NEW.status = 'accepted' THEN
-      INSERT INTO notifications (user_id, type, title, message, link)
-      VALUES (
-        NEW.buyer_id,
-        'bargain_accepted',
-        'Bargain Accepted!',
-        CONCAT('Your bargain offer of ৳', NEW.bargain_price, ' has been accepted'),
-        CONCAT('mybargains.php?bargain_id=', NEW.id)
-      );
-    ELSEIF NEW.status = 'rejected' THEN
-      INSERT INTO notifications (user_id, type, title, message, link)
-      VALUES (
-        NEW.buyer_id,
-        'bargain_rejected',
-        'Bargain Rejected',
-        'Your bargain offer was rejected by the seller',
-        CONCAT('mybargains.php?bargain_id=', NEW.id)
-      );
-    ELSEIF NEW.status = 'countered' THEN
-      INSERT INTO notifications (user_id, type, title, message, link)
-      VALUES (
-        NEW.buyer_id,
-        'bargain_countered',
-        'Counter Offer Received',
-        'The seller has made a counter offer on your bargain',
-        CONCAT('mybargains.php?bargain_id=', NEW.id)
-      );
-    END IF;
-  END IF;
-END
-$$
-DELIMITER ;
+-- Note: Triggers removed for free hosting compatibility
+-- Trigger logic is handled in PHP code instead
 
 -- --------------------------------------------------------
 
@@ -256,42 +200,7 @@ INSERT INTO `chat_messages` (`id`, `chat_id`, `sender_id`, `receiver_id`, `messa
 (7, 2, 11221079, 11221080, 'Collect it on time', 'text', 1, '2025-12-27 18:11:49'),
 (8, 2, 11221080, 11221079, 'ok', 'text', 0, '2025-12-27 18:12:23');
 
---
--- Triggers `chat_messages`
---
-DELIMITER $$
-CREATE TRIGGER `after_message_insert` AFTER INSERT ON `chat_messages` FOR EACH ROW BEGIN
-  -- Update last message timestamp
-  UPDATE deal_chats 
-  SET last_message_at = NEW.created_at 
-  WHERE id = NEW.chat_id;
-  
-  -- Increment unread count for receiver
-  UPDATE deal_chats 
-  SET buyer_unread_count = buyer_unread_count + 1 
-  WHERE id = NEW.chat_id AND buyer_id = NEW.receiver_id;
-  
-  UPDATE deal_chats 
-  SET seller_unread_count = seller_unread_count + 1 
-  WHERE id = NEW.chat_id AND seller_id = NEW.receiver_id;
-END
-$$
-DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `after_message_notification` AFTER INSERT ON `chat_messages` FOR EACH ROW BEGIN
-  IF NEW.message_type = 'text' THEN
-    INSERT INTO notifications (user_id, type, title, message, link)
-    SELECT 
-      NEW.receiver_id,
-      'deal_chat_message',
-      'New Deal Message',
-      CONCAT('You have a new message about a deal'),
-      CONCAT('mydeals.php?chat_id=', NEW.chat_id)
-    FROM dual;
-  END IF;
-END
-$$
-DELIMITER ;
+-- Note: chat_messages triggers removed for free hosting compatibility
 
 -- --------------------------------------------------------
 
@@ -346,28 +255,7 @@ CREATE TABLE `deals` (
 INSERT INTO `deals` (`id`, `product_id`, `seller_id`, `buyer_id`, `final_price`, `bargain_id`, `status`, `seller_confirmed`, `buyer_confirmed`, `seller_contact`, `buyer_contact`, `meeting_location`, `notes`, `created_at`, `completed_at`) VALUES
 (5, 5, 11221079, 11221080, 85.00, NULL, 'pending', 0, 0, NULL, NULL, NULL, NULL, '2025-12-27 18:09:24', NULL);
 
---
--- Triggers `deals`
---
-DELIMITER $$
-CREATE TRIGGER `after_deal_complete` AFTER UPDATE ON `deals` FOR EACH ROW BEGIN
-  IF NEW.status = 'completed' AND OLD.status != 'completed' THEN
-    -- Update product status to sold
-    UPDATE products SET status = 'sold' WHERE id = NEW.product_id;
-    
-    -- Notify both parties
-    INSERT INTO notifications (user_id, type, title, message, link)
-    VALUES 
-      (NEW.seller_id, 'deal_completed', 'Deal Completed!', 
-       CONCAT('Your product has been sold for ৳', NEW.final_price), 
-       CONCAT('deal-details.php?id=', NEW.id)),
-      (NEW.buyer_id, 'deal_completed', 'Deal Completed!', 
-       CONCAT('You successfully purchased the product for ৳', NEW.final_price), 
-       CONCAT('deal-details.php?id=', NEW.id));
-  END IF;
-END
-$$
-DELIMITER ;
+-- Note: deals triggers removed for free hosting compatibility
 
 -- --------------------------------------------------------
 
@@ -578,22 +466,7 @@ CREATE TABLE `offers` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Triggers `offers`
---
-DELIMITER $$
-CREATE TRIGGER `after_offer_insert_notification` AFTER INSERT ON `offers` FOR EACH ROW BEGIN
-  INSERT INTO notifications (user_id, type, title, message, link)
-  SELECT 
-    b.buyer_id,
-    'counter_offer',
-    'Counter Offer Received',
-    CONCAT('Seller offered ৳', NEW.offered_price, ' as counter offer'),
-    CONCAT('mybargains.php?bargain_id=', NEW.bargain_id)
-  FROM bargains b WHERE b.id = NEW.bargain_id;
-END
-$$
-DELIMITER ;
+-- Note: offers triggers removed for free hosting compatibility
 
 -- --------------------------------------------------------
 
