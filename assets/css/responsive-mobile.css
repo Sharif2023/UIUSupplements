@@ -65,6 +65,7 @@
    Tablet Responsive (768px - 1199px)
    ======================================== */
 @media (max-width: 1199px) {
+
     /* Reduce padding on main content */
     .main {
         padding: var(--tablet-padding) !important;
@@ -90,6 +91,7 @@
    Mobile Responsive (Below 768px)
    ======================================== */
 @media (max-width: 768px) {
+
     /* Show mobile menu toggle */
     .mobile-menu-toggle {
         display: block !important;
@@ -119,6 +121,7 @@
 
     nav.mobile-active {
         left: 0 !important;
+        display: block !important;
     }
 
     /* Sidebar for admin panel */
@@ -128,10 +131,13 @@
         width: var(--mobile-sidebar-width) !important;
         max-width: 85vw !important;
         transition: left 0.3s ease !important;
+        display: block !important;
     }
 
     .sidebar.mobile-active {
         left: 0 !important;
+        display: block !important;
+        z-index: 1000 !important;
     }
 
     /* ========================================
@@ -152,6 +158,8 @@
     .header {
         padding: 0 15px !important;
         height: var(--header-height-mobile) !important;
+        margin-top: 60px !important;
+        /* Space for hamburger menu */
     }
 
     .header-left h2 {
@@ -161,6 +169,14 @@
     .center-title {
         font-size: 20px !important;
         text-align: center !important;
+        margin-top: 70px !important;
+        /* Space for hamburger menu */
+    }
+
+    /* Main top section - add spacing for hamburger menu */
+    .main-top {
+        margin-top: 60px !important;
+        padding-top: 10px !important;
     }
 
     /* ========================================
@@ -239,7 +255,8 @@
         font-size: 13px !important;
     }
 
-    th, td {
+    th,
+    td {
         padding: 10px 8px !important;
         font-size: 12px !important;
     }
@@ -254,7 +271,8 @@
     textarea,
     select {
         min-height: var(--touch-target-min) !important;
-        font-size: 16px !important; /* Prevents zoom on iOS */
+        font-size: 16px !important;
+        /* Prevents zoom on iOS */
         padding: 12px !important;
     }
 
@@ -416,7 +434,8 @@
         font-size: 18px !important;
     }
 
-    p, span {
+    p,
+    span {
         font-size: 14px !important;
         line-height: 1.5 !important;
     }
@@ -424,14 +443,14 @@
     /* ========================================
        ISSUE FIXES - Mobile Design Issues
        ======================================== */
-    
+
     /* Issue #2: Slider Fix - Images showing all together */
     .slider .slides {
         width: 100% !important;
         display: flex;
         overflow: hidden;
     }
-    
+
     .slider .slide {
         min-width: 100%;
         flex-shrink: 0;
@@ -445,9 +464,9 @@
         font-size: 14px !important;
         display: block !important;
     }
-    
-    .main-top + div,
-    section.main > div[style*="display: flex"] {
+
+    .main-top+div,
+    section.main>div[style*="display: flex"] {
         flex-direction: column !important;
         gap: 10px !important;
         align-items: stretch !important;
@@ -461,13 +480,13 @@
         gap: 15px !important;
         margin-bottom: 20px !important;
     }
-    
+
     .search-bar,
     .sort-bar {
         width: 100% !important;
         position: relative !important;
     }
-    
+
     .search-bar i.search-icon {
         position: absolute !important;
         left: 12px !important;
@@ -476,7 +495,7 @@
         z-index: 1 !important;
         pointer-events: none !important;
     }
-    
+
     .sort-bar i.sort-icon {
         position: absolute !important;
         left: 12px !important;
@@ -485,21 +504,21 @@
         z-index: 1 !important;
         pointer-events: none !important;
     }
-    
+
     #search-room {
         width: 100% !important;
         padding: 12px 12px 12px 40px !important;
         font-size: 14px !important;
         box-sizing: border-box !important;
     }
-    
+
     #sort-options {
         width: 100% !important;
         padding: 12px 12px 12px 40px !important;
         font-size: 14px !important;
         box-sizing: border-box !important;
     }
-    
+
     .search-btn,
     #search-button {
         width: 100% !important;
@@ -512,17 +531,17 @@
     .contact-section {
         overflow: hidden !important;
     }
-    
+
     .contact-info {
         grid-template-columns: 1fr !important;
         gap: 12px !important;
     }
-    
+
     .contact-item {
         max-width: 100% !important;
         overflow: hidden !important;
     }
-    
+
     .contact-item-value {
         word-wrap: break-word !important;
         overflow-wrap: break-word !important;
@@ -538,13 +557,13 @@
         padding: 12px 20px !important;
         font-size: 14px !important;
     }
-    
+
     button.view-profile {
         font-size: 12px !important;
         padding: 8px 12px !important;
         white-space: nowrap !important;
     }
-    
+
     .contact-button {
         font-size: 11px !important;
         padding: 6px 10px !important;
@@ -563,7 +582,7 @@
         line-height: 1.3 !important;
         text-align: center !important;
     }
-    
+
     .card h3,
     .card-title,
     .mentor-card h2 {
@@ -583,15 +602,22 @@
     .notification-badge {
         border-radius: 50% !important;
     }
-    
+
     /* Ensure equal dimensions for perfect circles */
     .mentor-card img {
-        width: 80px !important;
-        height: 80px !important;
+        width: 60px !important;
+        height: 60px !important;
         object-fit: cover !important;
         border-radius: 50% !important;
     }
-    
+
+    /* Reduce mentor profile photo sizes */
+    .mentor-profile,
+    .profile-photo {
+        width: 100px !important;
+        height: 100px !important;
+    }
+
     .notification-badge {
         min-width: 20px !important;
         height: 20px !important;
@@ -602,7 +628,7 @@
         justify-content: center !important;
         border-radius: 50% !important;
     }
-    
+
     .stat-icon {
         border-radius: 14px !important;
     }
@@ -612,6 +638,7 @@
    Small Mobile (Below 480px)
    ======================================== */
 @media (max-width: 480px) {
+
     /* Even more compact for very small screens */
     .main {
         padding: 10px !important;
@@ -691,6 +718,7 @@
    Landscape Mode (Small Height)
    ======================================== */
 @media (max-height: 600px) and (orientation: landscape) {
+
     nav,
     .sidebar {
         overflow-y: auto !important;
@@ -705,13 +733,17 @@
    Touch Device Optimizations
    ======================================== */
 @media (hover: none) and (pointer: coarse) {
+
     /* Remove hover effects on touch devices */
     .card:hover {
         transform: none !important;
     }
 
     /* Increase tap targets */
-    a, button, input, select {
+    a,
+    button,
+    input,
+    select {
         min-height: var(--touch-target-min) !important;
     }
 
