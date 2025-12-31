@@ -133,6 +133,7 @@ $bargains = $bargainsStmt->get_result();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="assets/css/index.css" />
+    <link rel="stylesheet" href="assets/css/responsive-mobile.css" />
     <link rel="stylesheet" href="assets/css/sell-exchange.css" />
     <style>
         .main {
@@ -515,6 +516,7 @@ $bargains = $bargainsStmt->get_result();
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/index.js"></script>
+<script src="assets/js/mobile-nav.js"></script>
     <script src="assets/js/bargain-manager.js?v=2.0"></script>
     <script src="assets/js/deal-chat.js"></script>
     <script src="assets/js/notification-handler.js"></script>

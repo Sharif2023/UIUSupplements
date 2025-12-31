@@ -226,6 +226,7 @@ if ($showMyItems) {
     <link rel="icon" type="image/x-icon" href="logo/title.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="assets/css/index.css" />
+    <link rel="stylesheet" href="assets/css/responsive-mobile.css" />
     <style>
         /* Page-specific styles for Lost and Found */
         .main-top {
@@ -1198,5 +1199,6 @@ if ($showMyItems) {
     </div>
 </footer>
 <script src="assets/js/index.js"></script>
+<script src="assets/js/mobile-nav.js"></script>
 
 </html>

@@ -82,6 +82,7 @@ $currentUsername = $currentUserData['username'];
     <link rel="icon" type="image/x-icon" href="logo/title.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="assets/css/index.css" />
+    <link rel="stylesheet" href="assets/css/responsive-mobile.css" />
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
 
@@ -669,6 +670,7 @@ $currentUsername = $currentUserData['username'];
             }
         });
     </script>
+<script src="assets/js/mobile-nav.js"></script>
 </body>
 
 </html>

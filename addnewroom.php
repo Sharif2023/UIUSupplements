@@ -26,6 +26,9 @@ $adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@800&display=swap" rel="stylesheet">
     
+    <!-- Mobile Responsive CSS -->
+    <link rel="stylesheet" href="assets/css/responsive-mobile.css" />
+    
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
 
@@ -691,6 +694,7 @@ $adminName = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
             }
         });
     </script>
+<script src="assets/js/mobile-nav.js"></script>
 </body>
 
 </html>

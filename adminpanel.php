@@ -46,6 +46,9 @@ $conn->close();
     <!-- Custom Modal Styles -->
     <link rel="stylesheet" href="assets/css/modal-styles.css">
     
+    <!-- Mobile Responsive CSS -->
+    <link rel="stylesheet" href="assets/css/responsive-mobile.css">
+    
     <style>
         :root {
             --primary-color: #6366f1;
@@ -1525,5 +1528,6 @@ $conn->close();
 
     <script src="assets/js/modal-utils.js"></script>
     <script src="adminpanel/admin-scripts.js"></script>
+    <script src="assets/js/mobile-nav.js"></script>
 </body>
 </html>

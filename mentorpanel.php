@@ -155,6 +155,7 @@ $conn->close();
     <link rel="icon" type="image/x-icon" href="logo/title.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="assets/css/index.css" />
+    <link rel="stylesheet" href="assets/css/responsive-mobile.css" />
     <style>
         .mentor-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -896,6 +897,7 @@ $conn->close();
             &copy; 2020 Copyright: <a href="https://www.youtube.com/@SHARIFsCODECORNER">Sharif Code Corner</a>
         </div>
     </footer>
+<script src="assets/js/mobile-nav.js"></script>
 </body>
 
 </html>

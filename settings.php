@@ -143,6 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="icon" type="image/x-icon" href="logo/title.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="stylesheet" href="assets/css/responsive-mobile.css" />
     <style>
         .settings-page {
             max-width: 1000px;
@@ -745,6 +746,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </footer>
 
     <script src="assets/js/index.js"></script>
+<script src="assets/js/mobile-nav.js"></script>
     <script>
         function switchTab(tabName) {
             // Hide all tab contents

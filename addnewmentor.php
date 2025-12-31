@@ -132,6 +132,9 @@ $conn->close();
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Mobile Responsive CSS -->
+    <link rel="stylesheet" href="assets/css/responsive-mobile.css" />
+    
     <style>
         :root {
             --primary-color: #6366f1;
@@ -848,6 +851,7 @@ $conn->close();
             container.appendChild(entry);
         }
     </script>
+<script src="assets/js/mobile-nav.js"></script>
 </body>
 
 </html>

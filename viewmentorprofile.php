@@ -26,6 +26,10 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     <title>Mentor Profile | UIU Supplement</title>
     <link rel="icon" type="image/x-icon" href="logo/title.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Centralized CSS -->
+    <link rel="stylesheet" href="assets/css/index.css" />
+    <!-- Mobile Responsive CSS -->
+    <link rel="stylesheet" href="assets/css/responsive-mobile.css" />
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
 
@@ -623,6 +627,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             </a>
         </section>
     </div>
+<script src="assets/js/mobile-nav.js"></script>
 </body>
 
 </html>

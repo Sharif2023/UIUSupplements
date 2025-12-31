@@ -17,6 +17,7 @@ if (!isset($_SESSION['user_id'])) {
     <link rel="icon" type="image/x-icon" href="logo/title.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="assets/css/index.css" />
+    <link rel="stylesheet" href="assets/css/responsive-mobile.css" />
 
     <style>
         /* Page Header */
@@ -702,6 +703,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </footer>
     <script src="assets/js/index.js"></script>
+<script src="assets/js/mobile-nav.js"></script>
 </body>
 
 </html>

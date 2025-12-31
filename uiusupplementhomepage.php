@@ -65,6 +65,8 @@ $stats['total_lost_items'] = $lost_result ? $lost_result->fetch_assoc()['total']
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <!-- Centralized CSS -->
   <link rel="stylesheet" href="assets/css/index.css" />
+  <!-- Mobile Responsive CSS -->
+  <link rel="stylesheet" href="assets/css/responsive-mobile.css" />
   <style>
     /* Page-specific styles for Homepage */
     .header-icons {
@@ -1464,5 +1466,6 @@ $stats['total_lost_items'] = $lost_result ? $lost_result->fetch_assoc()['total']
 </footer>
 
 <script src="assets/js/index.js"></script>
+<script src="assets/js/mobile-nav.js"></script>
 
 </html>
