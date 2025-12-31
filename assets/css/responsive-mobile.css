@@ -599,19 +599,30 @@
     .mentor-profile,
     .mentor-photo,
     .profile-photo,
-    .mentor-card img,
     .admin-avatar,
     .notification-badge {
         border-radius: 50% !important;
     }
 
-    /* Ensure equal dimensions for perfect circles - ONLY for profile photos */
+    /* Ensure equal dimensions for perfect circles - ONLY for main profile photos */
     .mentor-card>a>img,
     .mentor-card>img {
         width: 60px !important;
         height: 60px !important;
         object-fit: cover !important;
         border-radius: 50% !important;
+    }
+
+    /* EXPLICITLY keep small info icons at their original size */
+    .mentor-card h3 img,
+    .mentor-card .language img,
+    .mentor-card .country img,
+    .mentor-card .response-time img,
+    .mentor-card .mentor-info img,
+    .mentor-card-content h3 img {
+        width: 12px !important;
+        height: 12px !important;
+        border-radius: 0 !important;
     }
 
     /* Keep skill/contact icons small */
