@@ -10,7 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="uiusupplementhomepage.css">
     <!-- Mobile Responsive CSS -->
-    <link rel="stylesheet" href="assets/css/responsive-mobile.css" />
+    <link rel="stylesheet" href="assets/css/responsive-mobile.css?v=2.0" />
     <style>
         .seat-container {
             display: grid;

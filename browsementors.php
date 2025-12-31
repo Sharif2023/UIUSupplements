@@ -17,7 +17,7 @@ if (!isset($_SESSION['user_id'])) {
     <link rel="icon" type="image/x-icon" href="logo/title.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="assets/css/index.css" />
-    <link rel="stylesheet" href="assets/css/responsive-mobile.css" />
+    <link rel="stylesheet" href="assets/css/responsive-mobile.css?v=2.0" />
     <style>
         /* Page-specific styles for Browse Mentors */
         .center-title {

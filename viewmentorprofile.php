@@ -29,7 +29,7 @@ $mentor_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     <!-- Centralized CSS -->
     <link rel="stylesheet" href="assets/css/index.css" />
     <!-- Mobile Responsive CSS -->
-    <link rel="stylesheet" href="assets/css/responsive-mobile.css" />
+    <link rel="stylesheet" href="assets/css/responsive-mobile.css?v=2.0" />
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
 

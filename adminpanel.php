@@ -47,7 +47,7 @@ $conn->close();
     <link rel="stylesheet" href="assets/css/modal-styles.css">
     
     <!-- Mobile Responsive CSS -->
-    <link rel="stylesheet" href="assets/css/responsive-mobile.css">
+    <link rel="stylesheet" href="assets/css/responsive-mobile.css?v=2.0">
     
     <style>
         :root {
