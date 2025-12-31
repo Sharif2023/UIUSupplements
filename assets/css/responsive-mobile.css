@@ -138,6 +138,8 @@
         left: 0 !important;
         display: block !important;
         z-index: 1000 !important;
+        transform: none !important;
+        /* Reset any transform displacement */
     }
 
     /* ========================================
@@ -603,12 +605,21 @@
         border-radius: 50% !important;
     }
 
-    /* Ensure equal dimensions for perfect circles */
-    .mentor-card img {
+    /* Ensure equal dimensions for perfect circles - ONLY for profile photos */
+    .mentor-card>a>img,
+    .mentor-card>img {
         width: 60px !important;
         height: 60px !important;
         object-fit: cover !important;
         border-radius: 50% !important;
+    }
+
+    /* Keep skill/contact icons small */
+    .mentor-card .skills i,
+    .mentor-card .contact i {
+        width: auto !important;
+        height: auto !important;
+        font-size: 14px !important;
     }
 
     /* Reduce mentor profile photo sizes */
