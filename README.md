@@ -2,6 +2,8 @@
 
 **UIU Supplements** is a comprehensive student life management platform designed specifically for students of United International University (UIU). It serves as a one-stop solution for various student needs, ranging from finding accommodation and mentorship to buying/selling academic materials and finding part-time jobs.
 
+## Run: [Full Website](http://uiusupplements.yzz.me/uiusupplementlogin.html)
+
 ## 🚀 Key Features
 
 ### 1. 🛒 Sell & Exchange Marketplace
